@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import axios from 'axios'
-import { styled } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -14,7 +18,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import InputBase from '@mui/material/InputBase';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Import the CSS file for styling
@@ -243,18 +247,6 @@ export default function Task() {
 
     };
 
-    // const handleInputChange = (event) => {
-    //   const { name, value } = event.target;
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     [name]: value,
-    //   }));
-    // };
-
-    // if (!isFormOpen) {
-    //   return <div>Form closed. You can use the form data elsewhere.</div>;
-    // }
-
    
 
 
@@ -271,17 +263,6 @@ export default function Task() {
     const routeChange1 = (id) => {
         navigate("/Dashboard/Taskdetail",{state:{taskId:id}});
     }
-
-
-    // useEffect(() => {
-    //   setLoading(true)
-    //   fetch("https://6ff9-2405-201-4003-794e-3549-9421-abad-6afe.ngrok-free.app/api/user/")
-    //     .then(response => response.json())
-    //     .then(json => setUsers(json))
-    //     .finally(() => {
-    //       setLoading(false)
-    //     })
-    // }, [])
 
     useEffect(() => {
         setLoading(true);
@@ -305,6 +286,49 @@ export default function Task() {
     }, []);
 
 
+    const Search = styled('div')(({ theme }) => ({
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: 'white',
+        '&:hover': {
+          backgroundColor: 'white',
+        },
+        marginLeft: 0,
+        width: '100%',
+        color:'gray',
+        [theme.breakpoints.up('sm')]: {
+          marginLeft: theme.spacing(1),
+          width: 'auto',
+        },
+      }));
+      
+      const SearchIconWrapper = styled('div')(({ theme }) => ({
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        color:'gray',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }));
+      
+      const StyledInputBase = styled(InputBase)(({ theme }) => ({
+        color: 'inherit',
+        '& .MuiInputBase-input': {
+          padding: theme.spacing(1, 1, 1, 0),
+          // vertical padding + font size from searchIcon
+          paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+          transition: theme.transitions.create('width'),
+          width: '100%',
+          [theme.breakpoints.up('sm')]: {
+            width: '12ch',
+            '&:focus': {
+              width: '20ch',
+            },
+          },
+        },
+      }));
 
 
 
@@ -315,55 +339,25 @@ export default function Task() {
 
 
     return (
-
-
-
-        <div>
-        <Grid container spacing={0}>
-            {/* <Grid item xs={12}>
-      <Item>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-          <Typography variant="h4" gutterBottom>
-            Customer
+            <div >
+                     <Grid >
+                     <Box sx={{ flexGrow: 6 }}>
+      <AppBar style={{backgroundColor:'#007F6D'}}  position="static">
+        <Toolbar variant="dense">
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+          >
+            Tasks
           </Typography>
-        </Stack>
 
 
-      </Item>
-    </Grid> */}
-            <Grid item xs={12} >
-
-
-
-
-                <Item style={{ backgroundColor: '#007F6D', height: '60%', marginTop: '-2%' }}>
-                <Grid item xs={3}>
-                    <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '70%', fontSize: '18px', marginTop: '9px' }}>
-                        Tasks
-                    </Typography>
-                    </Grid>
-
-                    <Grid item xs={3}>
-                    <TextField
-                        id="search"
-                        type="search"
-                        label="Search"
-                        size="small"
-
-                        sx={{ width: '80%', marginLeft: '118%', marginTop: '-14%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
-
-                    />
-                    </Grid>
-
-                    <Grid item xs={3}>
-                    
-                    <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-35%', marginLeft: '210%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
-                    </Grid>
-                   <div>
-                   <Grid item xs={3}>
-                    <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', marginTop: '-28%', marginRight: '-475%', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
-                        <InputLabel id="demo-select-small-label" style={{color:'black'}}>Status</InputLabel>
-                        <Select
+          <Grid item xs={3}>
+                     <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
+                         <InputLabel id="demo-select-small-label" style={{color:'black'}}>Status</InputLabel>
+                         <Select
                             labelId="demo-select-small-label"
                             id="demo-select-small"
                             value={status}
@@ -379,14 +373,9 @@ export default function Task() {
                         </Select>
                     </FormControl>
                     </Grid>
-                    </div>
 
-
-
-
-                    <div>
                     <Grid item xs={3}>
-                    <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', marginTop: '-34%', marginLeft:'328%', borderRadius: '5px', height: '75%', width: '1%' }} size="small">
+                    <FormControl  sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
                         <InputLabel id="demo-select-small-label" style={{color:'black'}}>Date</InputLabel>
                         <Select
                             labelId="demo-select-small-label"
@@ -405,186 +394,33 @@ export default function Task() {
                         </Select>
                     </FormControl>
                     </Grid>
-                    </div>
+                
 
-                  
-
-
-
-
-
-
-                    {/* 
-        <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ width: '19%', height: '71%', marginLeft: '77%', backgroundColor: 'white', color: 'black', marginTop: '-12%', marginRight: '-2%', }} startIcon={<Iconify icon="eva:plus-fill" />}>
-          New Customer
-        </Button> */}
-
-                    <Dialog
-                        open={openUser}
-                        onClose={handleClose}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        style={{ height: '550px' }}
-                    >
-                        <DialogTitle id="alert-dialog-title">
-                            {"Add Customer"}
-                        </DialogTitle>
-                        <DialogContent>
-                            <div>
-                                <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
-                            </div>
-                            <div>
-                                <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-48px' }}>Add Image</p>
-                            </div>
-                            <DialogContentText>
-
-                                <Container maxWidth="sm">
-                                    <form onSubmit={handleSubmit}>
-                                        <Grid container spacing={5}>
-                                            <Grid item xs={6}>
-
-                                                <TextField
-                                                    label="Name"
-                                                    value={name}
-                                                    onChange={(e) => setName(e.target.value)}
-
-                                                    fullWidth
-                                                    required
-                                                    style={{ padding: '7px', width: '250px' }}
-                                                />
-                                                <TextField
-                                                    label="Contact No"
-                                                    value={contactno}
-                                                    onChange={(e) => setContactNo(e.target.value)}
-                                                    fullWidth
-                                                    required
-                                                    style={{ padding: '7px', width: '250px' }}
-
-                                                />
-                                                <TextField
-                                                    label="Area Pin"
-                                                    value={areapin}
-                                                    onChange={(e) => setAreapin(e.target.value)}
-                                                    fullWidth
-                                                    required
-                                                    style={{ padding: '7px', width: '250px' }}
-
-                                                />
-                                                    {/* <TextField
-                            label="Role"
-                            value={address}
-                            onChange={(e) => setRole(e.target.value)}
-                            fullWidth
-                            multilin
-                            rows={2}
-                            required
-                            style={{ padding: '7px', width: '250px', }}
-                          /> */}
-
-                                                    {/* <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
-                            <InputLabel id="demo-select-small-label">Role</InputLabel>
-                            <Select
-                              labelId="demo-select-small-label"
-                              id="demo-select-small"
-                              value={role}
-                              label="Role"
-                              onChange={handleChange1}
-                              style={{width:'238px',height:'55px'}}
-                            >
-                              <MenuItem value="">
-                                <em>None</em>
-                              </MenuItem>
-                              <MenuItem value={10}>Admin </MenuItem>
-                              <MenuItem value={20}>Customer</MenuItem>
-                              <MenuItem value={30}>Engineer</MenuItem>
-                            </Select>
-                          </FormControl> */}
-
-                                                    <TextField
-                                                        label="Password"
-                                                        value={password}
-                                                        onChange={(e) => setPassword(e.target.value)}
-                                                        fullWidth
-                                                        required
-                                                        style={{ padding: '7px', width: '250px' }}
-
-                                                    />
-
-
-                                                </Grid>
-
-                                                <Grid item xs={6}>
-                                                    <TextField
-                                                        label="Email"
-                                                        value={email}
-                                                        onChange={(e) => setEmail(e.target.value)}
-                                                        fullWidth
-                                                        required
-                                                        type="email"
-                                                        style={{ padding: '7px', width: '250px' }}
-                                                    />
-                                                    <TextField
-                                                        label="State"
-                                                        value={state}
-                                                        onChange={(e) => setState(e.target.value)}
-                                                        fullWidth
-                                                        required
-
-                                                        style={{ padding: '7px', width: '250px' }}
-                                                    />
-                                                    <TextField
-                                                        label="Address"
-                                                        value={address}
-                                                        onChange={(e) => setAddress(e.target.value)}
-                                                        fullWidth
-                                                        multilin
-                                                        rows={4}
-                                                        required
-                                                        style={{ padding: '7px', width: '250px', height: '0px' }}
-                                                    />
-
-                                                    <TextField
-                                                        label="City"
-                                                        value={city}
-                                                        onChange={(e) => setCity(e.target.value)}
-                                                        fullWidth
-                                                        required
-                                                        style={{ padding: '7px', width: '250px', marginTop: '20%' }}
-
-                                                    />
-
-                                                </Grid>
-                                            </Grid>
-                                            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '18px', paddingTop: '-3px', marginLeft: '423px' }}>
-                                                Submit
-                                            </Button>
-                                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
-                                        </form>
-                                    </Container>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
+        </Toolbar>
+      </AppBar>
+    </Box>
 
 
 
-
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
-                <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
-                  Submit
-                </Button> */}
-                            </DialogActions>
-                        </Dialog>
-
-
-
-                    </Item>
-                </Grid>
+        
+   
+     
+            
 
 
 
 
 
-                <Grid item xs={12} style={{ marginTop: '-2%' }}>
+                <Grid item xs={12} >
                     <Item>
                         <Card >
 
@@ -717,6 +553,7 @@ export default function Task() {
             </Grid>
 
         </div>
+
     );
 
 }

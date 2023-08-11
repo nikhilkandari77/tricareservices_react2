@@ -293,8 +293,13 @@ export default function Taskdetail() {
                 
                   console.log(json.data);   
                   setTask(json.data);
+                  if(task.engineerName!==null){
+                    toast.success("Engineer Already Assigned")
+                  }
                   showCustomer(json.data.customerId,token);
-            
+                    
+        
+                    
                   
             })
 
@@ -336,6 +341,7 @@ export default function Taskdetail() {
               
               setCustomer(json.data);
               
+              
         })
        
 
@@ -364,7 +370,7 @@ export default function Taskdetail() {
                         {/* <button style={{ marginRight: '-50%' }}>Completed</button> */}
                         <p style={{ color: 'white', marginTop: '-0.70%', marginLeft: '-82%' }}>Ticket Id-TK232123879 </p>
                         <p style={{ color: 'white', marginTop: '-3%', marginLeft: '-45%' }}>Date-21-06-2023</p>
-                        <p style={{ color: 'white', marginTop: '1%', marginLeft: '-30%' }}>Problem-MatherBoard something not working properly and display blinking everytime this  issue start buy after 1 month</p>
+                        <p style={{ color: 'white', marginTop: '1%', marginLeft: '-88%' }}>Problem-{task.problem}</p>
 
 
 
@@ -386,7 +392,7 @@ export default function Taskdetail() {
                     <Item style={{ height: '705px', fontSize: '24px' }}>
                         Profile
 
-                        <img style={{ width: 85, height: 120, marginLeft: '30%', paddingBottom: '65px', marginTop: '38px', color: 'white' }} alt="Bx bxs lock alt" src="https://thumbs.dreamstime.com/b/flat-male-avatar-image-beard-hairstyle-businessman-profile-icon-vector-179285629.jpg" />
+                        <img style={{ width: 150, height: 150, marginLeft: '30%', paddingBottom: '65px', marginTop: '38px', color: 'white' }} alt="Bx bxs lock alt" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiQmcqzN9KSMx-hxPJfiB3yt59uQhN9R4IqjisfUEitJv9lbQVN14QYLsUfmgiH-AoH2VgTFMdRBaTWa9XXpU9aMV1fveYnRgRsf4peaqt_rCR_qyQ483NgjHHdhfYpOr8axyGWhk3DHw5lAUQkXl6NGMugPS7k6Apw7CUjqRMgwAv01i2_AXyRumuBfw/w680/blank-profile-picture-hd-images-photo.JPG" />
                         <p style={{ fontSize: '25px', marginTop: '-25px' }}>Name:{customer.name}</p>
                         <p style={{ fontSize: '19px', marginTop: '0px' }}>Email:{customer.email}</p>
                         <p style={{ fontSize: '19px', marginTop: '-15px' }}>Contact:{customer.contact}</p>
@@ -409,12 +415,12 @@ export default function Taskdetail() {
                     <Item style={{ height: '705px', }}>
                         <div style={{ padding: '20px', }}>
 
-                            <img style={{ width: 125, height: 95, marginLeft: '80px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />
-                            <p style={{ fontSize: '18px', marginRight: '138px', marginTop: '-10px' }}>{task.productCustomer.productName}</p>
-                            <Grid container spacing={5}>
-                                <Grid item xs={4}>
+                            {/* <img style={{ width: 125, height: 95, marginLeft: '80px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
+                            <p style={{ fontWeight:'bold',fontSize: '38px', marginRight: '138px', marginTop: '-10px' }}>{task.productCustomer.productName}</p>
+                            <Grid container spacing={9}>
+                                <Grid item xs={5.5}>
 
-                                    <ul style={{ listStyleType: 'none',fontSize: '15px',textAlign:'left' }}>
+                                    <ul style={{lineHeight:'2', listStyleType: 'none',fontSize: '15px',textAlign:'left' }}>
                                         <li > Complaint Id  </li>
                                         <li> Serial no  </li>
                                         <li>Product </li>
@@ -427,6 +433,7 @@ export default function Taskdetail() {
                                         <li>Customer Contact</li>
                                         <li>Problem</li>
                                         <li>Complaint Status</li>
+                                        <li>Engineer Name </li>
                                         <li>Customer City</li>
                                         <li> Pincode </li>
                                         <li>Address</li>
@@ -434,19 +441,20 @@ export default function Taskdetail() {
                                 </Grid>
 
                                 <Grid item xs={4}>
-                                    <ul style={{ listStyleType: 'none',fontSize: '15px',textAlign:'left' }}>
+                                    <ul style={{ lineHeight:'2',listStyleType: 'none',fontSize: '15px',textAlign:'left',width:'100vh' }}>
                                     {task.id}
                                         <li>{task.productCustomer.serialNo} </li>
                                         <li>{task.productCustomer.productName}</li>
                                         <li >{task.productCustomer.manufacturingDate}</li>
                                         <li >{task.productCustomer.installationDate}</li>
-                                        <li >{task.createdDateTime}</li>
+                                        <li >{new Date(task.createdDateTime).toLocaleDateString()}</li>
                                         <li >{task.productCustomer.productType}</li>
                                         <li > {task.productCustomer.purchaseDate}</li>
                                         <li >{task.productCustomer.warrantyPeriod}</li>
                                         <li>{task.contact}</li>
                                         <li >{task.problem}</li>
                                         <li > {task.complaintStatus}</li>
+                                        <li>{task.engineerName}</li>
                                         <li > {task.city}</li>
                                         <li > {task.pinCode}</li>
                                         <li > {task.area}</li>
@@ -493,10 +501,10 @@ export default function Taskdetail() {
                                 <MenuItem value="Paid"><em>Paid</em></MenuItem>
                             </Select>
                         </FormControl>
-
-
+                            
+                           
                         <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
-                            <InputLabel id="demo-select-small-label">Remote Task</InputLabel>
+                            <InputLabel id="demo-select-small-label">{task.complaintType}</InputLabel>
                             <Select
                                 labelId="demo-select-small-label"
                                 id="demo-select-small"
@@ -514,17 +522,23 @@ export default function Taskdetail() {
                         </FormControl>
 
                         <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
-                            <InputLabel id="demo-select-small-label">Select Engineer</InputLabel>
+                            <InputLabel id="demo-select-small-label">{
+                                  task.engineerName===null?
+                                    (<MenuItem value=""><em><b>Engineer</b></em></MenuItem>)
+                                    :(<MenuItem ><em><b>{task.engineerName}</b></em></MenuItem>)
+                               
+                                }</InputLabel>
                             <Select
                                 labelId="demo-select-small-label"
                                 id="demo-select-small"
                                 value={engineer}
                                 label="Select Engineer"
+                                defaultValue='hello'
                                 onChange={handleChange1}
+                              
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
+                               
+                                <MenuItem value=""><em>None</em></MenuItem>
                                 {
                                 Object.keys(engineers).length===0?"":(
                                     engineers.map(engineer0=>
@@ -550,12 +564,13 @@ export default function Taskdetail() {
 
 
                         <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
-                            <InputLabel id="demo-select-small-label">Priority</InputLabel>
+                            <InputLabel id="demo-select-small-label"><b>{task.priority} </b></InputLabel>
                             <Select
                                 labelId="demo-select-small-label"
                                 id="demo-select-small"
                                 value={priority}
                                 label="Priority"
+                            
                                 onChange={handleChange4}
                             >
                                 <MenuItem value="">
@@ -565,12 +580,23 @@ export default function Taskdetail() {
                                 <MenuItem value="Medium">Medium</MenuItem>
                                 <MenuItem value="Low">Low</MenuItem>
                             </Select>
-                        </FormControl>
+                            
+                           </FormControl>
+
+                           {/* <select className="form-select" aria-label="Default select example">
+                             <option selected>Open this select menu</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                                </select> */}
+                           
+                            
+                    
 
 
                         <button style={{ backgroundColor: '#00764D', width: '77%', height: '6%', marginLeft: '5%', marginTop: '5%', color: 'white', borderRadius: '16px' }}
                         onClick={handleSubmit1}
-                        >Task Assign</button>
+                        >Task Assign / Re-assign</button>
                         <button style={{ backgroundColor: 'Red', width: '77%', height: '6%', marginLeft: '5%', marginTop: '5%', color: 'white', borderRadius: '16px' }}
                         onClick={handleSubmit2}
                         >Reject</button>
