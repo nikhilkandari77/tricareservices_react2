@@ -263,7 +263,15 @@
 // }
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+
+
+
+
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -278,43 +286,45 @@ import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import InputBase from '@mui/material/InputBase';
+
 import Iconify from '../../../components/iconify';
 
 
 
 
 const columns = [
-  { id: 'customername', label: 'Sr.No', minWidth: 80 },
-  { id: 'area', label: 'Image', minWidth: 100 },
-  { id: 'noofproduct', label: ' Product', minWidth: 90 },
-  {
-    id: 'contactno',
-    label: 'Product Type',
-    minWidth: 150,
-    align: 'right',
-    // format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'joindate',
-    label: 'Customer',
-    minWidth: -10,
-    align: 'right',
-    // format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'jobno',
-    label: 'Job No',
-    minWidth: 100,
-    align: 'right',
-    // format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'constractiontype',
-    label: 'Constraction Type',
-    minWidth: 160,
-    align: 'right',
-    // format: (value) => value.toLocaleString('en-US'),
-  },
+  { id: 'id', label: 'Sr.No', minWidth: 140 },
+  { id: 'name', label: 'Name', minWidth: 170 },
+  { id: 'imageName', label: ' Image', minWidth: 400 },
+  // {
+  //   id: 'contactno',
+  //   label: 'Product Type',
+  //   minWidth: 150,
+  //   align: 'right',
+  //   // format: (value) => value.toLocaleString('en-US'),
+  // },
+  // {
+  //   id: 'joindate',
+  //   label: 'Customer',
+  //   minWidth: -10,
+  //   align: 'right',
+  //   // format: (value) => value.toLocaleString('en-US'),
+  // },
+  // {
+  //   id: 'jobno',
+  //   label: 'Job No',
+  //   minWidth: 100,
+  //   align: 'right',
+  //   // format: (value) => value.toLocaleString('en-US'),
+  // },
+  // {
+  //   id: 'constractiontype',
+  //   label: 'Constraction Type',
+  //   minWidth: 160,
+  //   align: 'right',
+  //   // format: (value) => value.toLocaleString('en-US'),
+  // },
   {
     id: 'button',
     label: 'Action',
@@ -332,27 +342,28 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function createData(customername, area, noofproduct, contactno, joindate,jobno,constractiontype, button) {
-  // const density = asset / serialno;
-  return { customername, area, noofproduct, contactno, joindate,jobno,constractiontype, button };
-}
+// function createData(customername, area, noofproduct, contactno, joindate,jobno,constractiontype, button) {
+//   // const density = asset / serialno;
+//   return { customername, area, noofproduct, contactno, joindate,jobno,constractiontype, button };
+// }
 
-const rows = [
+// const rows = [
 
-  createData(1, <img style={{ width: 45, height: 50 }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />, 'Rapid pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
-  createData(2, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_b 1.svg" />, 'Charger pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
-  createData(3, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_c 1.svg" />, 'Digi Charge', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
-  createData(4, <img style={{ width: 45, height: 50 }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />, 'Rapid pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
-  createData(5, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_b 1.svg" />, 'Charger pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
-  createData(6, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_c 1.svg" />, 'Digi Charge', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
+//   createData(1, <img style={{ width: 45, height: 50 }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />, 'Rapid pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
+//   createData(2, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_b 1.svg" />, 'Charger pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
+//   createData(3, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_c 1.svg" />, 'Digi Charge', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
+//   createData(4, <img style={{ width: 45, height: 50 }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />, 'Rapid pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
+//   createData(5, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_b 1.svg" />, 'Charger pod', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
+//   createData(6, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_c 1.svg" />, 'Digi Charge', 'LT Panel', 'Adani Electrical','120004','Indoor', 'Action'),
 
 
-];
+// ];
 
 
 
 
 export default function StickyHeadTable() {
+  const [rows, setRows] = useState([])
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [name, setName] = useState('');
@@ -370,6 +381,7 @@ export default function StickyHeadTable() {
   const [dateofinstallation, setInstallation] = useState('');
   const [nextsheduledmaintenance, setNextsheduledmaintenance] = useState('');
   const [controller, setController] = useState('');
+  const [loading, setLoading] = useState(false)
 
 
 
@@ -437,6 +449,102 @@ export default function StickyHeadTable() {
 
 
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setLoading(true);
+    fetch("https://tricareservice.onrender.com/api/user/product-master/", {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+
+    })
+
+      .then(response => response.json())
+      .then(json => {
+        console.log("Fetched data:", json); // This line will print the data to the console
+        // setUsers(json);
+        setRows(json.data)
+
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+
+
+
+  const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: 'white',
+    '&:hover': {
+      backgroundColor: 'white',
+    },
+    marginLeft: 0,
+    width: '100%',
+    color: 'gray',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  }));
+
+  const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    color: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }));
+
+  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+      padding: theme.spacing(1, 1, 1, 0),
+      // vertical padding + font size from searchIcon
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create('width'),
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        width: '12ch',
+        '&:focus': {
+          width: '20ch',
+        },
+      },
+    },
+  }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   return (
 
@@ -455,31 +563,47 @@ export default function StickyHeadTable() {
 
           </Item>
         </Grid> */}
-        <Grid item xs={12} style={{marginLeft:'-2%'}} >
 
 
 
 
-          <Item style={{ backgroundColor: '#007F6D', height: '82%',marginTop:'-2%',width:'100%' }}>
-            <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '892%', fontSize: '140%', marginTop: '14erm', }}>
-              Products 
-            </Typography>
-
-            <TextField
-              id="search"
-              type="search"
-              label="Search"
-              size="small"
-
-              sx={{ width: '20%', marginLeft: '18%', marginTop: '-4%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
-
-            />
-            <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-6%', marginLeft: '2%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
 
 
 
+        
+          <Box sx={{ flexGrow: 6 }}>
+            <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+              <Toolbar variant="dense">
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                >
+                  Tasks
+                </Typography>
 
-            <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ width: '20%', height: '82%', marginLeft: '77%', backgroundColor: 'white', color: 'black', marginTop: '-11.5%', marginRight: '-2%',  }} startIcon={<Iconify icon="eva:plus-fill" />}>
+
+              
+
+
+                <Search>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                  />
+                </Search>
+                {/* <search>
+
+                   <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
+                </search> */}
+
+                <Search>
+
+                  <Button onClick={handleClickOpenUserPopup} variant="contained"  style={{backgroundColor:'white',color:'black'}}  startIcon={<Iconify icon="eva:plus-fill" />}>
               Add Products
             </Button>
 
@@ -643,9 +767,11 @@ export default function StickyHeadTable() {
 
                         </Grid>
                       </Grid>
-                      <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '34px', paddingTop: '-3px', marginLeft: '388px',width:'116px' }}>
+                      <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}  >
                         Add Product
                       </Button>
+
+
                       <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '308PX', marginTop: '-59px' }} >Close</Button>
                     </form>
                   </Container>
@@ -662,17 +788,47 @@ export default function StickyHeadTable() {
                 </Button> */}
               </DialogActions>
             </Dialog>
+            </Search>
 
 
 
-          </Item>
-        </Grid>
+              </Toolbar>
+            </AppBar>
+          </Box>
+
+
+
+{/* 
+          <Item style={{ backgroundColor: '#007F6D', height: '82%', marginTop: '-2%', width: '100%' }}> */}
+            {/* <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '892%', fontSize: '140%', marginTop: '14erm', }}>
+              Products
+            </Typography> */}
+
+            {/* <TextField
+              id="search"
+              type="search"
+              label="Search"
+              size="small"
+
+              sx={{ width: '20%', marginLeft: '18%', marginTop: '-4%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
+
+            /> */}
+            {/* <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-6%', marginLeft: '2%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button> */}
+
+
+
+
+           
+
+
+          {/* </Item> */}
+        
 
 
 
 
 
-        <Grid item xs={12} style={{marginTop:'-4%',marginLeft:'-2%',}}>
+        <Grid item xs={12} style={{ marginTop: '1%', marginLeft: '0%', }}>
           <Item>
             <Card>
 
@@ -706,7 +862,7 @@ export default function StickyHeadTable() {
                                 if (column.id === 'button') {
                                   return (
                                     <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={handleClickOpen} variant="contained"> {value === null ? '' : String(value)} </Button>
+                                      <Button onClick={handleClickOpen} variant="contained"> Details </Button>
                                       <Dialog
                                         open={open}
                                         onClose={handleClose}

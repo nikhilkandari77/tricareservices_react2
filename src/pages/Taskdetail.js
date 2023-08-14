@@ -8,6 +8,10 @@ import Select from '@mui/material/Select';
 import { ToastContainer, toast } from 'react-toastify';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import AppBar from '@mui/material/AppBar';
+
+import Toolbar from '@mui/material/Toolbar';
+
 
 
 import Table from '@mui/material/Table';
@@ -357,31 +361,43 @@ export default function Taskdetail() {
 
 
         <div>
+            <Box>
+      <AppBar style={{backgroundColor:'#007F6D',padding:'1vh'}}  position="static">
+        <Toolbar >
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+          >
+            <div>
+                
+                <div>
+                    <a><b>Task-Id : </b> {task.id} </a>&nbsp;&nbsp;&nbsp;
+                    <a><b>Date : </b> {task.estimatedDate} </a>
+                </div>
+                <div>
+                    <a><b>Problem : {task.problem}</b></a>
+                </div>
+            </div>
+          </Typography>
+
+          <br/>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+          >Status : &nbsp;
+            {task.ticketStatus==="De-activated"?(<a>Completed</a>):(<a>In-Progress</a>)}
+            
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    </Box>
             <Grid container spacing={0.75} >
 
 
-                <Grid item xs={12} >
-
-
-
-
-                    <Item style={{ backgroundColor: '#007F6D', height: '78px', marginTop: '-2%' }}>
-                        {/* <p style={{ color: 'white', fontSize: '22px', marginLeft: '-900px' }}>Task</p> */}
-                        {/* <button style={{ marginRight: '-50%' }}>Completed</button> */}
-                        <p style={{ color: 'white', marginTop: '-0.70%', marginLeft: '-82%' }}>Ticket Id-TK232123879 </p>
-                        <p style={{ color: 'white', marginTop: '-3%', marginLeft: '-45%' }}>Date-21-06-2023</p>
-                        <p style={{ color: 'white', marginTop: '1%', marginLeft: '-88%' }}>Problem-{task.problem}</p>
-
-
-
-
-
-
-
-
-                    </Item>
-
-                </Grid>
 
 
 
@@ -634,7 +650,7 @@ export default function Taskdetail() {
 
             </Grid>
 
-        </div>
+      </div>
     );
 
 }

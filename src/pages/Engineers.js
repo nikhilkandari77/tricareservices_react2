@@ -222,6 +222,10 @@
 
 
 import React, { useState } from 'react';
+
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -239,6 +243,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import InputBase from '@mui/material/InputBase';
+
+
+
+
+
+
 import Iconify from '../components/iconify';
 
 
@@ -381,6 +392,68 @@ export default function Engineers() {
     );
 
 
+    const Search = styled('div')(({ theme }) => ({
+        position: 'relative',
+        borderRadius: theme.shape.borderRadius,
+        backgroundColor: 'white',
+        '&:hover': {
+            backgroundColor: 'white',
+        },
+        marginLeft: 0,
+        width: '100%',
+        color: 'gray',
+        [theme.breakpoints.up('sm')]: {
+            marginLeft: theme.spacing(1),
+            width: 'auto',
+        },
+    }));
+
+    const SearchIconWrapper = styled('div')(({ theme }) => ({
+        padding: theme.spacing(0, 2),
+        height: '100%',
+        position: 'absolute',
+        pointerEvents: 'none',
+        display: 'flex',
+        color: 'gray',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }));
+
+    const StyledInputBase = styled(InputBase)(({ theme }) => ({
+        color: 'inherit',
+        '& .MuiInputBase-input': {
+            padding: theme.spacing(1, 1, 1, 0),
+            // vertical padding + font size from searchIcon
+            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+            transition: theme.transitions.create('width'),
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                width: '12ch',
+                '&:focus': {
+                    width: '20ch',
+                },
+            },
+        },
+    }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -391,20 +464,176 @@ export default function Engineers() {
         <div>
             <Grid container spacing={5}>
 
+
+
+
+
+
+
+
+
                 <Grid item xs={12} >
+                    <Box sx={{ flexGrow: 6 }}>
+                        <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+                            <Toolbar variant="dense">
+                                <Typography
+                                    variant="h6"
+                                    noWrap
+                                    component="div"
+                                    sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                                >
+                                    Service Engineer
+                                </Typography>
 
 
 
 
-                    <Item style={{ height: '70%', marginTop: '-2%', backgroundColor: '#007F6D', width: '100%' }}>
-                        <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '892px', fontSize: '16px', marginTop: '15px', }}>
-                           <p> Service  </p>
+
+
+
+                                <Search>
+                                    <SearchIconWrapper>
+                                        <SearchIcon />
+                                    </SearchIconWrapper>
+                                    <StyledInputBase
+                                        placeholder="Search…"
+                                        inputProps={{ 'aria-label': 'search' }}
+                                    />
+                                </Search>
+
+
+
+
+
+                                <Grid >
+                                    <Search>
+
+                                        <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
+                                            Add Engineer
+                                        </Button>
+
+
+                                        <Dialog
+                                            open={openUser}
+                                            onClose={handleClose}
+                                            aria-labelledby="alert-dialog-title"
+                                            aria-describedby="alert-dialog-description"
+                                            style={{ height: '550px' }}
+                                        >
+                                            <DialogTitle id="alert-dialog-title">
+                                                {"Add Engineer"}
+                                            </DialogTitle>
+                                            <DialogContent>
+                                                <div>
+                                                    <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
+                                                </div>
+                                                <div>
+                                                    <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-36px' }}>Add Image</p>
+                                                </div>
+                                                <DialogContentText>
+
+                                                    <Container maxWidth="sm">
+                                                        <form onSubmit={handleSubmit}>
+                                                            <Grid container spacing={5}>
+                                                                <Grid item xs={6}>
+                                                                    <TextField
+                                                                        label="Name"
+                                                                        value={name}
+                                                                        onChange={(e) => setName(e.target.value)}
+                                                                        fullWidth
+                                                                        required
+                                                                        style={{ padding: '7px', width: '250px' }}
+                                                                    />
+                                                                    <TextField
+                                                                        label="Contact No"
+                                                                        value={contactNo}
+                                                                        onChange={(e) => setContactNo(e.target.value)}
+                                                                        fullWidth
+                                                                        required
+                                                                        style={{ padding: '7px', width: '250px' }}
+
+                                                                    />
+                                                                </Grid>
+
+                                                                <Grid item xs={6}>
+                                                                    <TextField
+                                                                        label="Email"
+                                                                        value={email}
+                                                                        onChange={(e) => setEmail(e.target.value)}
+                                                                        fullWidth
+                                                                        required
+                                                                        type="email"
+                                                                        style={{ padding: '7px', width: '250px' }}
+                                                                    />
+                                                                    <TextField
+                                                                        label="Address"
+                                                                        value={address}
+                                                                        onChange={(e) => setAddress(e.target.value)}
+                                                                        fullWidth
+                                                                        multilin
+                                                                        rows={4}
+                                                                        required
+                                                                        style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                    />
+                                                                </Grid>
+                                                            </Grid>
+                                                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '-16px', paddingTop: '-3px', marginLeft: '423px' }}>
+                                                                Submit
+                                                            </Button>
+                                                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
+                                                        </form>
+                                                    </Container>
+
+
+
+
+                                                </DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
+                <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
+                  Submit
+                </Button> */}
+                                            </DialogActions>
+                                        </Dialog>
+
+
+
+
+
+
+
+
+                                    </Search>
+
+                                </Grid>
+
+
+
+
+
+
+
+
+
+                            </Toolbar>
+                        </AppBar>
+                    </Box>
+
+
+
+
+
+
+                    {/* <Item style={{ height: '70%', marginTop: '-2%', backgroundColor: '#007F6D', width: '100%' }}> */}
+                    {/* <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '892px', fontSize: '16px', marginTop: '15px', }}>
+                            <p> Service  </p>
                         </Typography>
                         <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '78%', fontSize: '16px', marginTop: '-39px', }}>
-                           <p>  Engineers </p>
-                        </Typography>
+                            <p>  Engineers </p>
+                        </Typography> */}
 
-                        <TextField
+                    {/* <TextField
                             id="search"
                             type="search"
                             label="Search"
@@ -412,106 +641,24 @@ export default function Engineers() {
 
                             sx={{ width: '20%', marginLeft: '18%', marginTop: '-5.3%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
 
-                        />
-                        <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-8.5%', marginLeft: '2%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
+                        /> */}
+                    {/* <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-8.5%', marginLeft: '2%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
+ */}
 
 
-
-
+                    {/* 
                         <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ width: '20%', height: '72%', marginLeft: '77%', backgroundColor: 'white', color: 'black', marginTop: '-14%', marginRight: '-2%', }} startIcon={<Iconify icon="eva:plus-fill" />}>
                             Add Engineer
-                        </Button>
-
-                        <Dialog
-                            open={openUser}
-                            onClose={handleClose}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="alert-dialog-description"
-                            style={{ height: '550px' }}
-                        >
-                            <DialogTitle id="alert-dialog-title">
-                                {"Add Engineer"}
-                            </DialogTitle>
-                            <DialogContent>
-                                <div>
-                                    <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
-                                </div>
-                                <div>
-                                    <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-36px' }}>Add Image</p>
-                                </div>
-                                <DialogContentText>
-
-                                    <Container maxWidth="sm">
-                                        <form onSubmit={handleSubmit}>
-                                            <Grid container spacing={5}>
-                                                <Grid item xs={6}>
-                                                    <TextField
-                                                        label="Name"
-                                                        value={name}
-                                                        onChange={(e) => setName(e.target.value)}
-                                                        fullWidth
-                                                        required
-                                                        style={{ padding: '7px', width: '250px' }}
-                                                    />
-                                                    <TextField
-                                                        label="Contact No"
-                                                        value={contactNo}
-                                                        onChange={(e) => setContactNo(e.target.value)}
-                                                        fullWidth
-                                                        required
-                                                        style={{ padding: '7px', width: '250px' }}
-
-                                                    />
-                                                </Grid>
-
-                                                <Grid item xs={6}>
-                                                    <TextField
-                                                        label="Email"
-                                                        value={email}
-                                                        onChange={(e) => setEmail(e.target.value)}
-                                                        fullWidth
-                                                        required
-                                                        type="email"
-                                                        style={{ padding: '7px', width: '250px' }}
-                                                    />
-                                                    <TextField
-                                                        label="Address"
-                                                        value={address}
-                                                        onChange={(e) => setAddress(e.target.value)}
-                                                        fullWidth
-                                                        multilin
-                                                        rows={4}
-                                                        required
-                                                        style={{ padding: '7px', width: '250px', height: '120px' }}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '-16px', paddingTop: '-3px', marginLeft: '423px' }}>
-                                                Submit
-                                            </Button>
-                                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
-                                        </form>
-                                    </Container>
+                        </Button> */}
 
 
-
-
-                                </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
-                <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
-                  Submit
-                </Button> */}
-                            </DialogActions>
-                        </Dialog>
-                    </Item>
+                    {/* </Item> */}
                 </Grid>
 
 
                 <Grid container spacing={0}>
                     <Grid item xs={1} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-18%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Junior Engineer
@@ -522,7 +669,8 @@ export default function Engineers() {
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
 
-                                <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />                                </Typography>
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
@@ -539,12 +687,12 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>
                     <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-18%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Senior Engineer
@@ -554,7 +702,7 @@ export default function Engineers() {
 
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
                                 </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
@@ -572,12 +720,12 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>
                     <Grid item xs={1} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-18%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Junior Engineer
@@ -588,7 +736,8 @@ export default function Engineers() {
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
 
-                                <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />                                </Typography>
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
@@ -605,12 +754,12 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>
                     <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-18%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Senior Engineer
@@ -620,7 +769,8 @@ export default function Engineers() {
 
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />                                </Typography>
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
@@ -637,7 +787,7 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>
@@ -646,7 +796,7 @@ export default function Engineers() {
 
                 <Grid container spacing={0} style={{ marginTop: '3%' }}>
                     <Grid item xs={1} md={3}>
-                    <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Senior Engineer
@@ -656,7 +806,8 @@ export default function Engineers() {
 
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />                                </Typography>
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
@@ -673,12 +824,12 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>
                     <Grid item xs={3} md={3}>
-                    <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Junior Engineer
@@ -689,7 +840,8 @@ export default function Engineers() {
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
 
-                                <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />                                </Typography>
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
@@ -706,12 +858,12 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>
                     <Grid item xs={3} md={3}>
-                    <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Junior Engineer
@@ -722,7 +874,8 @@ export default function Engineers() {
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
 
-                                <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />                                </Typography>
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
@@ -739,12 +892,12 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>
                     <Grid item xs={3} md={3}>
-                    <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
                                     Junior Engineer
@@ -755,7 +908,8 @@ export default function Engineers() {
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
 
-                                <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="https://img.freepik.com/premium-vector/vector-engineer-color-avatar-icon_249240-36.jpg?w=2000" />                                </Typography>
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
@@ -772,7 +926,7 @@ export default function Engineers() {
                                 </Typography>
                             </CardContent>
                             <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%' }}>View Profile</Button>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
                     </Grid>

@@ -2,7 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
 
 
 import Paper from '@mui/material/Paper';
@@ -15,7 +19,6 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -66,38 +69,49 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-// function createData(id, name, city, areaPin, contact, email) {
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: 'white',
+  '&:hover': {
+    backgroundColor: 'white',
+  },
+  marginLeft: 0,
+  width: '100%',
+  color:'gray',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(1),
+    width: 'auto',
+  },
+}));
 
-//   // const density = asset / serialno;
-//   return { id, name, city, areaPin, contact, email };
-// }
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  color:'gray',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
 
-// const createRows = () => {
-//   for(let i =0;i<users.length;++1){
-//     let rows = [
-//       createData(users[i].id,users[i].name,users[i].city,users[i].contact,users[i].email,"100")
-//     ]
-//   }
-//   return rows
-// }
-
-// const rows = [
-//   createData('1', 'rohit', 'nagpur', 'Rapid pod', '8987767674', 'sonu@gmail.com', 'Details'),
-//   createData('2', 'mohit', 'nagpur', 'Charger pod', '7564444444', 'dkc@gmail.com', 'Details'),
-//   createData('3', 'sumit', 'nagpur', 'Digi Charge', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('4', 'denesh', 'nagpur', 'EV Tower', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('5', 'rohan', 'nagpur', 'Rapid Tower', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('6', 'rohan', 'nagpur', 'sa45', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('7', 'rohan', 'nagpur', 'sa12', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('8', 'rohan', 'nagpur', 'sa34', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('9', 'rohan', 'nagpur', 'sa23', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('10', 'rohan', 'nagpur', 'sa24', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('11', 'rohan', 'nagpur', 'sa24', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('12', 'rohan', 'nagpur', 'sa12', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('13', 'rohan', 'nagpur', 'sa32', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('14', 'rohan', 'nagpur', 'sa34', '8987767674', 'dkc@gmail.com', 'Details'),
-//   createData('15', 'rohan', 'nagpur', 'sa56', '8987767674', 'dkc@gmail.com', 'Details'),
-// ];
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch',
+      },
+    },
+  },
+}));
 
 
 
@@ -230,28 +244,6 @@ export default function StickyHeadTable() {
 
   };
 
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
-
-  // if (!isFormOpen) {
-  //   return <div>Form closed. You can use the form data elsewhere.</div>;
-  // }
-
-
-
-
-
-
-  // const routeChange = () => {
-  //   window.location.href = "/dashboard/customerdetail";
-  // }
-
-  
   const routeChange4 = (id) => {
 
     
@@ -311,233 +303,231 @@ export default function StickyHeadTable() {
 
 
   return (
-
+    
 
 
     <div>
       <Grid container spacing={0} >
-        {/* <Grid item xs={12}>
-          <Item>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-              <Typography variant="h4" gutterBottom>
+
+
+
+      <Box sx={{ flexGrow: 6 }}>
+    <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+        <Toolbar variant="dense">
+            <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            >
                 Customer
-              </Typography>
-            </Stack>
+            </Typography>
 
 
-          </Item>
-        </Grid> */}
-        {/* <Grid item xs={12} > */}
-        <Grid item className="grid-el" xs={12} md={12}>
+           
+
+            
 
 
+            <Search>
+                <SearchIconWrapper>
+                    <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                />
+            </Search>
 
 
-          <Item style={{ backgroundColor: '#007F6D', height: '72%', marginTop: '-2%' }}>
-            <Grid item xs={3}>
+              
+            
 
-              <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '90%', fontSize: '140%', marginTop: '9%' }}>
-                Customers
-              </Typography>
-            </Grid>
+            <Grid >
+            <Search>
 
-            <Grid item xs={3}>
+<Button onClick={handleClickOpenUserPopup} variant="contained" style={{   backgroundColor: 'white', color: 'black',   }} >
+New Customer
+</Button>
 
-              <TextField
-                id="search"
-                type="search"
-                label="Search"
-                size="small"
+<Dialog
+open={openUser}
+onClose={handleClose}
+aria-labelledby="alert-dialog-title"
+aria-describedby="alert-dialog-description"
+style={{ height: '550px' }}
+>
+<DialogTitle id="alert-dialog-title">
+{"Add Customer"}
+</DialogTitle>
+<DialogContent>
+<div>
+<img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
+</div>
+<div>
+<p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-48px' }}>Add Image</p>
+</div>
+<DialogContentText>
 
-                sx={{ width: '80%', marginLeft: '180%', marginTop: '-17%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
+<Container maxWidth="sm">
+<form onSubmit={handleSubmit}>
+<Grid container spacing={5}>
+<Grid item xs={6}>
 
-              />
-            </Grid>
+<TextField
+label="Name"
+value={name}
+onChange={(e) => setName(e.target.value)}
 
-            <Grid item xs={3}>
-              <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-44%', marginLeft: '270%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
+fullWidth
+required
+// style={{ padding: '7px', width: '250px' }}
+sx={{ m: 1, width: '250px' }}
+/>
+<TextField
+label="Contact No"
+value={contactno}
+onChange={(e) => setContactNo(e.target.value)}
+fullWidth
+required
+// style={{ padding: '7px', width: '250px' }}
+sx={{ m: 1, width: '250px' }}
 
-            </Grid>
+/>
+<TextField
+label="Area Pin"
+value={areapin}
+onChange={(e) => setAreapin(e.target.value)}
+fullWidth
+required
+// style={{ padding: '7px', width: '250px' }}
+sx={{ m: 1, width: '250px' }}
 
-            <Grid item xs={3}>
+/>
+{/* <TextField
+label="Role"
+value={address}
+onChange={(e) => setRole(e.target.value)}
+fullWidth
+multilin
+rows={2}
+required
+style={{ padding: '7px', width: '250px', }}
+/> */}
 
-              <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ width: '69%', height: '85%', marginLeft: '327%', backgroundColor: 'white', color: 'black', marginTop: '-67%', marginRight: '-2%', }} >
-                New Customer
-              </Button>
+{/* <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
+<InputLabel id="demo-select-small-label">Role</InputLabel>
+<Select
+labelId="demo-select-small-label"
+id="demo-select-small"
+value={role}
+label="Role"
+onChange={handleChange1}
+style={{width:'238px',height:'55px'}}
+>
+<MenuItem value="">
+  <em>None</em>
+</MenuItem>
+<MenuItem value={10}>Admin </MenuItem>
+<MenuItem value={20}>Customer</MenuItem>
+<MenuItem value={30}>Engineer</MenuItem>
+</Select>
+</FormControl> */}
 
-              <Dialog
-                open={openUser}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-                style={{ height: '550px' }}
-              >
-                <DialogTitle id="alert-dialog-title">
-                  {"Add Customer"}
-                </DialogTitle>
-                <DialogContent>
-                  <div>
-                    <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
-                  </div>
-                  <div>
-                    <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-48px' }}>Add Image</p>
-                  </div>
-                  <DialogContentText>
+<TextField
+label="Password"
+value={password}
+onChange={(e) => setPassword(e.target.value)}
+fullWidth
+required
+// style={{ padding: '7px', width: '250px' }}
+sx={{ m: 1, width: '250px' }}
 
-                    <Container maxWidth="sm">
-                      <form onSubmit={handleSubmit}>
-                        <Grid container spacing={5}>
-                          <Grid item xs={6}>
-
-                            <TextField
-                              label="Name"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-
-                              fullWidth
-                              required
-                              // style={{ padding: '7px', width: '250px' }}
-                              sx={{ m: 1, width: '250px' }}
-                            />
-                            <TextField
-                              label="Contact No"
-                              value={contactno}
-                              onChange={(e) => setContactNo(e.target.value)}
-                              fullWidth
-                              required
-                              // style={{ padding: '7px', width: '250px' }}
-                              sx={{ m: 1, width: '250px' }}
-
-                            />
-                            <TextField
-                              label="Area Pin"
-                              value={areapin}
-                              onChange={(e) => setAreapin(e.target.value)}
-                              fullWidth
-                              required
-                              // style={{ padding: '7px', width: '250px' }}
-                              sx={{ m: 1, width: '250px' }}
-
-                            />
-                            {/* <TextField
-                            label="Role"
-                            value={address}
-                            onChange={(e) => setRole(e.target.value)}
-                            fullWidth
-                            multilin
-                            rows={2}
-                            required
-                            style={{ padding: '7px', width: '250px', }}
-                          /> */}
-
-                            {/* <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
-                            <InputLabel id="demo-select-small-label">Role</InputLabel>
-                            <Select
-                              labelId="demo-select-small-label"
-                              id="demo-select-small"
-                              value={role}
-                              label="Role"
-                              onChange={handleChange1}
-                              style={{width:'238px',height:'55px'}}
-                            >
-                              <MenuItem value="">
-                                <em>None</em>
-                              </MenuItem>
-                              <MenuItem value={10}>Admin </MenuItem>
-                              <MenuItem value={20}>Customer</MenuItem>
-                              <MenuItem value={30}>Engineer</MenuItem>
-                            </Select>
-                          </FormControl> */}
-
-                            <TextField
-                              label="Password"
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              fullWidth
-                              required
-                              // style={{ padding: '7px', width: '250px' }}
-                              sx={{ m: 1, width: '250px' }}
-
-                            />
+/>
 
 
-                          </Grid>
+</Grid>
 
-                          <Grid item xs={6}>
-                            <TextField
-                              label="Email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              fullWidth
-                              required
-                              type="email"
-                              // style={{ padding: '7px', width: '250px' }}
-                              sx={{ m: 1, width: '250px' }}
-                            />
-                            <TextField
-                              label="State"
-                              value={state}
-                              onChange={(e) => setState(e.target.value)}
-                              fullWidth
-                              required
+<Grid item xs={6}>
+<TextField
+label="Email"
+value={email}
+onChange={(e) => setEmail(e.target.value)}
+fullWidth
+required
+type="email"
+// style={{ padding: '7px', width: '250px' }}
+sx={{ m: 1, width: '250px' }}
+/>
+<TextField
+label="State"
+value={state}
+onChange={(e) => setState(e.target.value)}
+fullWidth
+required
 
-                              // style={{ padding: '7px', width: '250px' }}
-                              sx={{ m: 1, width: '250px' }}
-                            />
-                            <TextField
-                              label="Address"
-                              value={address}
-                              onChange={(e) => setAddress(e.target.value)}
-                              fullWidth
-                              multilin
-                              rows={4}
-                              required
-                              // style={{ padding: '7px', width: '250px', height: '0px' }}
-                              sx={{ m: 1, width: '250px' }}
-                            />
+// style={{ padding: '7px', width: '250px' }}
+sx={{ m: 1, width: '250px' }}
+/>
+<TextField
+label="Address"
+value={address}
+onChange={(e) => setAddress(e.target.value)}
+fullWidth
+multilin
+rows={4}
+required
+// style={{ padding: '7px', width: '250px', height: '0px' }}
+sx={{ m: 1, width: '250px' }}
+/>
 
-                            <TextField
-                              label="City"
-                              value={city}
-                              onChange={(e) => setCity(e.target.value)}
-                              fullWidth
-                              required
-                              // style={{ padding: '7px', width: '250px', marginTop: '20%' }}
-                              sx={{ m: 1, width: '250px' }}
+<TextField
+label="City"
+value={city}
+onChange={(e) => setCity(e.target.value)}
+fullWidth
+required
+// style={{ padding: '7px', width: '250px', marginTop: '20%' }}
+sx={{ m: 1, width: '250px' }}
 
-                            />
+/>
 
-                          </Grid>
-                        </Grid>
-                        <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '18px', paddingTop: '-3px', marginLeft: '423px' }}>
-                          Submit
-                        </Button>
-                        <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
-                      </form>
-                    </Container>
+</Grid>
+</Grid>
+<Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '18px', paddingTop: '-3px', marginLeft: '423px' }}>
+Submit
+</Button>
+<Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
+</form>
+</Container>
 
 
 
 
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
-                <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
-                  Submit
-                </Button> */}
-                </DialogActions>
-              </Dialog>
+</DialogContentText>
+</DialogContent>
+<DialogActions>
+{/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
+<Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
+Submit
+</Button> */}
+</DialogActions>
+</Dialog>
+</Search>
 
-            </Grid>
-
-          </Item>
-        </Grid>
+</Grid>
 
 
 
+        </Toolbar>
+    </AppBar>
+</Box>
 
-        <Grid item xs={12} style={{ marginTop: '-5%' }}>
+
+
+
+
+        <Grid item xs={12} >
           <Item>
             <Card >
 
