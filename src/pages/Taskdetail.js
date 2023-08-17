@@ -124,13 +124,6 @@ const postComplaintDetails=async (data)=>{
 }
 
 
-
-
-
-
-
-
-
 export default function Taskdetail() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -325,6 +318,9 @@ export default function Taskdetail() {
                })
       
     }, []);
+
+
+    
 
 
  const showCustomer = (customerId,token) => {

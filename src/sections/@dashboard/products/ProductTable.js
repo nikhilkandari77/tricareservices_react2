@@ -287,16 +287,18 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import InputBase from '@mui/material/InputBase';
-
+import baseUrl from '../../../utils/baseUrl';
 import Iconify from '../../../components/iconify';
 
 
 
 
+
 const columns = [
-  { id: 'id', label: 'Sr.No', minWidth: 140 },
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'imageName', label: ' Image', minWidth: 400 },
+  { id: 'id', label: 'Sr.No', minWidth: 100 },
+  { id: 'imageName', label: ' Image', minWidth: 100 },
+  { id: 'name', label: 'Name', minWidth: 100 },
+  { id: 'category', label: ' Category', minWidth: 100 },
   // {
   //   id: 'contactno',
   //   label: 'Product Type',
@@ -363,6 +365,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 export default function StickyHeadTable() {
+  const [count,setCount]=useState(1)
   const [rows, setRows] = useState([])
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -399,9 +402,10 @@ export default function StickyHeadTable() {
 
   const [open, setOpen] = React.useState(false);
   const [openUser, setUserOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
+  const [data,setData]=useState({})
+  const handleClickOpen = (row) => {
     setOpen(true);
+    setData(row);
   };
 
   const handleClose = () => {
@@ -452,7 +456,7 @@ export default function StickyHeadTable() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     setLoading(true);
-    fetch("https://tricareservice.onrender.com/api/user/product-master/", {
+    fetch(`${baseUrl}/api/user/product-master/`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -852,23 +856,38 @@ export default function StickyHeadTable() {
                     <TableBody>
                       {rows
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => {
+                        .map((row) => { 
                           return (
                             <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                               {columns.map((column) => {
-                                const value = row[column.id];
-
-
+                                let value = row[column.id];
+                                if(column.id==="category")
+                                  value=value.name;
+                                else if(column.id==="SR.No")
+                                value=setCount(count+1);
+                                
+                                
+                                 else if (column.id==="imageName"){
+                                   
+                                    
+                                  return (
+                                  <TableCell>
+                                    <img style={{height:"7vh"}} src={`/products_images/${value}`} alt='product'/>
+                                    </TableCell>
+                                    )
+                                    
+                              }
+                                
                                 if (column.id === 'button') {
                                   return (
                                     <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={handleClickOpen} variant="contained"> Details </Button>
+                                      <Button onClick={()=>handleClickOpen(row)} variant="contained"> Details </Button>
                                       <Dialog
                                         open={open}
                                         onClose={handleClose}
                                         aria-labelledby="alert-dialog-title"
                                         aria-describedby="alert-dialog-description"
-
+                                        data={data}
                                       >
                                         <DialogTitle id="alert-dialog-title">
                                           {"View Details"}
@@ -878,13 +897,18 @@ export default function StickyHeadTable() {
 
                                             <div style={{ padding: '20px', }}>
 
-                                              <img style={{ width: 125, height: 115, marginLeft: '125px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />
+                                              <img style={{ width:"15rem" , height: "15vh",margin:"auto" }} alt="Bx bxs lock alt" src={`/products_images/${data.imageName}`} />
 
-                                              <Grid container spacing={5}>
+                                              <Grid container spacing={15}>
                                                 <Grid item xs={6}>
 
-                                                  <ul>
-                                                    <li > Asset id  </li>
+                                                  <ul style={{listStyleType:"none"}}>
+                                                    <li>Product Id : </li>
+                                                    <li>Product Name :</li>
+                                                    <li>Category Id :</li>
+                                                    <li>Category Name:</li>
+                                                    <li>Description :</li>
+                                                    {/* <li > Asset id  </li>
                                                     <li> Serial no  </li>
                                                     <li>SLA        </li>
                                                     <li> Date of Manufacturing</li>
@@ -898,33 +922,28 @@ export default function StickyHeadTable() {
                                                     <li>Display  </li>
                                                     <li>LED      </li>
                                                     <li> Latitude </li>
-                                                    <li>Longitude</li>
+                                                    <li>Longitude</li> */}
                                                   </ul>
                                                 </Grid>
-
-                                                <Grid item xs={6}>
-
-                                                  <li>Rapid Pod</li>
-                                                  <li>Rapid Pod TRI01 </li>
-                                                  <li>24hrs</li>
-                                                  <li>19/8/2023</li>
-                                                  <li>15/2/2023</li>
-                                                  <li>05/22023</li>
-                                                  <li>Railbit</li>
-                                                  <li> Schneider</li>
-                                                  <li>Siemens</li>
-                                                  <li>Havells</li>
-                                                  <li>Phoneix</li>
-                                                  <li> NP</li>
-                                                  <li> Railbit</li>
-                                                  <li> 27.78777</li>
-                                                  <li> 77.89877</li>
-
-
-
-
-                                                </Grid>
+                                                    {
+                                                    Object.keys(data).length===0?"":
+                                               ( <Grid item xs={6}>
+                                                  <ul style={{listStyleType:"none"}}>
+                                                    <li >{data.id}</li>
+                                                    <li>{data.name}</li>
+                                                    <li>{data.category.id}</li>
+                                                    <li>{data.category.name}</li>
+                                                    <li>{data.description}</li>
+                                                    </ul>
+                                                    
+                                                </Grid>)
+                                                }
+                                
+            
+                                
+                                                 
                                               </Grid>
+                                                
 
 
 
@@ -948,9 +967,10 @@ export default function StickyHeadTable() {
 
 
                                 }
+                                
 
 
-                                return (
+                                return  (
                                   <TableCell key={column.id} align={column.align}>
                                     {value}
                                   </TableCell>
