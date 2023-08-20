@@ -31,6 +31,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputBase from '@mui/material/InputBase';
 
+import baseUrl from '../utils/baseUrl';
 import Iconify from '../components/iconify';
 
 
@@ -175,7 +176,7 @@ export default function StickyHeadTable() {
     console.log(formData);
     console.log(token);
 
-    const response = await fetch('https://tricareservice.onrender.com/api/user/', {
+    const response = await fetch(`${baseUrl}/api/user/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -252,7 +253,7 @@ export default function StickyHeadTable() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     setLoading(true);
-    fetch("https://tricareservice.onrender.com/api/user/hasRole/2", {
+    fetch(`${baseUrl}/api/user/hasRole/2`, {
       method: 'GET',
       mode: 'cors',
       headers: {

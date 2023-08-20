@@ -29,7 +29,7 @@ const columns = [
   },
   {
     id: 'problem',
-    label: 'Complaint',
+    label: 'Problem',
     minWidth: 150,
     align: 'center',
     // format: (value) => value.toLocaleString('en-US'),
@@ -43,7 +43,7 @@ const columns = [
   },
   { id: 'createdDateTime', label: 'Complaint Time', align: 'center', minWidth: 110 },
   { id: 'engineerName', label: 'Engineer', align: 'center', minWidth: 70 },
-  { id: 'estimatedDate', label: 'Estimated End Time', align: 'center', minWidth: 110 },
+  { id: 'estimatedDateTime', label: 'Estimated End Time', align: 'center', minWidth: 110 },
   { id: 'complaintStatus', label: 'Status', align: 'center', minWidth: 70 },
   { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
   { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
@@ -245,12 +245,12 @@ export default function DashboardTable({ token }) {
 
                       }
 
-                      if (column.id === 'estimatedDate') {
+                      if (column.id === 'estimatedDateTime') {
 
                         console.log(`Desired Value ${value}`);
                         return (
                           <TableCell key={column.id} align={column.align}>
-                            {value !== null ? formatDate(value) : 'Pending Assign'}
+                            {value !== null ? formatDateTime(value) : 'Pending Assign'}
                           </TableCell>
                         );
 

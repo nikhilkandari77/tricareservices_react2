@@ -10,7 +10,7 @@ import colors from 'src/theme/colors';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Card, CardHeader, Box, Grid, Container, Typography } from '@mui/material';
+import { Card,CardContent, CardHeader, Box, Grid, Container, Typography } from '@mui/material';
 import * as echarts from 'echarts/core';
 import { GaugeChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -54,9 +54,11 @@ export default function DashboardAppPage() {
   const [todayServiceCount, setServiceCount] = useState(0);
   const theme = useTheme();
 
+
+
   useEffect(() => {
 
-
+    console.log(`Token${  token}`);
     fetch(`${baseUrl}/api/user/complaint/countData/`, {
       method: 'GET',
       mode: 'cors',
@@ -187,73 +189,60 @@ export default function DashboardAppPage() {
           Dashboard
         </Typography>
 
-        <Grid container spacing={5}>
-
-          <Grid item xs={3} sm={6} md={4}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={4}>
             <CardTodayServices title="" color='info' total={rows.todayService !== 0 ? rows.todayService : "0"} completed={0} />
           </Grid>
-
-          <Grid item xs={3} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <CardNextDayServices title="" total={0} color="warning" icon={'ant-design:windows-filled'} />
           </Grid>
-
-          <Grid item xs={3} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <CardBackLogServices title="" total={0} color="error" icon={'ant-design:bug-filled'} />
           </Grid>
-
         </Grid>
 
-      </Container>
-
-      <Container maxWidth="xl">
-
-        <Grid>
-
-
-          <DashboardTable token={token} />
-
-        </Grid>
 
       </Container>
 
       <Container maxWidth="xl">
 
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <DashboardTable token={token} />
+          </Grid>
+        </Grid>
 
-          <Grid item xs={3} md={6} sm={3}>
+      </Container>
 
-          <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+      <Container maxWidth="xl">
+        <Grid container spacing={2}>
 
+          <Grid item xs={12} md={6}>
+                <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+            {/* <Card>
+              <CardContent>
+              </CardContent>
+            </Card> */}
           </Grid>
 
-          <Grid item xs={3} md={6} sm={3}>
+
+
+          <Grid item xs={12} md={6}>
             <ChartEngineerWorkload
               title="Engineer WorkLoads"
               subheader=""
               chartLabels={[
-                'Rohit',
-                'Rakesh',
-                'Sanjay',
-                'Nikhil',
-                'Sumit',
-                'Rohan',
-                'Mukesh',
-                'Dilip',
-                'Karan',
+                'Rohit', 'Rakesh', 'Sanjay', 'Nikhil', 'Sumit',
+                'Rohan', 'Mukesh', 'Dilip', 'Karan'
               ]}
               chartData={[
-                {
-                  name: "numberofservices",
-                  data: [6, 3, 5, 1, 8, 2, 4, 7, 9]
-                }
+                { name: 'numberofservices', data: [6, 3, 5, 1, 8, 2, 4, 7, 9] }
               ]}
             />
           </Grid>
-
-
-
         </Grid>
       </Container>
+
 
 
     </>

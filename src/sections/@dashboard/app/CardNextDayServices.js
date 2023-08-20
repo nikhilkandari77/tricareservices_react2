@@ -72,7 +72,7 @@ export default function CardNextDayServices({ title, total, completed, icon, col
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
           <Typography variant="h3">Next Day</Typography>
-          <Typography variant="h3">Sheduled</Typography>
+          <Typography variant="h3">Scheduled</Typography>
           {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
           <Typography variant="h3">{0}</Typography>
       </div>

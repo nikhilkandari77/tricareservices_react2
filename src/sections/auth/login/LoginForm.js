@@ -79,14 +79,17 @@ export default function LoginForm() {
 
     if (response.ok) {
       // Save the token to local storage or state for future API requests
-      localStorage.setItem('token', data.token);
       setMessage('Login successful');
-      navigate("/dashboard")
-      localStorage.setItem("isLoggedIn",true)
+      localStorage.setItem('name', data.user.name);
+      localStorage.setItem('email', data.user.email);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem("isLoggedIn",true);
+      navigate("/dashboard");
     }
-    else if (! response.ok){
+    else if (!response.ok){
 
       alert('Invalid Credential')
+
      }
     
     
