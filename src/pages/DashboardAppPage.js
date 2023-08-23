@@ -1,4 +1,4 @@
-import React,{ useState,useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
@@ -6,13 +6,24 @@ import DashboardTable from 'src/components/tables/DashboardTable';
 import { faker } from '@faker-js/faker';
 // eslint-disable-next-line import/no-unresolved
 import colors from 'src/theme/colors';
+
+
 // @mui
 import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
+import { Card,CardContent, CardHeader, Box, Grid, Container, Typography } from '@mui/material';
+import * as echarts from 'echarts/core';
+import { GaugeChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+
+
+
 // components
 import Iconify from '../components/iconify';
 
+
+
 import baseUrl from '../utils/baseUrl';
+
 // sections
 import {
   AppTasks,
@@ -33,39 +44,139 @@ import {
 
 const token = localStorage.getItem('token');
 
-
+echarts.use([GaugeChart, CanvasRenderer]);
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
 
-  const [rows,setRows]=useState({});
-  const[todayServiceCount,setServiceCount]=useState(0)
+  const [rows, setRows] = useState({});
+  const [todayServiceCount, setServiceCount] = useState(0);
   const theme = useTheme();
 
+
+
   useEffect(() => {
-        
-    
+
+    console.log(`Token${  token}`);
     fetch(`${baseUrl}/api/user/complaint/countData/`, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-            Authorization: `Bearer ${token}`
-        },
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
 
     })
-    .then(response => response.json())
-    .then(json => {
-        
-      
-          setRows(json.data);
-          
-          
-          console.log(rows);
-    })
-  
+      .then(response => response.json())
+      .then(json => {
+
+
+        setRows(json.data);
+
+        console.log(json.data);
+      });
+
   }, []);
-    
+
+  const chartRef = useRef(null);
+
+  useEffect(() => {
+    const myChart = echarts.init(chartRef.current);
+
+    const option = {
+      series: [
+        {
+          type: 'gauge',
+          startAngle: 180,
+          endAngle: 0,
+          center: ['50%', '75%'],
+          radius: '90%',
+          min: 0,
+          max: 1,
+          splitNumber: 8,
+          axisLine: {
+            lineStyle: {
+              width: 6,
+              color: [
+                [0.25, '#FF6E76'],
+                [0.5, '#FDDD60'],
+                [0.75, '#58D9F9'],
+                [1, '#7CFFB2']
+              ]
+            }
+          },
+          pointer: {
+            icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
+            length: '12%',
+            width: 20,
+            offsetCenter: [0, '-60%'],
+            itemStyle: {
+              color: 'auto'
+            }
+          },
+          axisTick: {
+            length: 12,
+            lineStyle: {
+              color: 'auto',
+              width: 2
+            }
+          },
+          splitLine: {
+            length: 20,
+            lineStyle: {
+              color: 'auto',
+              width: 5
+            }
+          },
+          axisLabel: {
+            color: '#464646',
+            fontSize: 20,
+            distance: -60,
+            rotate: 'tangential',
+            formatter(value) {
+              if (value === 0.875) {
+                return 'Completed';
+              } if (value === 0.625) {
+                return 'On Going';
+              } if (value === 0.375) {
+                return 'Delayed';
+              } if (value === 0.125) {
+                return 'Pending';
+              }
+              return '';
+            }
+          },
+          title: {
+            offsetCenter: [0, '-10%'],
+            fontSize: 20
+          },
+          detail: {
+            fontSize: 30,
+            offsetCenter: [0, '-35%'],
+            valueAnimation: true,
+            formatter(value) {
+              return `${Math.round(value * 100)}`;
+            },
+            color: 'inherit'
+          },
+          data: [
+            {
+              value: 0.7,
+              name: 'OverAll Progress'
+            }
+          ]
+        }
+      ]
+    };
+
+
+    myChart.setOption(option);
+
+    return () => {
+      myChart.dispose();
+    };
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -74,123 +185,66 @@ export default function DashboardAppPage() {
 
       <Container maxWidth="xl" sx={{ mb: 5 }}>
 
-        <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue}}>
+        <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
           Dashboard
         </Typography>
 
-        <Grid container spacing={5}>
-
-          <Grid item xs={3} sm={6} md={4}>
-            <CardTodayServices title="" color = 'info' total={rows.todayService!==0?rows.todayService:"0"} completed={6} />
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={4}>
+            <CardTodayServices title="" color='info' total={rows.todayService !== 0 ? rows.todayService : "0"} completed={0} />
           </Grid>
-
-          <Grid item xs={3} sm={6} md={4}>
-            <CardNextDayServices title="" total={rows.nextDayScheduled!==0?rows.nextDayScheduled:"0"} color="warning" icon={'ant-design:windows-filled'} />
+          <Grid item xs={12} sm={6} md={4}>
+            <CardNextDayServices title="" total={0} color="warning" icon={'ant-design:windows-filled'} />
           </Grid>
-
-          <Grid item xs={3} sm={6} md={4}>
-            <CardBackLogServices title="" total={rows.backLog!==0?rows.backLog:"0"} color="error" icon={'ant-design:bug-filled'} />
+          <Grid item xs={12} sm={6} md={4}>
+            <CardBackLogServices title="" total={0} color="error" icon={'ant-design:bug-filled'} />
           </Grid>
+        </Grid>
 
-          </Grid>
 
-        </Container>
-
-        <Container maxWidth="xl">
-
-            <Grid>
-            
-                
-              <DashboardTable token={token}/>
-               
-            </Grid>
-
-        </Container>
+      </Container>
 
       <Container maxWidth="xl">
-        
-        <Grid container spacing={3}>
-        
-          <Grid item xs={12} md={6} lg={8}>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <DashboardTable token={token} />
+          </Grid>
+        </Grid>
+
+      </Container>
+
+      <Container maxWidth="xl">
+        <Grid container spacing={2}>
+
+          <Grid item xs={12} md={6}>
+                <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+            {/* <Card>
+              <CardContent>
+              </CardContent>
+            </Card> */}
+          </Grid>
+
+
+
+          <Grid item xs={12} md={6}>
             <ChartEngineerWorkload
               title="Engineer WorkLoads"
-              subheader="" 
+              subheader=""
               chartLabels={[
-                'Tengen Uzui',
-                'Shinobu Kocho',
-                'Kyojuro Rengoku',
-                'Mitsuri Kanroji',
-                'Obanai Iguro',
-                'Muichiro Tokito',
-                'Giyu Tomioka',
-                'Sanemi Shinazugawa',
-                'Gyomei Himejima',
+                'Rohit', 'Rakesh', 'Sanjay', 'Nikhil', 'Sumit',
+                'Rohan', 'Mukesh', 'Dilip', 'Karan'
               ]}
               chartData={[
-                {
-                  name: "numberofservices",
-                  data: [6, 3, 5, 1, 8, 2, 4, 7, 9]
-                }
+                { name: 'numberofservices', data: [6, 3, 5, 1, 8, 2, 4, 7, 9] }
               ]}
             />
           </Grid>
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentVisits
-              title="Current Visits"
-              chartData={[
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
-              ]}
-              chartColors={[
-                theme.palette.primary.main,
-                theme.palette.info.main,
-                theme.palette.warning.main,
-                theme.palette.error.main,
-              ]}
-            />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppConversionRates
-              title="Conversion Rates"
-              subheader="(+43%) than last year"
-              chartData={[
-                { label: 'Italy', value: 400 },
-                { label: 'Japan', value: 430 },
-                { label: 'China', value: 448 },
-                { label: 'Canada', value: 470 },
-                { label: 'France', value: 540 },
-                { label: 'Germany', value: 580 },
-                { label: 'South Korea', value: 690 },
-                { label: 'Netherlands', value: 1100 },
-                { label: 'United States', value: 1200 },
-                { label: 'United Kingdom', value: 1380 },
-              ]}
-            />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppCurrentSubject
-              title="Current Subject"
-              chartLabels={['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math']}
-              chartData={[
-                { name: 'Series 1', data: [80, 50, 30, 40, 100, 20] },
-                { name: 'Series 2', data: [20, 30, 40, 80, 20, 80] },
-                { name: 'Series 3', data: [44, 76, 78, 13, 43, 10] },
-              ]}
-              chartColors={[...Array(6)].map(() => theme.palette.text.secondary)}
-            />
-          </Grid> */}
-
-          
-        
         </Grid>
       </Container>
 
-      
+
+
     </>
   );
 }

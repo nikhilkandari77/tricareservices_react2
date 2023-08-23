@@ -318,10 +318,20 @@ const rows = [
 export default function Engineers() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    // const [name, setName] = useState('');
+    // const [contactNo, setContactNo] = useState('');
+    // const [email, setEmail] = useState('');
+    // const [address, setAddress] = useState('');
+
+
     const [name, setName] = useState('');
     const [contactNo, setContactNo] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
+    const [state, setState] = useState('');
+    const [areapin, setAreapin] = useState('');
+    const [password, setPassword] = useState('');
+    const [city, setCity] = useState('');
 
 
 
@@ -539,18 +549,43 @@ export default function Engineers() {
                                                                     <TextField
                                                                         label="Name"
                                                                         value={name}
+                                                                        sx={{ m: 1, width: '250px' }}
                                                                         onChange={(e) => setName(e.target.value)}
                                                                         fullWidth
                                                                         required
-                                                                        style={{ padding: '7px', width: '250px' }}
+                                                                    // style={{ padding: '7px', width: '250px' }}
                                                                     />
+
+
+
                                                                     <TextField
                                                                         label="Contact No"
                                                                         value={contactNo}
                                                                         onChange={(e) => setContactNo(e.target.value)}
                                                                         fullWidth
                                                                         required
-                                                                        style={{ padding: '7px', width: '250px' }}
+                                                                        // style={{ padding: '7px', width: '250px' }}
+                                                                        sx={{ m: 1, width: '250px' }}
+
+                                                                    />
+                                                                    <TextField
+                                                                        label="Area pin"
+                                                                        value={areapin}
+                                                                        onChange={(e) => setAreapin(e.target.value)}
+                                                                        fullWidth
+                                                                        required
+                                                                        // style={{ padding: '7px', width: '250px' }}
+                                                                        sx={{ m: 1, width: '250px' }}
+
+                                                                    />
+                                                                    <TextField
+                                                                        label="Password"
+                                                                        value={password}
+                                                                        onChange={(e) => setPassword(e.target.value)}
+                                                                        fullWidth
+                                                                        required
+                                                                        // style={{ padding: '7px', width: '250px' }}
+                                                                        sx={{ m: 1, width: '250px' }}
 
                                                                     />
                                                                 </Grid>
@@ -563,8 +598,10 @@ export default function Engineers() {
                                                                         fullWidth
                                                                         required
                                                                         type="email"
-                                                                        style={{ padding: '7px', width: '250px' }}
+                                                                        // style={{ padding: '7px', width: '250px' }}
+                                                                        sx={{ m: 1, width: '250px' }}
                                                                     />
+
                                                                     <TextField
                                                                         label="Address"
                                                                         value={address}
@@ -573,14 +610,37 @@ export default function Engineers() {
                                                                         multilin
                                                                         rows={4}
                                                                         required
-                                                                        style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                        // style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                        sx={{ m: 1, width: '250px' }}
+                                                                    />
+
+                                                                    <TextField
+                                                                        label="City"
+                                                                        value={city}
+                                                                        onChange={(e) => setCity(e.target.value)}
+                                                                        fullWidth
+                                                                        multilin
+                                                                        rows={4}
+                                                                        required
+                                                                        // style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                        sx={{ m: 1, width: '250px' }}
+                                                                    />
+                                                                    <TextField
+                                                                        label="Confirm Password"
+                                                                        value={password}
+                                                                        onChange={(e) => setState(e.target.value)}
+                                                                        fullWidth
+                                                                        required
+                                                                        type="password"
+                                                                        // style={{ padding: '7px', width: '250px' }}
+                                                                        sx={{ m: 1, width: '250px' }}
                                                                     />
                                                                 </Grid>
                                                             </Grid>
-                                                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '-16px', paddingTop: '-3px', marginLeft: '423px' }}>
+                                                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '30px', paddingTop: '-3px', marginLeft: '438px' }}>
                                                                 Submit
                                                             </Button>
-                                                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
+                                                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '339PX', marginTop: '-60px' }} >Close</Button>
                                                         </form>
                                                     </Container>
 
@@ -669,7 +729,7 @@ export default function Engineers() {
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
 
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
                                 </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
@@ -702,7 +762,7 @@ export default function Engineers() {
 
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
                                 </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
@@ -736,7 +796,7 @@ export default function Engineers() {
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
 
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
                                 </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
@@ -769,7 +829,7 @@ export default function Engineers() {
 
 
                                 <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
                                 </Typography>
                                 <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
                                     Sumit Kumar
@@ -794,8 +854,8 @@ export default function Engineers() {
                 </Grid>
 
 
-                <Grid container spacing={0} style={{ marginTop: '3%' }}>
-                    <Grid item xs={1} md={3}>
+                {/* <Grid container spacing={0} style={{ marginTop: '3%' }}> */}
+                {/* <Grid item xs={1} md={3}>
                         <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
@@ -827,8 +887,76 @@ export default function Engineers() {
                                 <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%', backgroundColor: 'lightblue' }}>View Profile</Button>
                             </CardActions>
                         </Card></Item>
-                    </Grid>
-                    <Grid item xs={3} md={3}>
+                    </Grid> */}
+                {/* <Grid item xs={3} md={3}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
+                            <CardContent>
+                                <Typography style={{ marginTop: '-12%' }}>
+                                    Junior Engineer
+                                </Typography>
+
+
+
+
+                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
+
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
+                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
+                                    Sumit Kumar
+                                </Typography>
+                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
+                                    Service Engineers
+                                </Typography>
+                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
+                                    Inprogress -22
+
+                                </Typography>
+                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
+                                    Completed -24
+
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
+                            </CardActions>
+                        </Card></Item>
+                    </Grid> */}
+                {/* <Grid item xs={3} md={3}>
+                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
+                            <CardContent>
+                                <Typography style={{ marginTop: '-12%' }}>
+                                    Junior Engineer
+                                </Typography>
+
+
+
+
+                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
+
+                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
+                                </Typography>
+                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
+                                    Sumit Kumar
+                                </Typography>
+                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
+                                    Service Engineers
+                                </Typography>
+                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
+                                    Inprogress -22
+
+                                </Typography>
+                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
+                                    Completed -24
+
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
+                            </CardActions>
+                        </Card></Item>
+                    </Grid> */}
+                {/* <Grid item xs={3} md={3}>
                         <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
                             <CardContent>
                                 <Typography style={{ marginTop: '-12%' }}>
@@ -862,75 +990,7 @@ export default function Engineers() {
                             </CardActions>
                         </Card></Item>
                     </Grid>
-                    <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Junior Engineer
-                                </Typography>
-
-
-
-
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid>
-                    <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Junior Engineer
-                                </Typography>
-
-
-
-
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid>
-                </Grid>
+                </Grid> */}
 
 
 

@@ -1,268 +1,4 @@
 
-// import * as React from 'react';
-// import Paper from '@mui/material/Paper';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import TablePagination from '@mui/material/TablePagination';
-// import TableRow from '@mui/material/TableRow';
-
-// import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
-
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogTitle from '@mui/material/DialogTitle';
-
-// // import Button from 'src/theme/overrides/Button';
-
-
-
-// const columns = [
-//   { id: 'srno', label: 'Sr.no', minWidth: 85 },
-//   { id: 'image', label: '', minWidth: 140 },
-//   { id: 'name', label: 'Name', minWidth: 100 },
-//   {
-//     id: 'assetno',
-//     label: 'Asset No',
-//     minWidth: 140,
-//     align: 'right',
-//     // format: (value) => value.toLocaleString('en-US'),
-//   },
-//   {
-//     id: 'serialno',
-//     label: 'Serial No',
-//     minWidth: 140,
-//     align: 'right',
-//     // format: (value) => value.toLocaleString('en-US'),
-//   },
-//   {
-//     id: 'button',
-//     label: 'Action',
-//     minWidth: 140,
-//     align: 'right',
-//     // format: (value) => value.toFixed(2),
-//   },
-// ];
-
-// function createData(srno, image, name, assetno, serialno, button) {
-//   // const density = asset / serialno;
-//   return { srno, image, name, assetno, serialno, button };
-// }
-
-// const rows = [
-//   createData(1, <img style={{ width: 45, height: 50 }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />, 'Rapid pod', 'qw345', 23, 'Action'),
-//   createData(2, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_b 1.svg" />, 'Charger pod', 'qw345', 23, 'Action'),
-//   createData(3, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_c 1.svg" />, 'Digi Charge', 'qw345', 23, 'Action'),
-//   createData(4, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_d 1.svg" />, 'EV Tower', 'qw345', 23, 'Action'),
-//   createData(5, <img style={{ width: 40, height: 45 }} alt="Bx bxs lock alt" src="/image1/charger_e 1.svg" />, 'Rapid Tower', 'qw345', 23, 'Action'),
-//   createData(6, 'img', 'sa45', 'qw345', 23, 'Action'),
-//   createData(7, 'img', 'sa12', 'qw345', 23, 'Action'),
-//   createData(8, 'img', 'sa34', 'qw345', 23, 'Action'),
-//   createData(9, 'img', 'sa23', 'qw345', 23, 'Action'),
-//   createData(10, 'img', 'sa24', 'qw345', 23, 'Action'),
-//   createData(11, 'img', 'sa24', 'qw345', 23, 'Action'),
-//   createData(12, 'img', 'sa12', 'qw345', 23, 'Action'),
-//   createData(13, 'img', 'sa32', 'qw345', 23, 'Action'),
-//   createData(14, 'img', 'sa34', 'qw345', 23, 'Action'),
-//   createData(15, 'img', 'sa56', 'qw345', 23, 'Action'),
-// ];
-
-// export default function StickyHeadTable() {
-//   const [page, setPage] = React.useState(0);
-//   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-
-
-//   const handleChangePage = (event, newPage) => {
-//     setPage(newPage);
-//   };
-
-//   const handleChangeRowsPerPage = (event) => {
-//     setRowsPerPage(+event.target.value);
-//     setPage(0);
-//   };
-
-//   const [open, setOpen] = React.useState(false);
-
-//   const handleClickOpen = () => {
-//     setOpen(true);
-//   };
-
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
-
-
-
-
-
-
-
-//   return (
-
-//     <div>
-
-
-
-
-
-
-
-
-
-//     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-//       <TableContainer sx={{ maxHeight: 440 }}>
-//         <Table stickyHeader aria-label="sticky table">
-//           <TableHead>
-//             <TableRow>
-//               {columns.map((column) => (
-//                 <TableCell
-//                   key={column.id}
-//                   align={column.align}
-//                   style={{ minWidth: column.minWidth }}
-//                 >
-//                   {column.label}
-//                 </TableCell>
-//               ))}
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {rows
-//               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-//               .map((row) => {
-//                 return (
-//                   <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-//                     {columns.map((column) => {
-//                       const value = row[column.id];
-
-//                       const heading = {
-
-
-//                       }
-
-
-//                       if (column.id === 'button') {
-//                         return (
-//                           <TableCell key={column.id} align={column.align}>
-//                             <Button onClick={handleClickOpen} variant="contained"> {value === null ? '' : String(value)} </Button>
-//                             <Dialog
-//                               open={open}
-//                               onClose={handleClose}
-//                               aria-labelledby="alert-dialog-title"
-//                               aria-describedby="alert-dialog-description"
-//                             >
-//                               <DialogTitle id="alert-dialog-title">
-//                                 {"View Details"}
-//                               </DialogTitle>
-//                               <DialogContent>
-//                                 <DialogContentText>
-
-//                                   <div style={{ padding: '20px', }}>
-
-//                                     <img style={{ width: 125, height: 115, marginLeft:'125px'}} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />
-
-//                                     <Grid container spacing={5}>
-//                                       <Grid item xs={6}>
-
-//                                         <ul>
-//                                           <li > Asset id  </li>
-//                                           <li> Serial no  </li>
-//                                           <li>SLA        </li>
-//                                           <li> Date of Manufacturing</li>
-//                                           <li> Date of installation </li>
-//                                           <li> Next shadule maintanance</li>
-//                                           <li> Controller  </li>
-//                                           <li> Meter   </li>
-//                                           <li>RCD     </li>
-//                                           <li>MCB     </li>
-//                                           <li>Connector</li>
-//                                           <li>Display  </li>
-//                                           <li>LED      </li>
-//                                           <li> Latitude </li>
-//                                           <li>Longitude</li>
-//                                         </ul>
-//                                       </Grid>
-
-//                                       <Grid item xs={6}>
-
-//                                         <li>Rapid Pod</li>
-//                                         <li>Rapid Pod TRI01 </li>
-//                                         <li>24hrs</li>
-//                                         <li>19/8/2023</li>
-//                                         <li>15/2/2023</li>
-//                                         <li>05/22023</li>
-//                                         <li>Railbit</li>
-//                                         <li> Schneider</li>
-//                                         <li>Siemens</li>
-//                                         <li>Havells</li>
-//                                         <li>Phoneix</li>
-//                                         <li> NP</li>
-//                                         <li> Railbit</li>
-//                                         <li> 27.78777</li>
-//                                         <li> 77.89877</li>
-
-
-
-
-//                                       </Grid>
-//                                     </Grid>
-
-
-
-//                                   </div>
-//                                 </DialogContentText>
-//                               </DialogContent>
-//                               <DialogActions>
-//                                 <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
-//                                 <Button onClick={handleClose} autoFocus>
-//                                   Accept
-//                                 </Button>
-//                               </DialogActions>
-//                             </Dialog>
-//                           </TableCell>
-
-//                         );
-
-
-//                       }
-
-
-//                       return (
-//                         <TableCell key={column.id} align={column.align}>
-//                           {value}
-//                         </TableCell>
-
-//                       );
-//                     })}
-//                   </TableRow>
-
-//                 );
-//               })}
-//           </TableBody>
-//         </Table>
-//       </TableContainer>
-//       <TablePagination
-//         rowsPerPageOptions={[10, 25, 100]}
-//         component="div"
-//         count={rows.length}
-//         rowsPerPage={rowsPerPage}
-//         page={page}
-//         onPageChange={handleChangePage}
-//         onRowsPerPageChange={handleChangeRowsPerPage}
-//       />
-//     </Paper>
-
-//    </div>
-
-
-
-//   );
-
-// }
-
-
 import React, { useState, useEffect } from 'react';
 
 import AppBar from '@mui/material/AppBar';
@@ -287,44 +23,18 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import InputBase from '@mui/material/InputBase';
-
+import baseUrl from '../../../utils/baseUrl';
 import Iconify from '../../../components/iconify';
 
 
 
 
+
 const columns = [
-  { id: 'id', label: 'Sr.No', minWidth: 140 },
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'imageName', label: ' Image', minWidth: 400 },
-  // {
-  //   id: 'contactno',
-  //   label: 'Product Type',
-  //   minWidth: 150,
-  //   align: 'right',
-  //   // format: (value) => value.toLocaleString('en-US'),
-  // },
-  // {
-  //   id: 'joindate',
-  //   label: 'Customer',
-  //   minWidth: -10,
-  //   align: 'right',
-  //   // format: (value) => value.toLocaleString('en-US'),
-  // },
-  // {
-  //   id: 'jobno',
-  //   label: 'Job No',
-  //   minWidth: 100,
-  //   align: 'right',
-  //   // format: (value) => value.toLocaleString('en-US'),
-  // },
-  // {
-  //   id: 'constractiontype',
-  //   label: 'Constraction Type',
-  //   minWidth: 160,
-  //   align: 'right',
-  //   // format: (value) => value.toLocaleString('en-US'),
-  // },
+  { id: 'id', label: 'Sr.No', minWidth: 100 },
+  { id: 'imageName', label: ' Image', minWidth: 100 },
+  { id: 'name', label: 'Name', minWidth: 100 },
+  { id: 'category', label: ' Category', minWidth: 100 },
   {
     id: 'button',
     label: 'Action',
@@ -363,6 +73,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 export default function StickyHeadTable() {
+  const [count,setCount]=useState(1)
   const [rows, setRows] = useState([])
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -399,9 +110,10 @@ export default function StickyHeadTable() {
 
   const [open, setOpen] = React.useState(false);
   const [openUser, setUserOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
+  const [data,setData]=useState({})
+  const handleClickOpen = (row) => {
     setOpen(true);
+    setData(row);
   };
 
   const handleClose = () => {
@@ -452,7 +164,7 @@ export default function StickyHeadTable() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     setLoading(true);
-    fetch("https://tricareservice.onrender.com/api/user/product-master/", {
+    fetch(`${baseUrl}/api/user/product-master/`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -580,7 +292,7 @@ export default function StickyHeadTable() {
                   component="div"
                   sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                 >
-                  Tasks
+                  Products
                 </Typography>
 
 
@@ -852,23 +564,38 @@ export default function StickyHeadTable() {
                     <TableBody>
                       {rows
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => {
+                        .map((row) => { 
                           return (
                             <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                               {columns.map((column) => {
-                                const value = row[column.id];
-
-
+                                let value = row[column.id];
+                                if(column.id==="category")
+                                  value=value.name;
+                                else if(column.id==="SR.No")
+                                value=setCount(count+1);
+                                
+                                
+                                 else if (column.id==="imageName"){
+                                   
+                                    
+                                  return (
+                                  <TableCell>
+                                    <img style={{height:"7vh"}} src={`/products_images/${value}`} alt='product'/>
+                                    </TableCell>
+                                    )
+                                    
+                              }
+                                
                                 if (column.id === 'button') {
                                   return (
                                     <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={handleClickOpen} variant="contained"> Details </Button>
+                                      <Button onClick={()=>handleClickOpen(row)} variant="contained"> Details </Button>
                                       <Dialog
                                         open={open}
                                         onClose={handleClose}
                                         aria-labelledby="alert-dialog-title"
                                         aria-describedby="alert-dialog-description"
-
+                                        data={data}
                                       >
                                         <DialogTitle id="alert-dialog-title">
                                           {"View Details"}
@@ -878,13 +605,18 @@ export default function StickyHeadTable() {
 
                                             <div style={{ padding: '20px', }}>
 
-                                              <img style={{ width: 125, height: 115, marginLeft: '125px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" />
+                                              <img style={{ width:"15rem" , height: "15vh",margin:"auto" }} alt="Bx bxs lock alt" src={`/products_images/${data.imageName}`} />
 
-                                              <Grid container spacing={5}>
+                                              <Grid container spacing={15}>
                                                 <Grid item xs={6}>
 
-                                                  <ul>
-                                                    <li > Asset id  </li>
+                                                  <ul style={{listStyleType:"none"}}>
+                                                    <li>Product Id : </li>
+                                                    <li>Product Name :</li>
+                                                    <li>Category Id :</li>
+                                                    <li>Category Name:</li>
+                                                    <li>Description :</li>
+                                                    {/* <li > Asset id  </li>
                                                     <li> Serial no  </li>
                                                     <li>SLA        </li>
                                                     <li> Date of Manufacturing</li>
@@ -898,33 +630,28 @@ export default function StickyHeadTable() {
                                                     <li>Display  </li>
                                                     <li>LED      </li>
                                                     <li> Latitude </li>
-                                                    <li>Longitude</li>
+                                                    <li>Longitude</li> */}
                                                   </ul>
                                                 </Grid>
-
-                                                <Grid item xs={6}>
-
-                                                  <li>Rapid Pod</li>
-                                                  <li>Rapid Pod TRI01 </li>
-                                                  <li>24hrs</li>
-                                                  <li>19/8/2023</li>
-                                                  <li>15/2/2023</li>
-                                                  <li>05/22023</li>
-                                                  <li>Railbit</li>
-                                                  <li> Schneider</li>
-                                                  <li>Siemens</li>
-                                                  <li>Havells</li>
-                                                  <li>Phoneix</li>
-                                                  <li> NP</li>
-                                                  <li> Railbit</li>
-                                                  <li> 27.78777</li>
-                                                  <li> 77.89877</li>
-
-
-
-
-                                                </Grid>
+                                                    {
+                                                    Object.keys(data).length===0?"":
+                                               ( <Grid item xs={6}>
+                                                  <ul style={{listStyleType:"none"}}>
+                                                    <li >{data.id}</li>
+                                                    <li>{data.name}</li>
+                                                    <li>{data.category.id}</li>
+                                                    <li>{data.category.name}</li>
+                                                    <li>{data.description}</li>
+                                                    </ul>
+                                                    
+                                                </Grid>)
+                                                }
+                                
+            
+                                
+                                                 
                                               </Grid>
+                                                
 
 
 
@@ -948,9 +675,10 @@ export default function StickyHeadTable() {
 
 
                                 }
+                                
 
 
-                                return (
+                                return  (
                                   <TableCell key={column.id} align={column.align}>
                                     {value}
                                   </TableCell>

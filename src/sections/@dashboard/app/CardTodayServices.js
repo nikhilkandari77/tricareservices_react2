@@ -4,13 +4,18 @@
 //   Title
 // } from '@devexpress/dx-react-chart-material-ui';
 // import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-
+import React, { useEffect, useRef } from 'react';
+import * as echarts from 'echarts/core';
+import { TooltipComponent, LegendComponent } from 'echarts/components';
+import { PieChart } from 'echarts/charts';
+import { LabelLayout } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
 // import colors from 'src/theme/colors';
 
 // @mui
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
-import { Card, CircularProgress, Typography } from '@mui/material';
+import { Card, CircularProgress, Grid, Typography } from '@mui/material';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
 // components
@@ -38,9 +43,9 @@ const StyledIcon = styled('div')(({ theme }) => ({
 CardTodayServices.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  total: PropTypes.number.isRequired,
-  completed: PropTypes.number.isRequired,
+  title: PropTypes.string,
+  total: PropTypes.number,
+  completed: PropTypes.number,
   sx: PropTypes.object,
 };
 
@@ -54,24 +59,88 @@ const options = {
   },
 };
 
+echarts.use([
+  TooltipComponent,
+  LegendComponent,
+  PieChart,
+  CanvasRenderer,
+  LabelLayout
+]);
 
 
-export default function CardTodayServices({ title, total,completed, icon, color, sx, ...other }) {
 
+
+export default function CardTodayServices({ title, total, completed, icon, color, sx, ...other }) {
+
+  // const chartRef = useRef(null);
+
+  // useEffect(() => {
+  //   const myChart = echarts.init(chartRef.current);
+
+  //   const option = {
+  //     tooltip: {
+  //       trigger: 'item'
+  //     },
+  //     legend: {
+  //       top: '5%',
+  //       left: 'center'
+  //     },
+  //     series: [
+  //       {
+  //         name: '',
+  //         type: 'pie',
+  //         radius: ['40%', '70%'],
+  //         avoidLabelOverlap: true,
+  //         itemStyle: {
+  //           borderRadius: 5,
+  //           borderColor: '#fff',
+  //           borderWidth: 2
+  //         },
+  //         label: {
+  //           show: false,
+  //           position: 'center'
+  //         },
+  //         emphasis: {
+  //           label: {
+  //             show: false,
+  //             fontSize: 20,
+  //             fontWeight: 'normal'
+  //           }
+  //         },
+  //         labelLine: {
+  //           show: false
+  //         },
+  //         data: [
+  //           { value: total, name: 'Pending' },
+  //           // { value: 580, name: 'Email' },
+  //           // { value: 484, name: 'Union Ads' },
+  //           // { value: 300, name: 'Video Ads' }
+  //         ]
+  //       }
+  //     ]
+  //   };
+
+
+  //   myChart.setOption(option);
+
+  //   return () => {
+  //     myChart.dispose();
+  //   };
+  // }, [total, completed]);
 
   const data = {
     labels: [`Completed `, `In Progress `],
     datasets: [
       {
         label: 'Services',
-        data: [completed ,total - completed ],
+        data: [completed, total - completed],
         backgroundColor: [
-          
+
           'rgb(46, 204, 32, 1)',
           'rgb(255,255,0)',
         ],
         borderColor: [
-          
+
           'rgb(46, 204, 32, 1)',
           'rgb(255,255,0)',
         ],
@@ -85,7 +154,7 @@ export default function CardTodayServices({ title, total,completed, icon, color,
       sx={{
         py: 2,
         px: 10,
-        boxShadow: 10,   
+        boxShadow: 10,
         textAlign: 'start',
         // color: (theme) => theme.palette[color].darker,
         // bgcolor: (theme) => theme.palette[color].lighter,
@@ -101,11 +170,25 @@ export default function CardTodayServices({ title, total,completed, icon, color,
       {...other}
     >
 
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',  }}>
+      {/* <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+        
+      </div> */}
+
+      <Grid style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }}>
+
+
+        <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
           <Typography variant="h3">Today</Typography>
           <Typography variant="h3">Services</Typography>
           <Typography variant="h3">{fShortenNumber(total)}</Typography>
-      </div>
+
+        </Grid>
+
+        <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'end', }}>
+          {/* <div ref={chartRef} style={{ width: '100%', height: '100%' }} /> */}
+        </Grid>
+
+      </Grid>
 
       {/* <Typography variant="h3">Today</Typography>
 
@@ -116,7 +199,7 @@ export default function CardTodayServices({ title, total,completed, icon, color,
       {/* <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
         {title}
       </Typography> */}
-      
+
       {/* <div
       style={{
         display: 'flex',
@@ -127,9 +210,11 @@ export default function CardTodayServices({ title, total,completed, icon, color,
         width: '100%',
       }}
       >
-        <Doughnut data={data} options={options} />
-      </div> */}
         
+      </div> */}
+
+
+
 
     </Card>
   );
