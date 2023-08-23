@@ -78,7 +78,7 @@ const Search = styled('div')(({ theme }) => ({
   },
   marginLeft: 0,
   width: '100%',
-  color:'gray',
+  color: 'gray',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto',
@@ -91,7 +91,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   position: 'absolute',
   pointerEvents: 'none',
   display: 'flex',
-  color:'gray',
+  color: 'gray',
   alignItems: 'center',
   justifyContent: 'center',
 }));
@@ -117,7 +117,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function StickyHeadTable() {
-  const [rows,setRows]=useState([])
+  const [rows, setRows] = useState([])
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [name, setName] = useState('');
@@ -138,8 +138,8 @@ export default function StickyHeadTable() {
 
   const [loading, setLoading] = useState(false)
   const [users, setUsers] = useState([])
-  const navigate=useNavigate();
- 
+  const navigate = useNavigate();
+
 
 
 
@@ -246,10 +246,10 @@ export default function StickyHeadTable() {
 
   const routeChange4 = (id) => {
 
-    
-         
-      navigate("/dashboard/customerdetail/",{state:{userId:id}});  
-      
+
+
+    navigate("/dashboard/customerdetail/", { state: { userId: id } });
+
 
   }
 
@@ -260,7 +260,7 @@ export default function StickyHeadTable() {
 
 
 
- 
+
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -293,7 +293,7 @@ export default function StickyHeadTable() {
 
 
 
- 
+
 
 
 
@@ -303,7 +303,7 @@ export default function StickyHeadTable() {
 
 
   return (
-    
+
 
 
     <div>
@@ -311,217 +311,180 @@ export default function StickyHeadTable() {
 
 
 
-      <Box sx={{ flexGrow: 6 }}>
-    <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
-        <Toolbar variant="dense">
-            <Typography
+        <Box sx={{ flexGrow: 6 }}>
+          <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+            <Toolbar variant="dense">
+              <Typography
                 variant="h6"
                 noWrap
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-            >
+              >
                 Customer
-            </Typography>
+              </Typography>
 
 
-           
-
-            
 
 
-            <Search>
+
+
+
+              <Search>
                 <SearchIconWrapper>
-                    <SearchIcon />
+                  <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ 'aria-label': 'search' }}
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
                 />
-            </Search>
+              </Search>
+
+
+
 
 
               
-            
 
-            <Grid >
-            <Search>
+                  <Button className='responsive-button' onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
+                    New Customer
+                  </Button>
 
-<Button onClick={handleClickOpenUserPopup} variant="contained" style={{   backgroundColor: 'white', color: 'black',   }} >
-New Customer
-</Button>
+                  <Dialog
+                    open={openUser}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    style={{ height: '550px' }}
+                  >
+                    <DialogTitle id="alert-dialog-title">
+                      {"Add Customer"}
+                    </DialogTitle>
+                    <DialogContent>
+                      <div>
+                        <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
+                      </div>
+                      <div>
+                        <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-48px' }}>Add Image</p>
+                      </div>
+                      <DialogContentText>
 
-<Dialog
-open={openUser}
-onClose={handleClose}
-aria-labelledby="alert-dialog-title"
-aria-describedby="alert-dialog-description"
-style={{ height: '550px' }}
->
-<DialogTitle id="alert-dialog-title">
-{"Add Customer"}
-</DialogTitle>
-<DialogContent>
-<div>
-<img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
-</div>
-<div>
-<p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-48px' }}>Add Image</p>
-</div>
-<DialogContentText>
+                        <Container maxWidth="sm">
+                          <form onSubmit={handleSubmit}>
+                            <Grid container spacing={5}>
+                              <Grid item xs={6}>
 
-<Container maxWidth="sm">
-<form onSubmit={handleSubmit}>
-<Grid container spacing={5}>
-<Grid item xs={6}>
+                                <TextField
+                                  label="Name"
+                                  value={name}
+                                  onChange={(e) => setName(e.target.value)}
 
-<TextField
-label="Name"
-value={name}
-onChange={(e) => setName(e.target.value)}
+                                  fullWidth
+                                  required
+                                  // style={{ padding: '7px', width: '250px' }}
+                                  sx={{ m: 1, width: '250px' }}
+                                />
+                                <TextField
+                                  label="Contact No"
+                                  value={contactno}
+                                  onChange={(e) => setContactNo(e.target.value)}
+                                  fullWidth
+                                  required
+                                  // style={{ padding: '7px', width: '250px' }}
+                                  sx={{ m: 1, width: '250px' }}
 
-fullWidth
-required
-// style={{ padding: '7px', width: '250px' }}
-sx={{ m: 1, width: '250px' }}
-/>
-<TextField
-label="Contact No"
-value={contactno}
-onChange={(e) => setContactNo(e.target.value)}
-fullWidth
-required
-// style={{ padding: '7px', width: '250px' }}
-sx={{ m: 1, width: '250px' }}
+                                />
+                                <TextField
+                                  label="Area Pin"
+                                  value={areapin}
+                                  onChange={(e) => setAreapin(e.target.value)}
+                                  fullWidth
+                                  required
+                                  // style={{ padding: '7px', width: '250px' }}
+                                  sx={{ m: 1, width: '250px' }}
 
-/>
-<TextField
-label="Area Pin"
-value={areapin}
-onChange={(e) => setAreapin(e.target.value)}
-fullWidth
-required
-// style={{ padding: '7px', width: '250px' }}
-sx={{ m: 1, width: '250px' }}
+                                />
+                                
 
-/>
-{/* <TextField
-label="Role"
-value={address}
-onChange={(e) => setRole(e.target.value)}
-fullWidth
-multilin
-rows={2}
-required
-style={{ padding: '7px', width: '250px', }}
-/> */}
+                                <TextField
+                                  label="Password"
+                                  value={password}
+                                  onChange={(e) => setPassword(e.target.value)}
+                                  fullWidth
+                                  required
+                                  // style={{ padding: '7px', width: '250px' }}
+                                  sx={{ m: 1, width: '250px' }}
 
-{/* <FormControl sx={{ m: 1, minWidth: 170 }} size="small">
-<InputLabel id="demo-select-small-label">Role</InputLabel>
-<Select
-labelId="demo-select-small-label"
-id="demo-select-small"
-value={role}
-label="Role"
-onChange={handleChange1}
-style={{width:'238px',height:'55px'}}
->
-<MenuItem value="">
-  <em>None</em>
-</MenuItem>
-<MenuItem value={10}>Admin </MenuItem>
-<MenuItem value={20}>Customer</MenuItem>
-<MenuItem value={30}>Engineer</MenuItem>
-</Select>
-</FormControl> */}
-
-<TextField
-label="Password"
-value={password}
-onChange={(e) => setPassword(e.target.value)}
-fullWidth
-required
-// style={{ padding: '7px', width: '250px' }}
-sx={{ m: 1, width: '250px' }}
-
-/>
+                                />
 
 
-</Grid>
+                              </Grid>
 
-<Grid item xs={6}>
-<TextField
-label="Email"
-value={email}
-onChange={(e) => setEmail(e.target.value)}
-fullWidth
-required
-type="email"
-// style={{ padding: '7px', width: '250px' }}
-sx={{ m: 1, width: '250px' }}
-/>
-<TextField
-label="State"
-value={state}
-onChange={(e) => setState(e.target.value)}
-fullWidth
-required
+                              <Grid item xs={6}>
+                                <TextField
+                                  label="Email"
+                                  value={email}
+                                  onChange={(e) => setEmail(e.target.value)}
+                                  fullWidth
+                                  required
+                                  type="email"
+                                  // style={{ padding: '7px', width: '250px' }}
+                                  sx={{ m: 1, width: '250px' }}
+                                />
+                                <TextField
+                                  label="State"
+                                  value={state}
+                                  onChange={(e) => setState(e.target.value)}
+                                  fullWidth
+                                  required
 
-// style={{ padding: '7px', width: '250px' }}
-sx={{ m: 1, width: '250px' }}
-/>
-<TextField
-label="Address"
-value={address}
-onChange={(e) => setAddress(e.target.value)}
-fullWidth
-multilin
-rows={4}
-required
-// style={{ padding: '7px', width: '250px', height: '0px' }}
-sx={{ m: 1, width: '250px' }}
-/>
+                                  // style={{ padding: '7px', width: '250px' }}
+                                  sx={{ m: 1, width: '250px' }}
+                                />
+                                <TextField
+                                  label="Address"
+                                  value={address}
+                                  onChange={(e) => setAddress(e.target.value)}
+                                  fullWidth
+                                  multilin
+                                  rows={4}
+                                  required
+                                  // style={{ padding: '7px', width: '250px', height: '0px' }}
+                                  sx={{ m: 1, width: '250px' }}
+                                />
 
-<TextField
-label="City"
-value={city}
-onChange={(e) => setCity(e.target.value)}
-fullWidth
-required
-// style={{ padding: '7px', width: '250px', marginTop: '20%' }}
-sx={{ m: 1, width: '250px' }}
+                                <TextField
+                                  label="City"
+                                  value={city}
+                                  onChange={(e) => setCity(e.target.value)}
+                                  fullWidth
+                                  required
+                                  // style={{ padding: '7px', width: '250px', marginTop: '20%' }}
+                                  sx={{ m: 1, width: '250px' }}
 
-/>
+                                />
 
-</Grid>
-</Grid>
-<Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '18px', paddingTop: '-3px', marginLeft: '423px' }}>
-Submit
-</Button>
-<Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
-</form>
-</Container>
+                              </Grid>
+                            </Grid>
+                            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '18px', paddingTop: '-3px', marginLeft: '423px' }}>
+                              Submit
+                            </Button>
+                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
+                          </form>
+                        </Container>
 
 
 
 
-</DialogContentText>
-</DialogContent>
-<DialogActions>
-{/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
-<Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
-Submit
-</Button> */}
-</DialogActions>
-</Dialog>
-</Search>
-
-</Grid>
+                      </DialogContentText>
+                    </DialogContent>
+                  </Dialog>
+                
 
 
 
-        </Toolbar>
-    </AppBar>
-</Box>
+            </Toolbar>
+          </AppBar>
+        </Box>
 
 
 
@@ -629,7 +592,7 @@ Submit
                         })}
                     </TableBody>
 
-                 
+
 
                   </Table>
                 </TableContainer>

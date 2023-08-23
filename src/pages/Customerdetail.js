@@ -533,9 +533,9 @@ export default function Customerdetail() {
                         </div>
                         </div>
                         <div className='col-md-2'><br/>
-                        <div><Button onClick={handleClickOpenUserPopup} variant="contained" style={{ color: 'black', backgroundColor: 'white', }}>edit profile</Button></div><br/>
+                        <div><Button onClick={handleClickOpenUserPopup} variant="contained" style={{ color: 'black', backgroundColor: 'white',width:"100%" }}>edit profile</Button></div><br/>
                         
-                        <Button onClick={handleClickOpenUserPopup2} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
+                        <Button onClick={handleClickOpenUserPopup2} variant="contained" style={{ backgroundColor: 'white', color: 'black',width:"100%" }} >
                                  Add Product
                             </Button> 
                             <Dialog
