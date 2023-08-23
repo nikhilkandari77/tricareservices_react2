@@ -39,9 +39,9 @@ const StyledIcon = styled('div')(({ theme }) => ({
 CardNextDayServices.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  total: PropTypes.number.isRequired,
-  completed: PropTypes.number.isRequired,
+  title: PropTypes.string,
+  total: PropTypes.number,
+  completed: PropTypes.number,
   sx: PropTypes.object,
 };
 
@@ -72,8 +72,9 @@ export default function CardNextDayServices({ title, total, completed, icon, col
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
           <Typography variant="h3">Next Day</Typography>
-          <Typography variant="h3">Sheduled</Typography>
-          <Typography variant="h3">{fShortenNumber(total)}</Typography>
+          <Typography variant="h3">Scheduled</Typography>
+          {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
+          <Typography variant="h3">{0}</Typography>
       </div>
 
       

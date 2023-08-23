@@ -1,6 +1,7 @@
+/* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
-import axios from 'axios'
+import axios from 'axios';
 import { styled, alpha } from '@mui/material/styles';
 
 import AppBar from '@mui/material/AppBar';
@@ -39,7 +40,7 @@ import { Pending } from '@mui/icons-material';
 import Iconify from '../components/iconify';
 
 import baseUrl from '../utils/baseUrl';
-
+import Label from '../components/label/Label';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -63,8 +64,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 export default function Task() {
-    const navigate=useNavigate();
-    const [rows,setRows]=useState([])
+    const navigate = useNavigate();
+    const [rows, setRows] = useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [name, setName] = useState('');
@@ -83,13 +84,13 @@ export default function Task() {
     const [formData, setFormData] = useState({});
     const [isFormOpen, setIsFormOpen] = useState(true);
 
-    const [loading, setLoading] = useState(false)
-    const [users, setUsers] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [users, setUsers] = useState([]);
 
     const [tasktype, setTasktype] = React.useState('');
     const [status, setStatus] = useState('');
 
-   const[date, setDate] = useState('');
+    const [date, setDate] = useState('');
 
 
 
@@ -117,13 +118,13 @@ export default function Task() {
     };
     const handleClickOpenUserPopup = () => {
         setUserOpen(true);
-    }
+    };
     const handleClickClose1 = () => {
         setUserOpen(false);
-    }
+    };
     const handleClickOpen1 = () => {
         setUserOpen(false);
-    }
+    };
 
 
 
@@ -135,58 +136,91 @@ export default function Task() {
     };
 
 
-    const [datas,setData]=useState([])
+    const [datas, setData] = useState([]);
 
     const columns = [
-        { id: 'id', label: 'Complaint Id', minWidth: 20 },
-        { id: 'customerName', label: 'Customer Name', minWidth: 200 },
-        { id: 'problem', label: 'Problem', minWidth: 190 },
-        { id: 'engineerName', label: 'Engineer Assigned', minWidth: 200 },
-        { id: 'complaintStatus', label: 'status', minWidth: 180 },
-        { id: 'createdDateTime', label: 'created time', minWidth: 190 },
+        { id: "sr", label: 'S.No', minWidth: 10 },
+        { id: 'id', label: 'ComplaintId',align: 'center', minWidth: 30 },
         {
-            id: 'city',
-            label: 'City',
-            minWidth: 190,
-            align: 'left',
-            // format: (value) => value.toLocaleString('en-US'),
-        },
-        {
-            id: 'area',
-            label: 'Area',
-            minWidth: 130,
-            align: 'left',
-    
-            // format: (value) => value.toLocaleString('en-US'),
-        },
-        {
-            id: 'priority',
-            label: 'Priority',
-            minWidth: 130,
-            align: 'left',
-    
-            // format: (value) => value.toLocaleString('en-US'),
-        },
-        {
-            id: 'complaintStatus',
-            label: 'Status',
-            minWidth: 100,
-            align: 'left',
-    
-            // format: (value) => value.toLocaleString('en-US'),
-        },
-        {
-            id: 'button',
-            label: 'Action',
-            minWidth: 100,
+            id: 'productCustomer',
+            subId: 'productName',
+            label: 'Product',
+            minWidth: 70,
             align: 'center',
-    
-    
-    
-    
+            // format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+            id: 'problem',
+            label: 'Problem',
+            minWidth: 170,
+            align: 'center',
+            // format: (value) => value.toLocaleString('en-US'),
+        },
+        {
+            id: 'customerName',
+            label: 'Customer',
+            minWidth: 70,
+            align: 'center',
             // format: (value) => value.toFixed(2),
         },
+        { id: 'createdDateTime', label: 'Complaint Time', align: 'center', minWidth: 120 },
+        { id: 'engineerName', label: 'Engineer', align: 'center', minWidth: 70 },
+        { id: 'estimatedDateTime', label: 'Estimated End Time', align: 'center', minWidth: 120 },
+        { id: 'complaintStatus', label: 'Status', align: 'center', minWidth: 70 },
+        { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
+        { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
     ];
+
+    // const columns = [
+    //     { id: 'id', label: 'Complaint Id', minWidth: 100 },
+    //     { id: 'customerName', label: 'Customer Name', minWidth: 200 },
+    //     { id: 'problem', label: 'Problem', minWidth: 190 },
+    //     { id: 'engineerName', label: 'Engineer Assigned', minWidth: 200 },
+    //     { id: 'complaintStatus', label: 'status', minWidth: 180 },
+    //     { id: 'createdDateTime', label: 'created time', minWidth: 190 },
+    //     {
+    //         id: 'city',
+    //         label: 'City',
+    //         minWidth: 190,
+    //         align: 'left',
+    //         // format: (value) => value.toLocaleString('en-US'),
+    //     },
+    //     {
+    //         id: 'area',
+    //         label: 'Area',
+    //         minWidth: 130,
+    //         align: 'left',
+
+    //         // format: (value) => value.toLocaleString('en-US'),
+    //     },
+    //     {
+    //         id: 'priority',
+    //         label: 'Priority',
+    //         minWidth: 130,
+    //         align: 'left',
+
+    //         // format: (value) => value.toLocaleString('en-US'),
+    //     },
+    //     {
+    //         id: 'complaintStatus',
+    //         label: 'Status',
+    //         minWidth: 100,
+    //         align: 'left',
+
+    //         // format: (value) => value.toLocaleString('en-US'),
+    //     },
+    //     {
+    //         id: 'button',
+    //         label: 'Action',
+    //         minWidth: 100,
+    //         align: 'center',
+
+
+
+
+    //         // format: (value) => value.toFixed(2),
+    //     },
+    // ];
 
     const token = localStorage.getItem('token');
 
@@ -251,7 +285,7 @@ export default function Task() {
 
     };
 
-   
+
 
 
 
@@ -263,10 +297,10 @@ export default function Task() {
 
     const routeChange = () => {
         window.location.href = "/Pages/Task";
-    }
+    };
     const routeChange1 = (id) => {
-        navigate("/Dashboard/Taskdetail",{state:{taskId:id}});
-    }
+        navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -295,46 +329,72 @@ export default function Task() {
         borderRadius: theme.shape.borderRadius,
         backgroundColor: 'white',
         '&:hover': {
-          backgroundColor: 'white',
+            backgroundColor: 'white',
         },
         marginLeft: 0,
         width: '100%',
-        color:'gray',
+        color: 'gray',
         [theme.breakpoints.up('sm')]: {
-          marginLeft: theme.spacing(1),
-          width: 'auto',
+            marginLeft: theme.spacing(1),
+            width: 'auto',
         },
-      }));
-      
-      const SearchIconWrapper = styled('div')(({ theme }) => ({
+    }));
+
+    const SearchIconWrapper = styled('div')(({ theme }) => ({
         padding: theme.spacing(0, 2),
         height: '100%',
         position: 'absolute',
         pointerEvents: 'none',
         display: 'flex',
-        color:'gray',
+        color: 'gray',
         alignItems: 'center',
         justifyContent: 'center',
-      }));
-      
-      const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    }));
+
+    const StyledInputBase = styled(InputBase)(({ theme }) => ({
         color: 'inherit',
         '& .MuiInputBase-input': {
-          padding: theme.spacing(1, 1, 1, 0),
-          // vertical padding + font size from searchIcon
-          paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-          transition: theme.transitions.create('width'),
-          width: '100%',
-          [theme.breakpoints.up('sm')]: {
-            width: '12ch',
-            '&:focus': {
-              width: '20ch',
+            padding: theme.spacing(1, 1, 1, 0),
+            // vertical padding + font size from searchIcon
+            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+            transition: theme.transitions.create('width'),
+            width: '100%',
+            [theme.breakpoints.up('sm')]: {
+                width: '12ch',
+                '&:focus': {
+                    width: '20ch',
+                },
             },
-          },
         },
-      }));
+    }));
 
 
+    function formatDate(dateString) {
+        const options = {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        };
+      
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', options);
+      }
+      
+      function formatDateTime(dateString) {
+        const options = {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        };
+      
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', options);
+      }
+      
+        let sr = 0;
 
 
 
@@ -343,87 +403,75 @@ export default function Task() {
 
 
     return (
-            <div >
-                     <Grid >
-                     <Box sx={{ flexGrow: 6 }}>
-      <AppBar style={{backgroundColor:'#007F6D'}}  position="static">
-        <Toolbar variant="dense">
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            Tasks
-          </Typography>
+        <div >
+            <Grid >
+                <Box sx={{ flexGrow: 6 }}>
+                    <AppBar style={{ backgroundColor: '#449355' }} position="static">
+                        <Toolbar variant="dense">
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="div"
+                                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                            >
+                                Tasks
+                            </Typography>
 
 
-          <Grid item xs={3}>
-                     <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
-                         <InputLabel id="demo-select-small-label" style={{color:'black'}}>Status</InputLabel>
-                         <Select
-                            labelId="demo-select-small-label"
-                            id="demo-select-small"
-                            value={status}
-                            label="Status"
-                            onChange={handleChange3}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-                            <MenuItem value={10}>Completed </MenuItem>
-                            <MenuItem value={20}>Pending</MenuItem>
-                            <MenuItem value={30}>Completed</MenuItem>
-                        </Select>
-                    </FormControl>
-                    </Grid>
+                            <Grid item xs={3}>
+                                <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
+                                    <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Status</InputLabel>
+                                    <Select
+                                        labelId="demo-select-small-label"
+                                        id="demo-select-small"
+                                        value={status}
+                                        label="Status"
+                                        onChange={handleChange3}
+                                    >
 
-                    <Grid item xs={3}>
-                    <FormControl  sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
-                        <InputLabel id="demo-select-small-label" style={{color:'black'}}>Date</InputLabel>
-                        <Select
-                            labelId="demo-select-small-label"
-                            id="demo-select-small"
-                            value={date}
-                            label="Date"
-                            onChange={handleChange3}
-                        >
-                            <MenuItem value="">
-                                <em>All</em>
-                            </MenuItem>
-                            <MenuItem value={10}>Today </MenuItem>
-                            <MenuItem value={20}>Last 2 day</MenuItem>
-                            <MenuItem value={30}>Last 7 day</MenuItem>
-                            <MenuItem value={30}>Last 30 day</MenuItem>
-                        </Select>
-                    </FormControl>
-                    </Grid>
-                
+                                        <MenuItem value={10}>Completed </MenuItem>
+                                        <MenuItem value={20}>Pending</MenuItem>
+                                        <MenuItem value={30}>Completed</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-         
-          
-        </Toolbar>
-      </AppBar>
-    </Box>
+                            <Grid item xs={3}>
+                                <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
+                                    <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Date</InputLabel>
+                                    <Select
+                                        labelId="demo-select-small-label"
+                                        id="demo-select-small"
+                                        value={date}
+                                        label="Date"
+                                        onChange={handleChange3}
+                                    >
+                                        <MenuItem value="">
+                                            <em>All</em>
+                                        </MenuItem>
+                                        <MenuItem value={10}>Today </MenuItem>
+                                        <MenuItem value={20}>Last 2 day</MenuItem>
+                                        <MenuItem value={30}>Last 7 day</MenuItem>
+                                        <MenuItem value={30}>Last 30 day</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
 
+                            <Search>
+                                <SearchIconWrapper>
+                                    <SearchIcon />
+                                </SearchIconWrapper>
+                                <StyledInputBase
+                                    placeholder="Search…"
+                                    inputProps={{ 'aria-label': 'search' }}
+                                />
+                            </Search>
 
-        
-   
-     
-            
 
-
-
+                        </Toolbar>
+                    </AppBar>
+                </Box>
 
 
                 <Grid item xs={12} >
@@ -432,13 +480,14 @@ export default function Task() {
 
 
                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                                <TableContainer sx={{ maxHeight: 440 }}>
+
+                                <TableContainer sx={{ maxHeight: 500 }}>
                                     <Table stickyHeader aria-label="sticky table">
                                         <TableHead>
                                             <TableRow>
                                                 {columns.map((column) => (
                                                     <TableCell
-                                                        key={column.id}
+
                                                         align={column.align}
                                                         style={{ minWidth: column.minWidth }}
                                                     >
@@ -448,83 +497,115 @@ export default function Task() {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {rows
-                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                .map((row) => {
-                                                    return (
-                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                            {
+                                                rows
+                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                    .map((row) => (
+                                                        <TableRow hover role="checkbox" tabIndex={-1}>
                                                             {columns.map((column) => {
-                                                                const value = row[column.id];
 
+                                                                const value = column.id === "productCustomer" ? row[column.id][column.subId] : row[column.id];
 
-                                                                if (column.id === 'button') {
+                                                                if (column.id === 'sr') {
+                                                                    sr += 1;
                                                                     return (
                                                                         <TableCell key={column.id} align={column.align}>
-                                                                            <Button onClick={() => routeChange1(row.id)} variant="contained"> Show Details </Button>
-                                                                            <Dialog
-                                                                                open={open}
-                                                                                onClose={handleClose}
-                                                                                aria-labelledby="alert-dialog-title"
-                                                                                aria-describedby="alert-dialog-description"
-
-                                                                            >
-                                                                                <DialogTitle id="alert-dialog-title">
-                                                                                    {"View Details"}
-                                                                                </DialogTitle>
-                                                                                <DialogContent>
-                                                                                    <DialogContentText>
-
-                                                                                        <div>
-                                                                                            <Container>
-                                                                                                <Grid container spacing={2}>
-                                                                                                    <Grid item xs={10}>
-                                                                                                        <Item>xs=8</Item>
-                                                                                                    </Grid>
-                                                                                                    <Grid item xs={10}>
-                                                                                                        <Item>xs=4</Item>
-                                                                                                    </Grid>
-                                                                                                    <Grid item xs={4}>
-                                                                                                        <Item>xs=4</Item>
-                                                                                                    </Grid>
-                                                                                                    <Grid item xs={8}>
-                                                                                                        <Item>xs=8</Item>
-                                                                                                    </Grid>
-                                                                                                </Grid>
-
-                                                                                            </Container>
-                                                                                        </div>
-
-
-
-
-                                                                                    </DialogContentText>
-                                                                                </DialogContent>
-                                                                                <DialogActions>
-                                                                                    <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
-                                                                                    <Button onClick={handleClose} autoFocus>
-                                                                                        Accept
-                                                                                    </Button>
-                                                                                </DialogActions>
-                                                                            </Dialog>
+                                                                            {value === null ? '' : String(sr)}
                                                                         </TableCell>
+                                                                    );
+                                                                }
 
+                                                                if (column.id === 'compaintStatus') {
+                                                                    // console.log(value);
+                                                                    let labelColor;
+
+                                                                    if (value === 'Pending Assign') {
+                                                                        labelColor = 'error';
+                                                                    } else if (value === 'Engineer Assigned') {
+                                                                        labelColor = 'warning';
+                                                                    } else if (value === 'Completed') {
+                                                                        labelColor = 'success';
+                                                                    } else {
+                                                                        labelColor = 'default';
+                                                                    }
+
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
+                                                                        </TableCell>
+                                                                    );
+                                                                }
+
+                                                                if (column.id === 'priority') {
+                                                                    // console.log(value);
+                                                                    let labelColor;
+
+                                                                    if (value === 'High') {
+                                                                        labelColor = 'error';
+                                                                    } else if (value === 'Normal') {
+                                                                        labelColor = 'warning';
+                                                                    } else if (value === 'Low') {
+                                                                        labelColor = 'success';
+                                                                    } else {
+                                                                        labelColor = 'default';
+                                                                    }
+
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
+                                                                        </TableCell>
+                                                                    );
+                                                                }
+                                                                if (column.id === 'action') {
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            <Button onClick={() => routeChange1(row.id)} variant="contained">Details</Button>
+                                                                        </TableCell>
+                                                                    );
+                                                                }
+
+                                                                if (column.id === 'engineerName') {
+
+                                                                    // console.log(`Desired Value ${  value}`);
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value !== null ? value : 'Pending Assign'}
+                                                                        </TableCell>
                                                                     );
 
+                                                                }
+
+                                                                if (column.id === 'estimatedDateTime') {
+
+                                                                    console.log(`Desired Value ${value}`);
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value !== null ? formatDateTime(value) : 'Pending Assign'}
+                                                                        </TableCell>
+                                                                    );
+
+                                                                }
+
+                                                                if (column.id === 'createdDateTime') {
+
+                                                                    console.log(`Desired Value ${value}`);
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value !== null ? formatDateTime(value) : ''}
+                                                                        </TableCell>
+                                                                    );
 
                                                                 }
 
 
                                                                 return (
                                                                     <TableCell key={column.id} align={column.align}>
-                                                                        {value}
+                                                                        {value === null ? '' : String(value)}
                                                                     </TableCell>
-
                                                                 );
                                                             })}
                                                         </TableRow>
-
-                                                    );
-                                                })}
+                                                    ))}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>

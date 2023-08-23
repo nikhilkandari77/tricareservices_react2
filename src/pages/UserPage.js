@@ -1,12 +1,13 @@
+/* eslint-disable react/jsx-key */
 
 
 import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import SearchIcon from '@mui/icons-material/Search';
-import InputBase from '@mui/material/InputBase';
+
 
 
 import Paper from '@mui/material/Paper';
@@ -19,6 +20,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -27,9 +29,11 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import InputBase from '@mui/material/InputBase';
 
-import Iconify from '../components/iconify';
 import baseUrl from '../utils/baseUrl';
+import Iconify from '../components/iconify';
+
 
 
 const columns = [
@@ -69,61 +73,23 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: 'white',
-  '&:hover': {
-    backgroundColor: 'white',
-  },
-  marginLeft: 0,
-  width: '100%',
-  color: 'gray',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
-  },
-}));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  color: 'gray',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
-      },
-    },
-  },
-}));
+
 
 
 
 
 export default function StickyHeadTable() {
-  const [rows, setRows] = useState([])
+  const [rows, setRows] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [name, setName] = useState('');
-  const [contactno, setContactNo] = useState('');
+  const [contactNo, setContactNo] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
+  const [contactno, setContactno] = useState('');
+
 
   const [message, setMessage] = useState('');
 
@@ -136,8 +102,8 @@ export default function StickyHeadTable() {
   const [formData, setFormData] = useState({});
   const [isFormOpen, setIsFormOpen] = useState(true);
 
-  const [loading, setLoading] = useState(false)
-  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
 
@@ -172,13 +138,13 @@ export default function StickyHeadTable() {
   };
   const handleClickOpenUserPopup = () => {
     setUserOpen(true);
-  }
+  };
   const handleClickClose1 = () => {
     setUserOpen(false);
-  }
+  };
   const handleClickOpen1 = () => {
     setUserOpen(false);
-  }
+  };
 
 
 
@@ -200,7 +166,7 @@ export default function StickyHeadTable() {
       email,
       address,
       role: {
-        id: 2,
+        id: 3,
       },
     };
 
@@ -244,6 +210,28 @@ export default function StickyHeadTable() {
 
   };
 
+  // const handleInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
+
+  // if (!isFormOpen) {
+  //   return <div>Form closed. You can use the form data elsewhere.</div>;
+  // }
+
+
+
+
+
+
+  // const routeChange = () => {
+  //   window.location.href = "/dashboard/customerdetail";
+  // }
+
+
   const routeChange4 = (id) => {
 
 
@@ -251,7 +239,7 @@ export default function StickyHeadTable() {
     navigate("/dashboard/customerdetail/", { state: { userId: id } });
 
 
-  }
+  };
 
 
 
@@ -278,7 +266,7 @@ export default function StickyHeadTable() {
       .then(json => {
         console.log("Fetched data:", json); // This line will print the data to the console
         // setUsers(json);
-        setRows(json.data)
+        setRows(json.data);
 
       })
       .finally(() => {
@@ -292,9 +280,52 @@ export default function StickyHeadTable() {
 
 
 
+  const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: 'white',
+    '&:hover': {
+      backgroundColor: 'white',
+    },
+    marginLeft: 0,
+    width: '100%',
+    color: 'gray',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  }));
+
+  const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    color: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }));
+
+  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+      padding: theme.spacing(1, 1, 1, 0),
+      // vertical padding + font size from searchIcon
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create('width'),
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        width: '12ch',
+        '&:focus': {
+          width: '20ch',
+        },
+      },
+    },
+  }));
 
 
-
+let sr = 0;
 
 
 
@@ -308,9 +339,6 @@ export default function StickyHeadTable() {
 
     <div>
       <Grid container spacing={0} >
-
-
-
         <Box sx={{ flexGrow: 6 }}>
           <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
             <Toolbar variant="dense">
@@ -324,11 +352,6 @@ export default function StickyHeadTable() {
               </Typography>
 
 
-
-
-
-
-
               <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
@@ -340,14 +363,14 @@ export default function StickyHeadTable() {
               </Search>
 
 
+              <Grid >
+                <Search>
+                  <search>
 
-
-
-              
-
-                  <Button className='responsive-button' onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
-                    New Customer
-                  </Button>
+                    <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
+                      New Customer
+                    </Button>
+                  </search>
 
                   <Dialog
                     open={openUser}
@@ -372,20 +395,21 @@ export default function StickyHeadTable() {
                           <form onSubmit={handleSubmit}>
                             <Grid container spacing={5}>
                               <Grid item xs={6}>
-
                                 <TextField
                                   label="Name"
                                   value={name}
+                                  sx={{ m: 1, width: '250px' }}
                                   onChange={(e) => setName(e.target.value)}
-
                                   fullWidth
                                   required
-                                  // style={{ padding: '7px', width: '250px' }}
-                                  sx={{ m: 1, width: '250px' }}
+                                // style={{ padding: '7px', width: '250px' }}
                                 />
+
+
+
                                 <TextField
                                   label="Contact No"
-                                  value={contactno}
+                                  value={contactNo}
                                   onChange={(e) => setContactNo(e.target.value)}
                                   fullWidth
                                   required
@@ -394,7 +418,7 @@ export default function StickyHeadTable() {
 
                                 />
                                 <TextField
-                                  label="Area Pin"
+                                  label="Area pin"
                                   value={areapin}
                                   onChange={(e) => setAreapin(e.target.value)}
                                   fullWidth
@@ -403,8 +427,6 @@ export default function StickyHeadTable() {
                                   sx={{ m: 1, width: '250px' }}
 
                                 />
-                                
-
                                 <TextField
                                   label="Password"
                                   value={password}
@@ -415,8 +437,6 @@ export default function StickyHeadTable() {
                                   sx={{ m: 1, width: '250px' }}
 
                                 />
-
-
                               </Grid>
 
                               <Grid item xs={6}>
@@ -430,16 +450,7 @@ export default function StickyHeadTable() {
                                   // style={{ padding: '7px', width: '250px' }}
                                   sx={{ m: 1, width: '250px' }}
                                 />
-                                <TextField
-                                  label="State"
-                                  value={state}
-                                  onChange={(e) => setState(e.target.value)}
-                                  fullWidth
-                                  required
 
-                                  // style={{ padding: '7px', width: '250px' }}
-                                  sx={{ m: 1, width: '250px' }}
-                                />
                                 <TextField
                                   label="Address"
                                   value={address}
@@ -448,7 +459,7 @@ export default function StickyHeadTable() {
                                   multilin
                                   rows={4}
                                   required
-                                  // style={{ padding: '7px', width: '250px', height: '0px' }}
+                                  // style={{ padding: '7px', width: '250px', height: '120px' }}
                                   sx={{ m: 1, width: '250px' }}
                                 />
 
@@ -457,18 +468,28 @@ export default function StickyHeadTable() {
                                   value={city}
                                   onChange={(e) => setCity(e.target.value)}
                                   fullWidth
+                                  multilin
+                                  rows={4}
                                   required
-                                  // style={{ padding: '7px', width: '250px', marginTop: '20%' }}
+                                  // style={{ padding: '7px', width: '250px', height: '120px' }}
                                   sx={{ m: 1, width: '250px' }}
-
                                 />
-
+                                <TextField
+                                  label="Confirm Password"
+                                  value={password}
+                                  onChange={(e) => setState(e.target.value)}
+                                  fullWidth
+                                  required
+                                  type="password"
+                                  // style={{ padding: '7px', width: '250px' }}
+                                  sx={{ m: 1, width: '250px' }}
+                                />
                               </Grid>
                             </Grid>
-                            <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} style={{ marginTop: '18px', paddingTop: '-3px', marginLeft: '423px' }}>
+                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '30px', paddingTop: '-3px', marginLeft: '438px' }}>
                               Submit
                             </Button>
-                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
+                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '339PX', marginTop: '-60px' }} >Close</Button>
                           </form>
                         </Container>
 
@@ -477,8 +498,22 @@ export default function StickyHeadTable() {
 
                       </DialogContentText>
                     </DialogContent>
+                    <DialogActions>
+                      {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
+  <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
+    Submit
+  </Button> */}
+                    </DialogActions>
                   </Dialog>
-                
+                </Search>
+
+              </Grid>
+
+
+
+
+
+
 
 
 
@@ -490,7 +525,47 @@ export default function StickyHeadTable() {
 
 
 
-        <Grid item xs={12} >
+
+        <Grid item className="grid-el" xs={12} md={12}>
+
+
+
+
+          {/* <Item style={{ backgroundColor: '#007F6D', height: '72%', marginTop: '-2%' }}> */}
+          {/* <Grid item xs={3}>
+
+              <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '90%', fontSize: '140%', marginTop: '9%' }}>
+                Customers
+              </Typography>
+            </Grid> */}
+
+          {/* <Grid item xs={3}>
+
+              <TextField
+                id="search"
+                type="search"
+                label="Search"
+                size="small"
+
+                sx={{ width: '80%', marginLeft: '180%', marginTop: '-17%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
+
+              />
+            </Grid> */}
+
+          {/* <Grid item xs={3}>
+              <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-44%', marginLeft: '270%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
+
+            </Grid> */}
+
+
+
+          {/* </Item> */}
+        </Grid>
+
+
+
+
+        <Grid item xs={12} style={{ marginTop: '2%' }}>
           <Item>
             <Card >
 
@@ -515,11 +590,20 @@ export default function StickyHeadTable() {
                     <TableBody>
                       {rows
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => {
-                          return (
+                        .map((row) => (
                             <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                               {columns.map((column) => {
                                 const value = row[column.id];
+
+
+                                if (column.id === 'id') {
+                                  sr += 1;
+                                  return (
+                                    <TableCell key={column.id} align={column.align}>
+                                      {value === null ? '' : String(sr)}
+                                    </TableCell>
+                                  );
+                                }
 
 
                                 if (column.id === 'button') {
@@ -588,8 +672,7 @@ export default function StickyHeadTable() {
                               })}
                             </TableRow>
 
-                          );
-                        })}
+                          ))}
                     </TableBody>
 
 
@@ -612,15 +695,6 @@ export default function StickyHeadTable() {
 
           </Item>
         </Grid>
-
-
-
-
-
-
-
-
-
 
 
 
