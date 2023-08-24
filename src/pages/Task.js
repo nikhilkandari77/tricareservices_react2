@@ -1,15 +1,12 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
-import axios from 'axios';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import SearchIcon from '@mui/icons-material/Search';
-
-
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,27 +15,15 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Card, Container, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
-
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogTitle from '@mui/material/DialogTitle';
+import { Button, Card, Container, TextField, Typography, Grid, } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
-
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; // Import the CSS file for styling
-
-
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Pending } from '@mui/icons-material';
-
-import Iconify from '../components/iconify';
-
 import baseUrl from '../utils/baseUrl';
 import Label from '../components/label/Label';
 
@@ -60,6 +45,50 @@ const Item = styled(Paper)(({ theme }) => ({
 //   }
 //   return rows
 // }
+const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: 'white',
+    '&:hover': {
+        backgroundColor: 'white',
+    },
+    marginLeft: 0,
+    width: '100%',
+    color: 'gray',
+    [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(1),
+        width: 'auto',
+    },
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    color: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            width: '12ch',
+            '&:focus': {
+                width: '20ch',
+            },
+        },
+    },
+}));
+
 
 
 
@@ -73,6 +102,7 @@ export default function Task() {
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
 
+    const [search, setSearch] = useState('');
     const [message, setMessage] = useState('');
 
     const [areapin, setAreapin] = useState('');
@@ -171,133 +201,25 @@ export default function Task() {
         { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
     ];
 
-    // const columns = [
-    //     { id: 'id', label: 'Complaint Id', minWidth: 100 },
-    //     { id: 'customerName', label: 'Customer Name', minWidth: 200 },
-    //     { id: 'problem', label: 'Problem', minWidth: 190 },
-    //     { id: 'engineerName', label: 'Engineer Assigned', minWidth: 200 },
-    //     { id: 'complaintStatus', label: 'status', minWidth: 180 },
-    //     { id: 'createdDateTime', label: 'created time', minWidth: 190 },
-    //     {
-    //         id: 'city',
-    //         label: 'City',
-    //         minWidth: 190,
-    //         align: 'left',
-    //         // format: (value) => value.toLocaleString('en-US'),
-    //     },
-    //     {
-    //         id: 'area',
-    //         label: 'Area',
-    //         minWidth: 130,
-    //         align: 'left',
-
-    //         // format: (value) => value.toLocaleString('en-US'),
-    //     },
-    //     {
-    //         id: 'priority',
-    //         label: 'Priority',
-    //         minWidth: 130,
-    //         align: 'left',
-
-    //         // format: (value) => value.toLocaleString('en-US'),
-    //     },
-    //     {
-    //         id: 'complaintStatus',
-    //         label: 'Status',
-    //         minWidth: 100,
-    //         align: 'left',
-
-    //         // format: (value) => value.toLocaleString('en-US'),
-    //     },
-    //     {
-    //         id: 'button',
-    //         label: 'Action',
-    //         minWidth: 100,
-    //         align: 'center',
-
-
-
-
-    //         // format: (value) => value.toFixed(2),
-    //     },
-    // ];
 
     const token = localStorage.getItem('token');
 
-    // Form submission handler
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+
+    const searchItem = rows.filter(row => {
+        return (search === '')
+          || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
+          || (row.problem.toLowerCase().includes(search.toLowerCase())) 
+          || (row.customerName.toLowerCase().includes(search.toLowerCase()))
+          || (row.engineerName!==null?row.engineerName.toLowerCase().includes(search.toLowerCase()):row)
+          || (row.complaintStatus.toLowerCase().includes(search.toLowerCase()))?
+          row : null;
+    
+      })
+
+      console.log()
 
 
 
-        const formData = {
-            name,
-            adminId: 1,
-            contact: contactno,
-            password,
-            areaPin: areapin,
-            city,
-            state,
-            email,
-            address,
-            role: {
-                id: 3,
-            },
-        };
-
-        // Convert form data object to JSON
-        const requestBody = JSON.stringify(formData);
-
-        console.log(formData);
-        console.log(token);
-
-        const response = await fetch('https://6ff9-2405-201-4003-794e-3549-9421-abad-6afe.ngrok-free.app/api/user/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: requestBody,
-        });
-
-        const data = await response.json();
-        console.log(data);
-
-        if (response.ok) {
-
-            // Save the token to local storage or state for future API requests
-            // localStorage.setItem('token', data.token);
-            // setMessage('Login successful');
-        } else {
-            setMessage(data.message);
-        }
-
-
-        console.log('Form data submitted:', formData);
-        // Now you can close the form.
-        setIsFormOpen(false);
-
-
-
-
-
-
-
-    };
-
-
-
-
-
-
-
-
-
-
-
-    const routeChange = () => {
-        window.location.href = "/Pages/Task";
-    };
     const routeChange1 = (id) => {
         navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
     };
@@ -324,61 +246,8 @@ export default function Task() {
     }, []);
 
 
-    const Search = styled('div')(({ theme }) => ({
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: 'white',
-        '&:hover': {
-            backgroundColor: 'white',
-        },
-        marginLeft: 0,
-        width: '100%',
-        color: 'gray',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
-            width: 'auto',
-        },
-    }));
-
-    const SearchIconWrapper = styled('div')(({ theme }) => ({
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        color: 'gray',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }));
-
-    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-        color: 'inherit',
-        '& .MuiInputBase-input': {
-            padding: theme.spacing(1, 1, 1, 0),
-            // vertical padding + font size from searchIcon
-            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-            transition: theme.transitions.create('width'),
-            width: '100%',
-            [theme.breakpoints.up('sm')]: {
-                width: '12ch',
-                '&:focus': {
-                    width: '20ch',
-                },
-            },
-        },
-    }));
 
 
-    function formatDate(dateString) {
-        const options = {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric'
-        };
-      
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', options);
-      }
       
       function formatDateTime(dateString) {
         const options = {
@@ -463,8 +332,12 @@ export default function Task() {
                                     <SearchIcon />
                                 </SearchIconWrapper>
                                 <StyledInputBase
-                                    placeholder="Search…"
-                                    inputProps={{ 'aria-label': 'search' }}
+                                      placeholder="Search…"
+                                      inputProps={{ 'aria-label': 'search' }}
+                                      key="password"
+                                      value={search}
+                                      autoFocus
+                                      onChange={(e) => setSearch(e.target.value)}
                                 />
                             </Search>
 
@@ -498,7 +371,7 @@ export default function Task() {
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                rows
+                                                searchItem
                                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                                     .map((row) => (
                                                         <TableRow hover role="checkbox" tabIndex={-1}>

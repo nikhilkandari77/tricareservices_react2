@@ -760,8 +760,8 @@ export default function StickyHeadTable() {
                                                   )
                                                 } */}
 
-                                                <ImageSlide/>
-                                                
+                                                <ImageSlide />
+
 
 
                                                 <Grid container spacing={15}>

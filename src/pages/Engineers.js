@@ -221,11 +221,12 @@
 // }
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-
+import InputLabel from '@mui/material/InputLabel';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -244,42 +245,13 @@ import Box from '@mui/material/Box';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import InputBase from '@mui/material/InputBase';
-
-
-
-
-
+import baseUrl from '../utils/baseUrl';
 
 import Iconify from '../components/iconify';
 
 
 
-const columns = [
-    { id: 'customername', label: 'Customer Name', minWidth: 85 },
-    { id: 'area', label: 'Area', minWidth: 140 },
-    { id: 'noofproduct', label: 'No of Product', minWidth: 100 },
-    {
-        id: 'contactno',
-        label: 'Contact No',
-        minWidth: 140,
-        align: 'right',
-        // format: (value) => value.toLocaleString('en-US'),
-    },
-    {
-        id: 'joindate',
-        label: 'Join Date',
-        minWidth: 140,
-        align: 'right',
-        // format: (value) => value.toLocaleString('en-US'),
-    },
-    {
-        id: 'button',
-        label: 'Action',
-        minWidth: 140,
-        align: 'right',
-        // format: (value) => value.toFixed(2),
-    },
-];
+
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -289,28 +261,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-function createData(customername, area, noofproduct, contactno, joindate, button) {
-    // const density = asset / serialno;
-    return { customername, area, noofproduct, contactno, joindate, button };
-}
 
-const rows = [
-    createData('rohit', 'nagpur', 'Rapid pod', '8987767674', '23/2/2023', 'Details'),
-    createData('mohit', 'nagpur', 'Charger pod', '7564444444', '23/2/2023', 'Details'),
-    createData('sumit', 'nagpur', 'Digi Charge', '8987767674', '23/3/2023', 'Details'),
-    createData('denesh', 'nagpur', 'EV Tower', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'Rapid Tower', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa45', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa12', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa34', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa23', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa24', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa24', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa12', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa32', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa34', '8987767674', '23/4/2023', 'Details'),
-    createData('rohan', 'nagpur', 'sa56', '8987767674', '23/4/2023', 'Details'),
-];
 
 
 
@@ -325,13 +276,39 @@ export default function Engineers() {
 
 
     const [name, setName] = useState('');
-    const [contactNo, setContactNo] = useState('');
+    const [contact, setContact] = useState('');
+    
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [state, setState] = useState('');
-    const [areapin, setAreapin] = useState('');
+    const [areaPin, setAreaPin] = useState('');
+    
     const [password, setPassword] = useState('');
     const [city, setCity] = useState('');
+
+    const [row, setRow] = useState('');
+
+    const [loading, setLoading] = useState(false)
+    const [user, setUser] = useState('');
+    const [data, setData] = useState([]);
+    const [confirmpassword, setConfirmpassword] = useState('');
+    const navigate = useNavigate();
+
+
+
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(true);
+    const [message, setMessage] = useState('');
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+
+        if (file) {
+            setSelectedImage(URL.createObjectURL(file));
+        }
+    };
+
 
 
 
@@ -367,30 +344,57 @@ export default function Engineers() {
         setUserOpen(false);
     }
 
+    const handleCloseForm = () => {
+        setIsFormSubmitted('false');
+        handleClickClose1();
+    };
+
+
+
+
+
+
+
+
 
 
     // Form submission handler
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
 
-        // Perform actions with form data, e.g., validation or sending data to a server
-        // Example: console.log(name, contactNo, email, address);
+    //     // Perform actions with form data, e.g., validation or sending data to a server
+    //     // Example: console.log(name, contactNo, email, address);
 
-        // Reset form fields
-        setName('');
-        setContactNo('');
-        setEmail('');
-        setAddress('');
-    };
+    //     // Reset form fields
+    //     setName('');
+    //     setContactNo('');
+    //     setEmail('');
+    //     setAddress('');
+    // };
 
     const routeChange = () => {
         window.location.href = "/Engineers";
 
     }
 
-    const routeChange1 = () => {
-        window.location.href = "/dashboard/Engineersdetail ";
+    // const routeChange1 = () => {
+    //     window.location.href = "/dashboard/Engineersdetail ";
+    // }
+
+    const routeChange1 = (id) => {
+
+
+
+        navigate("/dashboard/Engineersdetail/", { state: { userId: id } });
+
+
     }
+
+
+
+
+
+
 
     const bull = (
         <Box
@@ -448,7 +452,104 @@ export default function Engineers() {
 
 
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
+        const token = localStorage.getItem('token');
+        const adminId1 = localStorage.getItem('adminId');
+
+
+        const formData = {
+            name,
+            adminId: adminId1,
+            contact,
+            password,
+            areaPin,
+            city,
+            state,
+            email,
+            address,
+            role: {
+                id: 3,
+            },
+        };
+
+        // Convert form data object to JSON
+        const requestBody = JSON.stringify(formData);
+
+        console.log(formData);
+        console.log(token);
+
+        const response = await fetch(`${baseUrl}/api/user/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: requestBody,
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+            setUserOpen(false);
+            alert('Form submitted successfuly');
+            window.location.reload();
+
+        } else {
+            setMessage(data.message);
+        }
+
+
+        console.log('Form data submitted:', formData);
+        // Now you can close the form.
+        setIsFormOpen(false);
+
+
+
+
+
+
+
+    };
+
+
+
+
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setLoading(true);
+        fetch(`${baseUrl}/api/user/hasRole/3`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+
+        })
+
+            .then(response => response.json())
+            .then(json => {
+                console.log("Fetched data:", json.data); // This line will print the data to the console
+                // setUsers(json);
+                setData(json.data)
+
+
+
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+        // handleChange7();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
 
 
@@ -472,7 +573,7 @@ export default function Engineers() {
 
 
         <div>
-            <Grid container spacing={5}>
+            <Grid container spacing={1}>
 
 
 
@@ -482,10 +583,12 @@ export default function Engineers() {
 
 
 
-                <Grid item xs={12} >
+                <Grid item xs={12}>
                     <Box sx={{ flexGrow: 6 }}>
                         <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
                             <Toolbar variant="dense">
+
+
                                 <Typography
                                     variant="h6"
                                     noWrap
@@ -513,149 +616,227 @@ export default function Engineers() {
 
 
 
+                                &nbsp;
+
+                                <div>
+
+                                    <Button className='responsive-button' onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
+                                        {<Iconify icon="eva:plus-fill" />}
+                                    </Button>
+
+                                </div>
+
+                                <Dialog
+                                    open={openUser}
+                                    onClose={handleClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                    style={{ height: 'auto', maxWidth: '100%' }} // Adjusted height and maxWidth for responsiveness
+                                >
+                                    <DialogTitle id="alert-dialog-title">
+                                        {"Add Engineer"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                        <Container maxWidth="md"> {/* Adjusted maxWidth for responsiveness */}
+                                            <form onSubmit={handleSubmit}>
+                                                <Grid container spacing={3}>
+
+                                                    <Grid item xs={12}>
+                                                        <div style={{ textAlign: 'center', marginBottom: '15px', position: 'relative' }}>
+                                                            <input
+                                                                type="file"
+                                                                id="imageUpload"
+                                                                style={{ display: 'none' }}
+                                                                onChange={handleImageChange} // Define your image change handler
+                                                            />
+                                                            <InputLabel htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'block' }}>
+                                                                <Button
+                                                                    component="span"
+                                                                    style={{
+                                                                        width: 75,
+                                                                        height: 100,
+                                                                        cursor: 'pointer',
+                                                                        backgroundSize: 'cover',
+                                                                        backgroundPosition: 'center',
+                                                                        backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
+                                                                    }}
+                                                                >
+                                                                    {/* Content of the button */}
+                                                                </Button>
+                                                                <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
+                                                            </InputLabel>
+                                                        </div>
+                                                    </Grid>
 
 
-                                <Grid >
-                                    <Search>
+                                                    {/* Left side fields */}
+                                                    {/* Your Name, Contact No, Email, and Area pin fields */}
 
-                                        <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
-                                            Add Engineer
-                                        </Button>
-
-
-                                        <Dialog
-                                            open={openUser}
-                                            onClose={handleClose}
-                                            aria-labelledby="alert-dialog-title"
-                                            aria-describedby="alert-dialog-description"
-                                            style={{ height: '550px' }}
-                                        >
-                                            <DialogTitle id="alert-dialog-title">
-                                                {"Add Engineer"}
-                                            </DialogTitle>
-                                            <DialogContent>
-                                                <div>
-                                                    <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
-                                                </div>
-                                                <div>
-                                                    <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-36px' }}>Add Image</p>
-                                                </div>
-                                                <DialogContentText>
-
-                                                    <Container maxWidth="sm">
-                                                        <form onSubmit={handleSubmit}>
-                                                            <Grid container spacing={5}>
-                                                                <Grid item xs={6}>
-                                                                    <TextField
-                                                                        label="Name"
-                                                                        value={name}
-                                                                        sx={{ m: 1, width: '250px' }}
-                                                                        onChange={(e) => setName(e.target.value)}
-                                                                        fullWidth
-                                                                        required
-                                                                    // style={{ padding: '7px', width: '250px' }}
-                                                                    />
+                                                    <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
+                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
+                                                            <TextField
+                                                                label="Name"
+                                                                value={name}
+                                                                sx={{ m: 1, width: '250px' }}
+                                                                onChange={(e) => setName(e.target.value)}
+                                                                fullWidth
+                                                                required
+                                                            // style={{ padding: '7px', width: '250px' }}
+                                                            />
 
 
 
-                                                                    <TextField
-                                                                        label="Contact No"
-                                                                        value={contactNo}
-                                                                        onChange={(e) => setContactNo(e.target.value)}
-                                                                        fullWidth
-                                                                        required
-                                                                        // style={{ padding: '7px', width: '250px' }}
-                                                                        sx={{ m: 1, width: '250px' }}
+                                                            <TextField
+                                                                label="Contact No"
+                                                                value={contact}
+                                                                onChange={(e) => setContact(e.target.value)}
+                                                                fullWidth
+                                                                required
+                                                                // style={{ padding: '7px', width: '250px' }}
+                                                                sx={{ m: 1, width: '250px' }}
 
-                                                                    />
-                                                                    <TextField
-                                                                        label="Area pin"
-                                                                        value={areapin}
-                                                                        onChange={(e) => setAreapin(e.target.value)}
-                                                                        fullWidth
-                                                                        required
-                                                                        // style={{ padding: '7px', width: '250px' }}
-                                                                        sx={{ m: 1, width: '250px' }}
+                                                            />
 
-                                                                    />
-                                                                    <TextField
-                                                                        label="Password"
-                                                                        value={password}
-                                                                        onChange={(e) => setPassword(e.target.value)}
-                                                                        fullWidth
-                                                                        required
-                                                                        // style={{ padding: '7px', width: '250px' }}
-                                                                        sx={{ m: 1, width: '250px' }}
+                                                            <TextField
+                                                                label="Email"
+                                                                value={email}
+                                                                onChange={(e) => setEmail(e.target.value)}
+                                                                fullWidth
+                                                                required
+                                                                type="email"
+                                                                // style={{ padding: '7px', width: '250px' }}
+                                                                sx={{ m: 1, width: '250px' }}
+                                                            />
 
-                                                                    />
-                                                                </Grid>
 
-                                                                <Grid item xs={6}>
-                                                                    <TextField
-                                                                        label="Email"
-                                                                        value={email}
-                                                                        onChange={(e) => setEmail(e.target.value)}
-                                                                        fullWidth
-                                                                        required
-                                                                        type="email"
-                                                                        // style={{ padding: '7px', width: '250px' }}
-                                                                        sx={{ m: 1, width: '250px' }}
-                                                                    />
+                                                            <TextField
+                                                                label="Area pin"
+                                                                value={areaPin}
+                                                                onChange={(e) => setAreaPin(e.target.value)}
+                                                                fullWidth
+                                                                required
+                                                                // style={{ padding: '7px', width: '250px' }}
+                                                                sx={{ m: 1, width: '250px' }}
 
-                                                                    <TextField
-                                                                        label="Address"
-                                                                        value={address}
-                                                                        onChange={(e) => setAddress(e.target.value)}
-                                                                        fullWidth
-                                                                        multilin
-                                                                        rows={4}
-                                                                        required
-                                                                        // style={{ padding: '7px', width: '250px', height: '120px' }}
-                                                                        sx={{ m: 1, width: '250px' }}
-                                                                    />
+                                                            />
 
-                                                                    <TextField
-                                                                        label="City"
-                                                                        value={city}
-                                                                        onChange={(e) => setCity(e.target.value)}
-                                                                        fullWidth
-                                                                        multilin
-                                                                        rows={4}
-                                                                        required
-                                                                        // style={{ padding: '7px', width: '250px', height: '120px' }}
-                                                                        sx={{ m: 1, width: '250px' }}
-                                                                    />
-                                                                    <TextField
-                                                                        label="Confirm Password"
-                                                                        value={password}
-                                                                        onChange={(e) => setState(e.target.value)}
-                                                                        fullWidth
-                                                                        required
-                                                                        type="password"
-                                                                        // style={{ padding: '7px', width: '250px' }}
-                                                                        sx={{ m: 1, width: '250px' }}
-                                                                    />
-                                                                </Grid>
-                                                            </Grid>
-                                                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '30px', paddingTop: '-3px', marginLeft: '438px' }}>
+
+                                                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                    </Grid>
+                                                    <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
+                                                        {/* Right side fields */}
+                                                        {/* Your Address, City, Password, and Confirm Password fields */}
+
+                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
+
+
+
+
+
+
+                                                            <TextField
+                                                                label="Address"
+                                                                value={address}
+                                                                onChange={(e) => setAddress(e.target.value)}
+                                                                fullWidth
+                                                                multilin
+                                                                rows={4}
+                                                                required
+                                                                // style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                sx={{ m: 1, width: '250px' }}
+                                                            />
+
+                                                            <TextField
+                                                                label="City"
+                                                                value={city}
+                                                                onChange={(e) => setCity(e.target.value)}
+                                                                fullWidth
+                                                                multilin
+                                                                rows={4}
+                                                                required
+                                                                // style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                sx={{ m: 1, width: '250px' }}
+                                                            />
+                                                            <TextField
+                                                                label="State"
+                                                                value={state}
+                                                                onChange={(e) => setState(e.target.value)}
+                                                                fullWidth
+                                                                multilin
+                                                                rows={4}
+                                                                required
+                                                                // style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                sx={{ m: 1, width: '250px' }}
+                                                            />
+
+
+                                                            <TextField
+                                                                label="Password"
+                                                                value={password}
+                                                                onChange={(e) => setPassword(e.target.value)}
+                                                                fullWidth
+                                                                required
+                                                                // style={{ padding: '7px', width: '250px' }}
+                                                                sx={{ m: 1, width: '250px' }}
+
+                                                            />
+                                                            {/* <TextField
+                              label="Confirm Password"
+                              value={confirmpassword}
+                              onChange={(e) => setConfirmpassword(e.target.value)}
+                              fullWidth
+                              required
+                              type="password"
+                              // style={{ padding: '7px', width: '250px' }}
+                              sx={{ m: 1, width: '250px' }}
+                            /> */}
+
+
+                                                        </div>
+
+
+
+                                                    </Grid>
+                                                </Grid>
+                                                <div style={{ marginTop: '20px' }}>
+                                                    {/* <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
+                          Submit
+                        </Button>
+                        <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
+                          Close
+                        </Button> */}
+
+                                                    {isFormSubmitted ? (
+                                                        <>
+                                                            <p>Form submitted successfully!</p>
+                                                            <Button onClick={handleCloseForm} style={{ float: 'right' }}>
+                                                                Close
+                                                            </Button>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
                                                                 Submit
                                                             </Button>
-                                                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '339PX', marginTop: '-60px' }} >Close</Button>
-                                                        </form>
-                                                    </Container>
-
-
-
-
-                                                </DialogContentText>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
-                <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
-                  Submit
-                </Button> */}
-                                            </DialogActions>
-                                        </Dialog>
+                                                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
+                                                                Close
+                                                            </Button>
+                                                        </>
+                                                    )}
 
 
 
@@ -664,9 +845,17 @@ export default function Engineers() {
 
 
 
-                                    </Search>
 
-                                </Grid>
+
+
+                                                </div>
+                                            </form>
+                                        </Container>
+                                    </DialogContent>
+                                </Dialog>
+
+
+
 
 
 
@@ -682,59 +871,81 @@ export default function Engineers() {
 
 
 
-
-
-
-                    {/* <Item style={{ height: '70%', marginTop: '-2%', backgroundColor: '#007F6D', width: '100%' }}> */}
-                    {/* <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '892px', fontSize: '16px', marginTop: '15px', }}>
-                            <p> Service  </p>
-                        </Typography>
-                        <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '78%', fontSize: '16px', marginTop: '-39px', }}>
-                            <p>  Engineers </p>
-                        </Typography> */}
-
-                    {/* <TextField
-                            id="search"
-                            type="search"
-                            label="Search"
-                            size="small"
-
-                            sx={{ width: '20%', marginLeft: '18%', marginTop: '-5.3%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
-
-                        /> */}
-                    {/* <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-8.5%', marginLeft: '2%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
- */}
-
-
-                    {/* 
-                        <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ width: '20%', height: '72%', marginLeft: '77%', backgroundColor: 'white', color: 'black', marginTop: '-14%', marginRight: '-2%', }} startIcon={<Iconify icon="eva:plus-fill" />}>
-                            Add Engineer
-                        </Button> */}
-
-
-                    {/* </Item> */}
                 </Grid>
 
 
-                <Grid container spacing={0}>
-                    <Grid item xs={1} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
+                <div className='container'>
+                    <div className='row'>
+                        <div className='col-md-12'>
+
+
+                            <div className='container eng-profile'>
+                                <div className='row'>
+
+                                    {data.map(item => (
+                                        <div key={item.id} className='col-md-3'>
+
+
+
+                                            <Item><Card style={{ backgroundColor: '#007F6D' }}>
+                                                <CardContent>
+                                                    <Typography style={{ marginTop: '-5%', color: 'white' }} >
+                                                        Junior Engineer
+                                                    </Typography>
+
+
+
+
+
+
+                                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                                        <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/assets/images/avatars/avatar_5.jpg" />
+                                                    </div>
+                                                    <Typography style={{ fontSize: '130%', color: 'white' }} >
+                                                        {item.name}
+                                                    </Typography>
+                                                    <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                        {item.contact}
+                                                    </Typography>
+
+                                                    <Typography style={{ color: 'white', fontSize: '100%' }} >
+                                                        {item.state}
+
+                                                    </Typography>
+                                                    <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                        Service Engineer
+
+                                                    </Typography>
+                                                </CardContent>
+                                                <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                                    <Button onClick={() => routeChange1(item.id)} style={{ color: '#131313', backgroundColor: 'white' }}>View Profile</Button>
+                                                </CardActions>
+                                            </Card></Item>
+                                        </div>
+                                    ))}
+
+                                    {/* <div className='col-md-3'>
+
+
+                
+                        <Item><Card style={{ backgroundColor: '#F0F0F0' }}>
                             <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
+                                <Typography style={{marginTop:'-5%'}}>
                                     Junior Engineer
                                 </Typography>
 
 
 
 
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
+                                
 
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                        <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/image1/male-user-filled-icon-man-icon-115533970576b3erfsss1.png" />
+                                </div>
+                                <Typography style={{ fontSize: '130%',  color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
+                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
                                     Service Engineers
                                 </Typography>
                                 <Typography style={{ color: '#131313', fontSize: '100%' }} >
@@ -746,62 +957,34 @@ export default function Engineers() {
 
                                 </Typography>
                             </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
+                            <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                    <Button onClick={routeChange1} style={{ color: '#131313', backgroundColor: 'lightblue' }}>View Profile</Button>
+                                </CardActions>
                         </Card></Item>
-                    </Grid>
-                    <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
+                        </div>
+                                          
+                                            <div className='col-md-3'>
+
+
+                
+                        <Item><Card style={{ backgroundColor: '#F0F0F0' }}>
                             <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Senior Engineer
-                                </Typography>
-
-
-
-
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid>
-                    <Grid item xs={1} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
+                                <Typography style={{marginTop:'-5%'}} >
                                     Junior Engineer
                                 </Typography>
 
 
 
 
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
+                                
 
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                        <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/image1/male-user-filled-icon-man-icon-115533970576b3erfsss1.png" />
+                                </div>
+                                <Typography style={{ fontSize: '130%',  color: '#131313' }} >
                                     Sumit Kumar
                                 </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
+                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
                                     Service Engineers
                                 </Typography>
                                 <Typography style={{ color: '#131313', fontSize: '100%' }} >
@@ -813,184 +996,28 @@ export default function Engineers() {
 
                                 </Typography>
                             </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
+                            <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                    <Button onClick={routeChange1} style={{ color: '#131313', backgroundColor: 'lightblue' }}>View Profile</Button>
+                                </CardActions>
                         </Card></Item>
-                    </Grid>
-                    <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '2%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Senior Engineer
-                                </Typography>
+                        </div> */}
 
 
 
 
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/dummy_eng.png" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
 
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid>
-                </Grid>
-
-
-                {/* <Grid container spacing={0} style={{ marginTop: '3%' }}> */}
-                {/* <Grid item xs={1} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Senior Engineer
-                                </Typography>
+                                </div>
+                            </div>
 
 
 
 
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '25%', paddingBottom: '20%', marginTop: '1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-11%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid> */}
-                {/* <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Junior Engineer
-                                </Typography>
+                        </div>
+                    </div>
+                </div>
 
 
 
-
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid> */}
-                {/* <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Junior Engineer
-                                </Typography>
-
-
-
-
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid> */}
-                {/* <Grid item xs={3} md={3}>
-                        <Item><Card style={{ backgroundColor: '#F0F0F0', marginTop: '-13%', marginLeft: '12%' }}>
-                            <CardContent>
-                                <Typography style={{ marginTop: '-12%' }}>
-                                    Junior Engineer
-                                </Typography>
-
-
-
-
-                                <Typography sx={{ fontSize: '20%' }} gutterBottom>
-
-                                    <img style={{ width: '50%', height: '15%', marginLeft: '24%', paddingBottom: '20%', marginTop: '-1px', color: '#131313' }} alt="Bx bxs lock alt" src="/image1/software-engineer-portrait-smiling-young-vietnamese-69422682.webp" />
-                                </Typography>
-                                <Typography style={{ fontSize: '130%', marginTop: '-15%', color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '120%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button onClick={routeChange1} style={{ marginLeft: '25%', color: '#131313', marginTop: '-10%', backgroundColor: 'lightblue' }}>View Profile</Button>
-                            </CardActions>
-                        </Card></Item>
-                    </Grid>
-                </Grid> */}
 
 
 

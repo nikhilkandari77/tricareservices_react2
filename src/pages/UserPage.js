@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 
 
 import React, { useEffect, useState } from 'react';
@@ -30,22 +29,23 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import InputBase from '@mui/material/InputBase';
-
 import baseUrl from '../utils/baseUrl';
+
+
 import Iconify from '../components/iconify';
 
 
 
 const columns = [
-  { id: 'id', label: 'Sr.No', minWidth: 55 },
-  { id: 'name', label: 'Customer Name', minWidth: 85 },
-  { id: 'city', label: 'City', minWidth: 140 },
-  { id: 'areaPin', label: 'Area Pin', minWidth: 100 },
+  { id: 'srno', label: 'Sr.No', minWidth: 55, align: 'center' },
+  { id: 'name', label: 'Customer Name', minWidth: 85, align: 'center' },
+  { id: 'city', label: 'City', minWidth: 140, align: 'center' },
+  { id: 'areaPin', label: 'Area Pin', minWidth: 100, align: 'center' },
   {
     id: 'contact',
     label: 'Contact No',
     minWidth: 140,
-    align: 'right',
+    align: 'center',
     // format: (value) => value.toLocaleString('en-US'),
   },
   {
@@ -78,14 +78,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 
-
-
 export default function StickyHeadTable() {
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState([])
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [name, setName] = useState('');
-  const [contactNo, setContactNo] = useState('');
+  const [contact, setContact] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [contactno, setContactno] = useState('');
@@ -93,21 +91,38 @@ export default function StickyHeadTable() {
 
   const [message, setMessage] = useState('');
 
-  const [areapin, setAreapin] = useState('');
+  const [areaPin, setAreaPin] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
 
   const [password, setPassword] = useState('');
+  // const [confirmpassword, setConfirmpassword] = useState('');
 
   const [formData, setFormData] = useState({});
   const [isFormOpen, setIsFormOpen] = useState(true);
 
-  const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false)
+  const [users, setUsers] = useState([])
   const navigate = useNavigate();
 
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      setSelectedImage(URL.createObjectURL(file));
+    }
+  };
+
+
+
+  const handleCloseForm = () => {
+    setIsFormSubmitted('false');
+    handleClickClose1();
+  };
 
 
 
@@ -138,13 +153,13 @@ export default function StickyHeadTable() {
   };
   const handleClickOpenUserPopup = () => {
     setUserOpen(true);
-  };
+  }
   const handleClickClose1 = () => {
     setUserOpen(false);
-  };
+  }
   const handleClickOpen1 = () => {
     setUserOpen(false);
-  };
+  }
 
 
 
@@ -153,20 +168,21 @@ export default function StickyHeadTable() {
     e.preventDefault();
 
     const token = localStorage.getItem('token');
+    const adminId1 = localStorage.getItem('adminId');
 
 
     const formData = {
       name,
-      adminId: 1,
-      contact: contactno,
+      adminId: adminId1,
+      contact,
       password,
-      areaPin: areapin,
+      areaPin,
       city,
       state,
       email,
       address,
       role: {
-        id: 3,
+        id: 2,
       },
     };
 
@@ -189,10 +205,10 @@ export default function StickyHeadTable() {
     console.log(data);
 
     if (response.ok) {
+      setUserOpen(false);
+      alert('Form submitted successfuly');
+      window.location.reload();
 
-      // Save the token to local storage or state for future API requests
-      // localStorage.setItem('token', data.token);
-      // setMessage('Login successful');
     } else {
       setMessage(data.message);
     }
@@ -210,21 +226,6 @@ export default function StickyHeadTable() {
 
   };
 
-  // const handleInputChange = (event) => {
-  //   const { name, value } = event.target;
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
-
-  // if (!isFormOpen) {
-  //   return <div>Form closed. You can use the form data elsewhere.</div>;
-  // }
-
-
-
-
 
 
   // const routeChange = () => {
@@ -239,9 +240,10 @@ export default function StickyHeadTable() {
     navigate("/dashboard/customerdetail/", { state: { userId: id } });
 
 
-  };
+  }
 
 
+  
 
 
 
@@ -266,7 +268,7 @@ export default function StickyHeadTable() {
       .then(json => {
         console.log("Fetched data:", json); // This line will print the data to the console
         // setUsers(json);
-        setRows(json.data);
+        setRows(json.data)
 
       })
       .finally(() => {
@@ -325,8 +327,9 @@ export default function StickyHeadTable() {
   }));
 
 
-let sr = 0;
 
+
+  let sr = 0;
 
 
 
@@ -352,6 +355,11 @@ let sr = 0;
               </Typography>
 
 
+
+
+
+
+
               <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
@@ -363,151 +371,249 @@ let sr = 0;
               </Search>
 
 
-              <Grid >
-                <Search>
-                  <search>
-
-                    <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
-                      New Customer
-                    </Button>
-                  </search>
-
-                  <Dialog
-                    open={openUser}
-                    onClose={handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    style={{ height: '550px' }}
-                  >
-                    <DialogTitle id="alert-dialog-title">
-                      {"Add Customer"}
-                    </DialogTitle>
-                    <DialogContent>
-                      <div>
-                        <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
-                      </div>
-                      <div>
-                        <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-48px' }}>Add Image</p>
-                      </div>
-                      <DialogContentText>
-
-                        <Container maxWidth="sm">
-                          <form onSubmit={handleSubmit}>
-                            <Grid container spacing={5}>
-                              <Grid item xs={6}>
-                                <TextField
-                                  label="Name"
-                                  value={name}
-                                  sx={{ m: 1, width: '250px' }}
-                                  onChange={(e) => setName(e.target.value)}
-                                  fullWidth
-                                  required
-                                // style={{ padding: '7px', width: '250px' }}
-                                />
 
 
 
-                                <TextField
-                                  label="Contact No"
-                                  value={contactNo}
-                                  onChange={(e) => setContactNo(e.target.value)}
-                                  fullWidth
-                                  required
-                                  // style={{ padding: '7px', width: '250px' }}
-                                  sx={{ m: 1, width: '250px' }}
+              {/* <Grid >
+                            <Search> */}&nbsp;
+              <div>
+                <Button className='responsive-button' onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
+                  <Iconify icon="eva:plus-fill" /> 
+                </Button>
+              </div>
 
-                                />
-                                <TextField
-                                  label="Area pin"
-                                  value={areapin}
-                                  onChange={(e) => setAreapin(e.target.value)}
-                                  fullWidth
-                                  required
-                                  // style={{ padding: '7px', width: '250px' }}
-                                  sx={{ m: 1, width: '250px' }}
 
-                                />
-                                <TextField
-                                  label="Password"
-                                  value={password}
-                                  onChange={(e) => setPassword(e.target.value)}
-                                  fullWidth
-                                  required
-                                  // style={{ padding: '7px', width: '250px' }}
-                                  sx={{ m: 1, width: '250px' }}
+              <Dialog
+                open={openUser}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                style={{ height: 'auto', maxWidth: '100%' }} // Adjusted height and maxWidth for responsiveness
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {"Add Customer"}
+                </DialogTitle>
+                <DialogContent>
+                  <Container maxWidth="md"> {/* Adjusted maxWidth for responsiveness */}
+                    <form onSubmit={handleSubmit}>
+                      <Grid container spacing={3}>
 
-                                />
-                              </Grid>
+                        <Grid item xs={12}>
+                          <div style={{ textAlign: 'center', marginBottom: '15px', position: 'relative' }}>
+                            <input
+                              type="file"
+                              id="imageUpload"
+                              style={{ display: 'none' }}
+                              onChange={handleImageChange} // Define your image change handler
+                            />
+                            <InputLabel htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'block' }}>
+                              <Button
+                                component="span"
+                                style={{
+                                  width: 75,
+                                  height: 100,
+                                  cursor: 'pointer',
+                                  backgroundSize: 'cover',
+                                  backgroundPosition: 'center',
+                                  backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
+                                }}
+                              >
+                                {/* Content of the button */}
+                              </Button>
+                              <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
+                            </InputLabel>
+                          </div>
+                        </Grid>
 
-                              <Grid item xs={6}>
-                                <TextField
-                                  label="Email"
-                                  value={email}
-                                  onChange={(e) => setEmail(e.target.value)}
-                                  fullWidth
-                                  required
-                                  type="email"
-                                  // style={{ padding: '7px', width: '250px' }}
-                                  sx={{ m: 1, width: '250px' }}
-                                />
 
-                                <TextField
-                                  label="Address"
-                                  value={address}
-                                  onChange={(e) => setAddress(e.target.value)}
-                                  fullWidth
-                                  multilin
-                                  rows={4}
-                                  required
-                                  // style={{ padding: '7px', width: '250px', height: '120px' }}
-                                  sx={{ m: 1, width: '250px' }}
-                                />
+                        {/* Left side fields */}
+                        {/* Your Name, Contact No, Email, and Area pin fields */}
 
-                                <TextField
-                                  label="City"
-                                  value={city}
-                                  onChange={(e) => setCity(e.target.value)}
-                                  fullWidth
-                                  multilin
-                                  rows={4}
-                                  required
-                                  // style={{ padding: '7px', width: '250px', height: '120px' }}
-                                  sx={{ m: 1, width: '250px' }}
-                                />
-                                <TextField
-                                  label="Confirm Password"
-                                  value={password}
-                                  onChange={(e) => setState(e.target.value)}
-                                  fullWidth
-                                  required
-                                  type="password"
-                                  // style={{ padding: '7px', width: '250px' }}
-                                  sx={{ m: 1, width: '250px' }}
-                                />
-                              </Grid>
-                            </Grid>
-                            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '30px', paddingTop: '-3px', marginLeft: '438px' }}>
+                        <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
+                            <TextField
+                              label="Name"
+                              value={name}
+                              sx={{ m: 1, width: '250px' }}
+                              onChange={(e) => setName(e.target.value)}
+                              fullWidth
+                              required
+                            // style={{ padding: '7px', width: '250px' }}
+                            />
+
+
+
+                            <TextField
+                              label="Contact No"
+                              value={contact}
+                              onChange={(e) => setContact(e.target.value)}
+                              fullWidth
+                              required
+                              // style={{ padding: '7px', width: '250px' }}
+                              sx={{ m: 1, width: '250px' }}
+
+                            />
+
+                            <TextField
+                              label="Email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              fullWidth
+                              required
+                              type="email"
+                              // style={{ padding: '7px', width: '250px' }}
+                              sx={{ m: 1, width: '250px' }}
+                            />
+
+
+                            <TextField
+                              label="Area pin"
+                              value={areaPin}
+                              onChange={(e) => setAreaPin(e.target.value)}
+                              fullWidth
+                              required
+                              // style={{ padding: '7px', width: '250px' }}
+                              sx={{ m: 1, width: '250px' }}
+
+                            />
+
+
+                          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </Grid>
+                        <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
+                          {/* Right side fields */}
+                          {/* Your Address, City, Password, and Confirm Password fields */}
+
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
+
+
+
+
+
+
+                            <TextField
+                              label="Address"
+                              value={address}
+                              onChange={(e) => setAddress(e.target.value)}
+                              fullWidth
+                              multilin
+                              rows={4}
+                              required
+                              // style={{ padding: '7px', width: '250px', height: '120px' }}
+                              sx={{ m: 1, width: '250px' }}
+                            />
+
+                            <TextField
+                              label="City"
+                              value={city}
+                              onChange={(e) => setCity(e.target.value)}
+                              fullWidth
+                              multilin
+                              rows={4}
+                              required
+                              // style={{ padding: '7px', width: '250px', height: '120px' }}
+                              sx={{ m: 1, width: '250px' }}
+                            />
+                            <TextField
+                              label="State"
+                              value={state}
+                              onChange={(e) => setState(e.target.value)}
+                              fullWidth
+                              multilin
+                              rows={4}
+                              required
+                              // style={{ padding: '7px', width: '250px', height: '120px' }}
+                              sx={{ m: 1, width: '250px' }}
+                            />
+
+
+                            <TextField
+                              label="Password"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              fullWidth
+                              required
+                              // style={{ padding: '7px', width: '250px' }}
+                              sx={{ m: 1, width: '250px' }}
+
+                            />
+                            {/* <TextField
+                              label="Confirm Password"
+                              value={confirmpassword}
+                              onChange={(e) => setConfirmpassword(e.target.value)}
+                              fullWidth
+                              required
+                              type="password"
+                              // style={{ padding: '7px', width: '250px' }}
+                              sx={{ m: 1, width: '250px' }}
+                            /> */}
+
+
+                          </div>
+
+
+
+                        </Grid>
+                      </Grid>
+                      <div style={{ marginTop: '20px' }}>
+                        {/* <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
+                          Submit
+                        </Button>
+                        <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
+                          Close
+                        </Button> */}
+
+                        {isFormSubmitted ? (
+                          <>
+                            <p>Form submitted successfully!</p>
+                            <Button onClick={handleCloseForm} style={{ float: 'right' }}>
+                              Close
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
                               Submit
                             </Button>
-                            <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '339PX', marginTop: '-60px' }} >Close</Button>
-                          </form>
-                        </Container>
+                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
+                              Close
+                            </Button>
+                          </>
+                        )}
 
 
 
 
-                      </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                      {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
-  <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
-    Submit
-  </Button> */}
-                    </DialogActions>
-                  </Dialog>
-                </Search>
 
-              </Grid>
+
+
+
+
+
+
+                      </div>
+                    </form>
+                  </Container>
+                </DialogContent>
+              </Dialog>
+
+              {/* // </Search>
+
+// </Grid> */}
 
 
 
@@ -526,41 +632,13 @@ let sr = 0;
 
 
 
-        <Grid item className="grid-el" xs={12} md={12}>
+        {/* <Grid item className="grid-el" xs={12} md={12}>
 
 
 
 
-          {/* <Item style={{ backgroundColor: '#007F6D', height: '72%', marginTop: '-2%' }}> */}
-          {/* <Grid item xs={3}>
 
-              <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '90%', fontSize: '140%', marginTop: '9%' }}>
-                Customers
-              </Typography>
-            </Grid> */}
-
-          {/* <Grid item xs={3}>
-
-              <TextField
-                id="search"
-                type="search"
-                label="Search"
-                size="small"
-
-                sx={{ width: '80%', marginLeft: '180%', marginTop: '-17%', paddingBottom: '2%', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
-
-              />
-            </Grid> */}
-
-          {/* <Grid item xs={3}>
-              <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: '-44%', marginLeft: '270%' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
-
-            </Grid> */}
-
-
-
-          {/* </Item> */}
-        </Grid>
+        </Grid> */}
 
 
 
@@ -590,13 +668,13 @@ let sr = 0;
                     <TableBody>
                       {rows
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => (
+                        .map((row) => {
+                          return (
                             <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                               {columns.map((column) => {
                                 const value = row[column.id];
 
-
-                                if (column.id === 'id') {
+                                if (column.id === 'srno') {
                                   sr += 1;
                                   return (
                                     <TableCell key={column.id} align={column.align}>
@@ -672,7 +750,8 @@ let sr = 0;
                               })}
                             </TableRow>
 
-                          ))}
+                          );
+                        })}
                     </TableBody>
 
 
@@ -687,6 +766,7 @@ let sr = 0;
                   page={page}
                   onPageChange={handleChangePage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
+
                 />
               </Paper>
 
@@ -695,6 +775,15 @@ let sr = 0;
 
           </Item>
         </Grid>
+
+
+
+
+
+
+
+
+
 
 
 
