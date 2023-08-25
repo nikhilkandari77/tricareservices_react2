@@ -1,0 +1,14 @@
+.responsive-button {
+    background-color: white;
+    color: black;
+    padding:9px;
+    font-size: 12px; /* Default font size */
+     /* Default padding */
+
+  
+    @media (max-width: 768px) {
+      font-size:0; /* Adjust font size for smaller screens */
+     
+      /* Adjust padding for smaller screens */
+    }
+  }

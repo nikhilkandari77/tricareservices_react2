@@ -83,7 +83,7 @@ export default function Taskdetail() {
             if (response.ok) {
                 toast.success("Complaint has been updated");
                 setTimeout(() => {
-                    window.location.reload(); // Refresh the current page
+                    navigate("/dashboard/task");
                 }, 2000);
             }
         } catch (error) {
@@ -108,7 +108,8 @@ export default function Taskdetail() {
         postComplaintDetails(d);
         toast.warn("Complaint has been rejected sucessfully");
         setTimeout(() => {
-            window.location.reload(); // Refresh the current page
+            navigate("/dashboard/task");
+
         }, 2000);
 
 
@@ -211,7 +212,7 @@ export default function Taskdetail() {
                         localStorage.clear();
                         // history.push('/login'); // Replace '/login' with the route for your login page
                         navigate("/login");
-                        
+
                     }
                     return response.json();
                 })

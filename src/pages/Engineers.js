@@ -1,225 +1,3 @@
-// import React, { useState } from 'react';
-
-// import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
-// import SearchIcon from '@mui/icons-material/Search';
-// import Dialog from '@mui/material/Dialog';
-// import DialogActions from '@mui/material/DialogActions';
-// import DialogTitle from '@mui/material/DialogTitle';
-// import Iconify from '../components/iconify';
-
-
-
-
-
-
-
-
-// export default function Engineers() {
-
-//     const [page, setPage] = React.useState(0);
-//     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-//     const [name, setName] = useState('');
-//     const [contactNo, setContactNo] = useState('');
-//     const [email, setEmail] = useState('');
-//     const [address, setAddress] = useState('');
-
-
-
-
-
-
-//     const handleChangePage = (event, newPage) => {
-//         setPage(newPage);
-//     };
-
-//     const handleChangeRowsPerPage = (event) => {
-//         setRowsPerPage(+event.target.value);
-//         setPage(0);
-//     };
-
-//     const [open, setOpen] = React.useState(false);
-//     const [openUser, setUserOpen] = React.useState(false);
-
-//     const handleClickOpen = () => {
-//         setOpen(true);
-//     };
-
-//     const handleClose = () => {
-//         setOpen(false);
-//     };
-//     const handleClickOpenUserPopup = () => {
-//         setUserOpen(true);
-//     }
-//     const handleClickClose1 = () => {
-//         setUserOpen(false);
-//     }
-//     const handleClickOpen1 = () => {
-//         setUserOpen(false);
-//     }
-
-
-
-//     // Form submission handler
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-
-//         // Perform actions with form data, e.g., validation or sending data to a server
-//         // Example: console.log(name, contactNo, email, address);
-
-//         // Reset form fields
-//         setName('');
-//         setContactNo('');
-//         setEmail('');
-//         setAddress('');
-//     };
-
-
-
-
-
-
-//     const routeChange = () => {
-//         window.location.href = "/Engineers";
-//     }
-
-
-
-//     // const handleChange = (event, newValue) => {
-//     //     setValue(newValue);
-//     // };
-
-
-
-//     return (
-
-//         <div>
-
-
-//             <Grid container spacing={1}>
-
-//                 <Grid item xs={12}>
-
-//                     <Item style={{ backgroundColor: '#007F6D', height: '76px' }}>
-//                         <Typography variant="h4" gutterBottom style={{ color: 'white', marginRight: '892px', fontSize: '20px', marginTop: '15px' }}>
-//                             Customer List
-//                         </Typography>
-
-//                         <TextField
-//                             id="search"
-//                             type="search"
-//                             label="Search"
-//                             size="small"
-
-//                             sx={{ width: 200, marginLeft: 52, marginTop: -5, paddingBottom: '25px', borderRadius: '4px', height: 38, backgroundColor: 'white', color: 'white' }}
-
-//                         />
-//                         <Button sx={{ margin: 1, backgroundColor: 'white', color: 'black', marginTop: -7, marginLeft: '21px' }} variant="contained"><SearchIcon>cdc</SearchIcon></Button>
-
-
-
-
-//                         <Button onClick={handleClickOpenUserPopup} variant="contained" style={{ width: '200px', height: '40px', marginLeft: '150px', backgroundColor: 'white', color: 'black', marginTop: '-65px', marginRight: '16px' }} startIcon={<Iconify icon="eva:plus-fill" />}>
-//                             New Customer
-//                         </Button>
-
-//                         <Dialog
-//                             open={openUser}
-//                             onClose={handleClose}
-//                             aria-labelledby="alert-dialog-title"
-//                             aria-describedby="alert-dialog-description"
-//                             style={{ height: '650px' }}
-//                         >
-//                             <DialogTitle id="alert-dialog-title">
-//                                 {"Add Customer"}
-//                             </DialogTitle>
-//                             <DialogContent>
-//                                 <div>
-//                                     <img style={{ width: 75, height: 110, marginLeft: '230px', paddingBottom: '65px', marginTop: '-6px' }} alt="Bx bxs lock alt" src="/image1/images.jpg" />
-//                                 </div>
-//                                 <div>
-//                                     <p style={{ paddingLeft: '224px', paddingTop: '-52px', paddingBottom: '27px', marginTop: '-36px' }}>Add Image</p>
-//                                 </div>
-//                                 <DialogContentText>
-
-//                                     <Container maxWidth="sm">
-//                                         <form onSubmit={handleSubmit}>
-//                                             <Grid container spacing={5}>
-//                                                 <Grid item xs={6}>
-//                                                     <TextField
-//                                                         label="Name"
-//                                                         value={name}
-//                                                         onChange={(e) => setName(e.target.value)}
-//                                                         fullWidth
-//                                                         required
-//                                                         style={{ padding: '7px', width: '250px' }}
-//                                                     />
-//                                                     <TextField
-//                                                         label="Contact No"
-//                                                         value={contactNo}
-//                                                         onChange={(e) => setContactNo(e.target.value)}
-//                                                         fullWidth
-//                                                         required
-//                                                         style={{ padding: '7px', width: '250px' }}
-
-//                                                     />
-//                                                 </Grid>
-
-//                                                 <Grid item xs={6}>
-//                                                     <TextField
-//                                                         label="Email"
-//                                                         value={email}
-//                                                         onChange={(e) => setEmail(e.target.value)}
-//                                                         fullWidth
-//                                                         required
-//                                                         type="email"
-//                                                         style={{ padding: '7px', width: '250px' }}
-//                                                     />
-//                                                     <TextField
-//                                                         label="Address"
-//                                                         value={address}
-//                                                         onChange={(e) => setAddress(e.target.value)}
-//                                                         fullWidth
-//                                                         multilin
-//                                                         rows={4}
-//                                                         required
-//                                                         style={{ padding: '7px', width: '250px', height: '120px' }}
-//                                                     />
-//                                                 </Grid>
-//                                             </Grid>
-//                                             <Button type="submit" variant="contained" color="primary" style={{ marginTop: '-16px', paddingTop: '-3px', marginLeft: '423px' }}>
-//                                                 Submit
-//                                             </Button>
-//                                             <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', marginLeft: '327PX', marginTop: '-63px' }} >Close</Button>
-//                                         </form>
-//                                     </Container>
-
-
-
-
-//                                 </DialogContentText>
-//                             </DialogContent>
-//                             <DialogActions>
-//                                 {/* <Button onClick={handleClickClose1} style={{ color: 'red', paddingRight: '22px', paddingBottom: '0px', marginBottom: '0px' }} >Close</Button>
-//                 <Button type="submit" onClick={handleSubmit} autoFocus style={{ paddingRight: '33px', paddingTop: '11px' }}>
-//                   Submit
-//                 </Button> */}
-//                             </DialogActions>
-//                         </Dialog>
-
-//                 </Item>
-//                 </Grid>
-//             </Grid>
-
-//         </div>
-
-
-
-//     );
-
-
-
-// }
-
 
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -277,12 +55,12 @@ export default function Engineers() {
 
     const [name, setName] = useState('');
     const [contact, setContact] = useState('');
-    
+
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
     const [state, setState] = useState('');
     const [areaPin, setAreaPin] = useState('');
-    
+
     const [password, setPassword] = useState('');
     const [city, setCity] = useState('');
 
@@ -390,7 +168,12 @@ export default function Engineers() {
 
     }
 
-
+//   const searchItem = rows.filter(row => {
+//    return (search === '')|| columns.map((column)=>row[column.id]!==undefined
+//    &&row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x,y)=>x||y)
+//    ||(row.category.name.toLowerCase().includes(search.toLowerCase()))
+//    ?row:null;
+//   })
 
 
 
@@ -672,7 +455,7 @@ export default function Engineers() {
                                                     {/* Left side fields */}
                                                     {/* Your Name, Contact No, Email, and Area pin fields */}
 
-                                                    <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
+                                                    <Grid item xs={3} md={6}> {/* Adjusted the Grid layout for responsiveness */}
                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
                                                             <TextField
                                                                 label="Name"
@@ -876,14 +659,14 @@ export default function Engineers() {
 
                 <div className='container'>
                     <div className='row'>
-                        <div className='col-md-12'>
+                        <div className=' col-sm-12 col-md-12 col-xl-6'>
 
 
                             <div className='container eng-profile'>
                                 <div className='row'>
 
                                     {data.map(item => (
-                                        <div key={item.id} className='col-md-3'>
+                                        <div key={item.id} className=' col-sm-1 col-md-3 col-xl-5'>
 
 
 
@@ -905,11 +688,11 @@ export default function Engineers() {
                                                         {item.name}
                                                     </Typography>
                                                     <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                        {item.contact}
+                                                        In Progress {item.activeTasks === null || item.activeTasks === undefined ? 0 : item.activeTasks}
                                                     </Typography>
 
                                                     <Typography style={{ color: 'white', fontSize: '100%' }} >
-                                                        {item.state}
+                                                        Completed {item.closedTasks === null || item.closedTasks === undefined ? 0 : item.closedTasks}
 
                                                     </Typography>
                                                     <Typography style={{ color: 'white', fontSize: '100%' }}>

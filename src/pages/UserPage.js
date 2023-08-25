@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 
-
+import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -75,6 +75,50 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: 'white',
+  '&:hover': {
+    backgroundColor: 'white',
+  },
+  marginLeft: 0,
+  width: '100%',
+  color: 'gray',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(1),
+    width: 'auto',
+  },
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  color: 'gray',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch',
+      },
+    },
+  },
+}));
+
 
 
 
@@ -87,7 +131,7 @@ export default function StickyHeadTable() {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [contactno, setContactno] = useState('');
-
+  const [search,setSearch]=useState('');
 
   const [message, setMessage] = useState('');
 
@@ -125,7 +169,11 @@ export default function StickyHeadTable() {
   };
 
 
-
+  const searchItem = rows.filter(row => {
+    return (search === '')|| columns.map((column)=>row[column.id]!==undefined
+    &&row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x,y)=>x||y)
+    ?row:null;
+   })
 
 
 
@@ -226,7 +274,7 @@ export default function StickyHeadTable() {
 
   };
 
-
+ 
 
   // const routeChange = () => {
   //   window.location.href = "/dashboard/customerdetail";
@@ -282,50 +330,6 @@ export default function StickyHeadTable() {
 
 
 
-  const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: 'white',
-    '&:hover': {
-      backgroundColor: 'white',
-    },
-    marginLeft: 0,
-    width: '100%',
-    color: 'gray',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto',
-    },
-  }));
-
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    color: 'gray',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: '12ch',
-        '&:focus': {
-          width: '20ch',
-        },
-      },
-    },
-  }));
-
 
 
 
@@ -367,6 +371,7 @@ export default function StickyHeadTable() {
                 <StyledInputBase
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
+                  onChange={(e)=>setSearch(e.target.value)}
                 />
               </Search>
 
@@ -666,7 +671,7 @@ export default function StickyHeadTable() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows
+                      {searchItem
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((row) => {
                           return (

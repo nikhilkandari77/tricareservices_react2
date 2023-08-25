@@ -12,6 +12,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -155,13 +156,20 @@ export default function StickyHeadTable() {
   }
 
 
-  const searchItem = rows.filter(row => {
-    return (search === '')
-      || (row.category.name.toLowerCase().includes(search.toLowerCase()))
-      || (row.name.toLowerCase().includes(search.toLowerCase())) ?
-      row : null;
+  // const searchItem = rows.filter(row => {
+  //   return (search === '')
+  //     || (row.category.name.toLowerCase().includes(search.toLowerCase()))
+  //     || (row.name.toLowerCase().includes(search.toLowerCase())) ?
+  //     row : null;
 
+  // })
+  const searchItem = rows.filter(row => {
+   return (search === '')|| columns.map((column)=>row[column.id]!==undefined
+   &&row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x,y)=>x||y)
+   ||(row.category.name.toLowerCase().includes(search.toLowerCase()))
+   ?row:null;
   })
+
   const deleteImagesHandler = (e) => {
     if (deleteImages.includes(e.target.value))
       setDeleteImages(deleteImages.filter(img => img !== e.target.value))
@@ -370,12 +378,12 @@ export default function StickyHeadTable() {
 
 
 
-    <div>
-      <Grid container spacing={0} >
+    <div className='container'>
+      <Grid  container spacing={1} item xs={12}>
 
 
 
-        <Box sx={{ flexGrow: 6 }}>
+        <Box sx={{ flexGrow: 6 }} item xs={12}>
           <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
             <Toolbar variant="dense">
               <Typography

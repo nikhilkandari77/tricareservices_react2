@@ -178,73 +178,60 @@ export default function DashboardAppPage() {
   }, []);
 
   return (
-    <>
-      <Helmet>
-        <title> Tricare Services </title>
-      </Helmet>
+   <>
+  <Helmet>
+    <title>Tricare Services</title>
+  </Helmet>
 
-      <Container maxWidth="xl" sx={{ mb: 5 }}>
+  <div className="container-fluid mb-5">
+    <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
+      Dashboard
+    </Typography>
 
-        <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
-          Dashboard
-        </Typography>
+    <Grid container spacing={3}>
+      <Grid item xs={12} sm={6} md={4}>
+        <CardTodayServices title="" color="info" total={rows.todayService !== 0 ? rows.todayService : "0"} completed={0} />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4}>
+        <CardNextDayServices title="" total={0} color="warning" icon={'ant-design:windows-filled'} />
+      </Grid>
+      <Grid item xs={12} sm={6} md={4}>
+        <CardBackLogServices title="" total={0} color="error" icon={'ant-design:bug-filled'} />
+      </Grid>
+    </Grid>
+  </div>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
-            <CardTodayServices title="" color='info' total={rows.todayService !== 0 ? rows.todayService : "0"} completed={0} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <CardNextDayServices title="" total={0} color="warning" icon={'ant-design:windows-filled'} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <CardBackLogServices title="" total={0} color="error" icon={'ant-design:bug-filled'} />
-          </Grid>
-        </Grid>
+  <div className="container-fluid">
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <DashboardTable token={token} />
+      </Grid>
+    </Grid>
+  </div>
 
-
-      </Container>
-
-      <Container maxWidth="xl">
-
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <DashboardTable token={token} />
-          </Grid>
-        </Grid>
-
-      </Container>
-
-      <Container maxWidth="xl">
-        <Grid container spacing={2}>
-
-          <Grid item xs={12} md={6}>
-                <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
-            {/* <Card>
-              <CardContent>
-              </CardContent>
-            </Card> */}
-          </Grid>
-
-
-
-          <Grid item xs={12} md={6}>
-            <ChartEngineerWorkload
-              title="Engineer WorkLoads"
-              subheader=""
-              chartLabels={[
-                'Rohit', 'Rakesh', 'Sanjay', 'Nikhil', 'Sumit',
-                'Rohan', 'Mukesh', 'Dilip', 'Karan'
-              ]}
-              chartData={[
-                { name: 'numberofservices', data: [6, 3, 5, 1, 8, 2, 4, 7, 9] }
-              ]}
-            />
-          </Grid>
-        </Grid>
-      </Container>
-
-
-
-    </>
+  <div className="container-fluid">
+  <Grid container spacing={3} justifyContent="center">
+    <Grid item xs={12} md={6}>
+      <div ref={chartRef} style={{ width: '100%', height: '100%', maxWidth: '800px', margin: '0 auto' }} />
+    </Grid>
+    <Grid item xs={12} md={6}>
+      <ChartEngineerWorkload
+        title="Engineer WorkLoads"
+        subheader=""
+        chartLabels={[
+          'Rohit', 'Rakesh', 'Sanjay', 'Nikhil', 'Sumit',
+          'Rohan', 'Mukesh', 'Dilip', 'Karan'
+        ]}
+        chartData={[
+          { name: 'numberofservices', data: [6, 3, 5, 1, 8, 2, 4, 7, 9] }
+        ]}
+        width={'100%'}
+        height={400} // You can adjust the height as needed
+        options={{ maintainAspectRatio: false }} // Allow chart to adjust its aspect ratio
+      />
+    </Grid>
+  </Grid>
+</div>
+</>
   );
 }

@@ -7,6 +7,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import SearchIcon from '@mui/icons-material/Search';
+import { DataGrid } from '@mui/x-data-grid';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -169,58 +170,108 @@ export default function Task() {
     const [datas, setData] = useState([]);
 
     const columns = [
-        { id: "sr", label: 'S.No', minWidth: 10 },
-        { id: 'id', label: 'ComplaintId',align: 'center', minWidth: 30 },
+        { id: "sr", field: "sr", headerName: 'S.No', maxWidth: 10 },
+        { id: 'id', field: 'id', headerName: 'ComplaintId', minWidth: 50 },
         {
             id: 'productCustomer',
+            field: 'productCustomer',
             subId: 'productName',
-            label: 'Product',
-            minWidth: 70,
-            align: 'center',
+            headerName: 'Product',
+            minWidth: 120,
+            renderCell: (params) => (
+                <a>{params.row.productCustomer.productName}</a>
+            ),
             // format: (value) => value.toLocaleString('en-US'),
         },
         {
             id: 'problem',
-            label: 'Problem',
-            minWidth: 170,
-            align: 'center',
+            field: 'problem',
+            headerName: 'Problem',
             // format: (value) => value.toLocaleString('en-US'),
+            minWidth: 120,
         },
         {
             id: 'customerName',
-            label: 'Customer',
+            field: 'customerName',
+            headerName: 'Customer',
             minWidth: 70,
-            align: 'center',
             // format: (value) => value.toFixed(2),
         },
-        { id: 'createdDateTime', label: 'Complaint Time', align: 'center', minWidth: 120 },
-        { id: 'engineerName', label: 'Engineer', align: 'center', minWidth: 70 },
-        { id: 'estimatedDateTime', label: 'Estimated End Time', align: 'center', minWidth: 120 },
-        { id: 'complaintStatus', label: 'Status', align: 'center', minWidth: 70 },
-        { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
-        { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
+        {
+            id: 'createdDateTime', field: 'createdDateTime', headerName: 'Complaint Time', minWidth: 170,
+            valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+            type: "date"
+        },
+        { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70 },
+        {
+            id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Time', minWidth: 170,
+            valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+            type: "date"
+        },
+        { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
+        {
+            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
+
+            renderCell: (params) => (
+                <Label
+
+                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
+                >
+                    {params.row.priority}
+                </Label>
+            )
+
+        },
+        // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 120,
+            renderCell: (params) => (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => routeChange1(params.id)}
+                >
+                    Details
+                </Button>
+            ),
+        },
     ];
+
+
+
+
 
 
     const token = localStorage.getItem('token');
 
 
-    const searchItem = rows.filter(row => {
-        return (search === '')
-          || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
-          || (row.problem.toLowerCase().includes(search.toLowerCase())) 
-          || (row.customerName.toLowerCase().includes(search.toLowerCase()))
-          || (row.engineerName!==null?row.engineerName.toLowerCase().includes(search.toLowerCase()):row)
-          || (row.complaintStatus.toLowerCase().includes(search.toLowerCase()))?
-          row : null;
-    
-      })
+    // const searchItem = rows.filter(row => {
+    //     return (search === '')
+    //       || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
+    //       || (row.problem.toLowerCase().includes(search.toLowerCase())) 
+    //       || (row.customerName.toLowerCase().includes(search.toLowerCase()))
+    //       || (row.engineerName!==null?row.engineerName.toLowerCase().includes(search.toLowerCase()):row)
+    //       || (row.complaintStatus.toLowerCase().includes(search.toLowerCase()))?
+    //       row : null;
 
-      console.log()
+    //   })
+    const searchItem = rows.filter(row => {
+        return (search === '') || columns.map((column) => row[column.id] !== undefined
+            && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
+            || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
+            ? row : null;
+    })
+
+
+
+    console.log()
 
 
 
     const routeChange1 = (id) => {
+        // console.log(id)
         navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
     };
 
@@ -238,7 +289,7 @@ export default function Task() {
             .then(response => response.json())
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
-                setRows(json.data);
+                setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
             })
             .finally(() => {
                 setLoading(false);
@@ -248,22 +299,22 @@ export default function Task() {
 
 
 
-      
-      function formatDateTime(dateString) {
+
+    function formatDateTime(dateString) {
         const options = {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          hour12: true
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
         };
-      
+
         const date = new Date(dateString);
         return date.toLocaleString('en-US', options);
-      }
-      
-        let sr = 0;
+    }
+
+    //    let sr = 0;
 
 
 
@@ -287,57 +338,18 @@ export default function Task() {
                             </Typography>
 
 
-                            <Grid item xs={3}>
-                                <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
-                                    <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Status</InputLabel>
-                                    <Select
-                                        labelId="demo-select-small-label"
-                                        id="demo-select-small"
-                                        value={status}
-                                        label="Status"
-                                        onChange={handleChange3}
-                                    >
-
-                                        <MenuItem value={10}>Completed </MenuItem>
-                                        <MenuItem value={20}>Pending</MenuItem>
-                                        <MenuItem value={30}>Completed</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <FormControl sx={{ m: 1, minWidth: 170, backgroundColor: 'white', borderRadius: '5px', height: '75%', width: '4%' }} size="small">
-                                    <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Date</InputLabel>
-                                    <Select
-                                        labelId="demo-select-small-label"
-                                        id="demo-select-small"
-                                        value={date}
-                                        label="Date"
-                                        onChange={handleChange3}
-                                    >
-                                        <MenuItem value="">
-                                            <em>All</em>
-                                        </MenuItem>
-                                        <MenuItem value={10}>Today </MenuItem>
-                                        <MenuItem value={20}>Last 2 day</MenuItem>
-                                        <MenuItem value={30}>Last 7 day</MenuItem>
-                                        <MenuItem value={30}>Last 30 day</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-
 
                             <Search>
                                 <SearchIconWrapper>
                                     <SearchIcon />
                                 </SearchIconWrapper>
                                 <StyledInputBase
-                                      placeholder="Search…"
-                                      inputProps={{ 'aria-label': 'search' }}
-                                      key="password"
-                                      value={search}
-                                      autoFocus
-                                      onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Search…"
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    key="password"
+                                    value={search}
+                                    autoFocus
+                                    onChange={(e) => setSearch(e.target.value)}
                                 />
                             </Search>
 
@@ -356,7 +368,7 @@ export default function Task() {
 
                                 <TableContainer sx={{ maxHeight: 500 }}>
                                     <Table stickyHeader aria-label="sticky table">
-                                        <TableHead>
+                                        {/* <TableHead>
                                             <TableRow>
                                                 {columns.map((column) => (
                                                     <TableCell
@@ -368,8 +380,19 @@ export default function Task() {
                                                     </TableCell>
                                                 ))}
                                             </TableRow>
-                                        </TableHead>
-                                        <TableBody>
+                                        </TableHead> */}
+
+
+                                        <div style={{ height: 400, width: '100%' }}>
+                                            <DataGrid rows={rows} columns={columns} pageSize={10}
+                                                rowsPerPageOptions={[10, 20]}
+                                            />
+                                        </div>
+
+
+
+
+                                        {/* <TableBody>
                                             {
                                                 searchItem
                                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -479,10 +502,10 @@ export default function Task() {
                                                             })}
                                                         </TableRow>
                                                     ))}
-                                        </TableBody>
+                                        </TableBody> */}
                                     </Table>
                                 </TableContainer>
-                                <TablePagination
+                                {/* <TablePagination
                                     rowsPerPageOptions={[10, 25, 100]}
                                     component="div"
                                     count={rows.length}
@@ -490,7 +513,7 @@ export default function Task() {
                                     page={page}
                                     onPageChange={handleChangePage}
                                     onRowsPerPageChange={handleChangeRowsPerPage}
-                                />
+                                /> */}
                             </Paper>
 
                         </Card>
