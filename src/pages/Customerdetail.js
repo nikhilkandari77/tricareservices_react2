@@ -1,7 +1,5 @@
 
 
-
-
 import React, { useState, useEffect } from 'react';
 
 
@@ -19,7 +17,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, EditableInputs } from '@mui/material';
+import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -122,7 +120,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
-
+const token = localStorage.getItem('token');
 
 
 
@@ -141,7 +139,7 @@ export default function Customerdetail() {
     // console.log("customerId: ");
     // console.log(customerId);
 
-   
+
 
 
 
@@ -178,10 +176,12 @@ export default function Customerdetail() {
 
     const [installationDate, setInstallationDate] = useState('');
     const [warrantyPeriod, setWarrantyPeriod] = useState('');
-    const[formData, setformData]= useState([]);
+    const [formData, setformData] = useState([]);
+    const [selectedProduct,setSelectedProduct]=useState(null);
+    const [products,setProducts]=useState([]);
 
     const [value, setValue] = React.useState('1');
- const [isEditable, setIsEditable] = useState(true);
+    const [isEditable, setIsEditable] = useState(true);
 
     const [category, setCategory] = useState('');
 
@@ -194,8 +194,8 @@ export default function Customerdetail() {
 
     const [selectedImage, setSelectedImage] = useState(null);
 
-    
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+    const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -262,6 +262,7 @@ export default function Customerdetail() {
         setOpenProduct(false);
     };
     const handleClickOpenUserPopup2 = () => {
+        getProducts();
         setUserOpenProduct(true);
     }
 
@@ -272,14 +273,29 @@ export default function Customerdetail() {
         setUserOpenProduct(false);
     }
 
-   
+
     const handleCloseForm = () => {
         setIsFormSubmitted('false');
         handleClickClose2();
-      };
+    };
 
 
+    const getProducts=()=>{
+        fetch(`${baseUrl}/api/user/product-master/`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
 
+        })
+
+            .then(response => response.json())
+            .then(json => {
+                console.log("product data:", json.data); // This line will print the data to the console
+                setProducts(json.data);
+            })
+    }
 
 
 
@@ -325,8 +341,8 @@ export default function Customerdetail() {
             [name]: value,
             [contact]: value,
         }));
-     
-        
+
+
     };
 
     const handleEditClick = () => {
@@ -375,14 +391,15 @@ export default function Customerdetail() {
     const handleSubmit2 = async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('token');
+       
 
-        
+
         const formData1 = {
-            "customer":{
-                "id":userId
+            "customer": {
+                "id": userId
             },
-            productName,
+            productId:selectedProduct.id,
+            productName:selectedProduct.name,
             productType,
             serialNo,
             constructionType,
@@ -397,14 +414,14 @@ export default function Customerdetail() {
                 "name": "E-Mobility & Renewable Energy"
             }
 
-            
+
         };
 
         // Convert form data object to JSON
         const requestBody = JSON.stringify(formData1);
 
-        console.log(formData1);
-        console.log(token);
+        console.log("product",formData1);
+        console.log(requestBody);
 
         const response = await fetch(`${baseUrl}/api/user/product-customer/`, {
             method: 'POST',
@@ -431,7 +448,7 @@ export default function Customerdetail() {
         // Now you can close the form.
         setIsFormOpen(false);
 
-        
+
 
 
 
@@ -496,7 +513,7 @@ export default function Customerdetail() {
             setUserOpenProduct(false);
             alert('Form submitted successfuly');
             window.location.reload();
-          
+
         } else {
             setMessage(data.message);
         }
@@ -644,7 +661,7 @@ export default function Customerdetail() {
     let sr = 0;
 
 
-  
+
     // const handleInputChange = (e) => {
     //     const { name, value } = e.target;
     //     setUser((prevUser) => ({
@@ -726,16 +743,22 @@ export default function Customerdetail() {
 
                                                                     <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
                                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                                            <TextField
-                                                                                label="Product Name"
-                                                                                value={productName}
-                                                                                onChange={(e) => setProductName(e.target.value)}
-
-                                                                                fullWidth
-                                                                                required
-                                                                                style={{ marginTop: '7%' }}
-                                                                            // style={{ padding: '7px', width: '250px' }}
-                                                                            />
+                                                                            <FormControl sx={{ m: 1, minWidth: 230, backgroundColor: 'white', borderRadius: '5px', marginTop: '7%' }}>
+                                                                                <InputLabel id="Select-Product">Select Product</InputLabel>
+                                                                                <Select
+                                                                                labelId="Select-Product"
+                                                                                    label="Products"
+                                                                                    value={selectedProduct}
+                                                                                    onChange={(e)=>{setSelectedProduct(e.target.value)}}
+                                                                                >
+                                                                                    {products.map((product) => (
+                                                                                        <MenuItem key={product.id} value={product}>
+                                                                                            {product.name}
+                                                                                        </MenuItem>
+                                                                                    ))}
+                                                                                </Select>
+                                                                            </FormControl>
+                                                                            
                                                                             <TextField
                                                                                 label="Product Type"
                                                                                 value={productType}
@@ -911,7 +934,7 @@ export default function Customerdetail() {
                                                                             />
 
 
-                                                                            <FormControl sx={{ m: 1, minWidth: 230, minHeight: 290, backgroundColor: 'white', borderRadius: '5px', marginTop: '7%' }} size="small">
+                                                                            <FormControl sx={{ m: 1, minWidth: 230, backgroundColor: 'white', borderRadius: '5px', marginTop: '7%' }} size="small">
                                                                                 <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Category</InputLabel>
                                                                                 <Select
                                                                                     labelId="demo-select-small-label"
@@ -1029,7 +1052,7 @@ export default function Customerdetail() {
                                                                                 value={user.name}
                                                                                 sx={{ m: 1, width: '250px' }}
                                                                                 onChange={handleInputChange}
-                                                                                
+
                                                                                 fullWidth
                                                                                 required
                                                                             // style={{ padding: '7px', width: '250px' }}
@@ -1042,9 +1065,9 @@ export default function Customerdetail() {
                                                                                 type='number'
                                                                                 value={user.contact}
                                                                                 onChange={handleInputChange}
-                                                                                
+
                                                                                 name="contact"
-                                                                                
+
                                                                                 fullWidth
                                                                                 required
                                                                                 // style={{ padding: '7px', width: '250px' }}
@@ -1063,7 +1086,7 @@ export default function Customerdetail() {
                                                                                 // style={{ padding: '7px', width: '250px' }}
                                                                                 sx={{ m: 1, width: '250px' }}
                                                                             />
-                                                                            
+
 
                                                                             <TextField
                                                                                 label="Area pin"
@@ -1089,7 +1112,7 @@ export default function Customerdetail() {
 
                                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
 
-                           
+
 
 
 
@@ -1097,7 +1120,7 @@ export default function Customerdetail() {
                                                                                 label="Address"
                                                                                 value={user.address}
                                                                                 onChange={handleInputChange}
-                                                                               name="address"
+                                                                                name="address"
                                                                                 fullWidth
                                                                                 multilin
                                                                                 rows={4}
@@ -1170,11 +1193,11 @@ export default function Customerdetail() {
 
 
 
-                                                                    
-                                                                        <button onClick={handleSaveClick} style={{ float: 'right', marginRight: '-5px', borderRadius: '7px', backgroundColor:'primary' }} >Save</button>
-                                                                    
-                                                                      
-                                                                    
+
+                                                                    <button onClick={handleSaveClick} style={{ float: 'right', marginRight: '-5px', borderRadius: '7px', backgroundColor: 'primary' }} >Save</button>
+
+
+
 
                                                                     <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }} >Close</Button>
 

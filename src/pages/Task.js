@@ -247,16 +247,7 @@ export default function Task() {
     const token = localStorage.getItem('token');
 
 
-    // const searchItem = rows.filter(row => {
-    //     return (search === '')
-    //       || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
-    //       || (row.problem.toLowerCase().includes(search.toLowerCase())) 
-    //       || (row.customerName.toLowerCase().includes(search.toLowerCase()))
-    //       || (row.engineerName!==null?row.engineerName.toLowerCase().includes(search.toLowerCase()):row)
-    //       || (row.complaintStatus.toLowerCase().includes(search.toLowerCase()))?
-    //       row : null;
 
-    //   })
     const searchItem = rows.filter(row => {
         return (search === '') || columns.map((column) => row[column.id] !== undefined
             && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
@@ -351,7 +342,12 @@ export default function Task() {
                                     autoFocus
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
-                            </Search>
+                            </Search>&nbsp;&nbsp;
+                            <div>
+                                <Button className='responsive-button' onClick={()=>navigate("/dashboard/task-history")} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
+                                Previous Tasks
+                                </Button>
+                            </div>
 
 
                         </Toolbar>
@@ -365,155 +361,12 @@ export default function Task() {
 
 
                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                                <div style={{ height: "70vh", width: '100%' }}>
+                                    <DataGrid rows={rows} columns={columns} pageSize={10}
+                                        rowsPerPageOptions={[10, 20]}
+                                    />
+                                </div>
 
-                                <TableContainer sx={{ maxHeight: 500 }}>
-                                    <Table stickyHeader aria-label="sticky table">
-                                        {/* <TableHead>
-                                            <TableRow>
-                                                {columns.map((column) => (
-                                                    <TableCell
-
-                                                        align={column.align}
-                                                        style={{ minWidth: column.minWidth }}
-                                                    >
-                                                        {column.label}
-                                                    </TableCell>
-                                                ))}
-                                            </TableRow>
-                                        </TableHead> */}
-
-
-                                        <div style={{ height: 400, width: '100%' }}>
-                                            <DataGrid rows={rows} columns={columns} pageSize={10}
-                                                rowsPerPageOptions={[10, 20]}
-                                            />
-                                        </div>
-
-
-
-
-                                        {/* <TableBody>
-                                            {
-                                                searchItem
-                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                    .map((row) => (
-                                                        <TableRow hover role="checkbox" tabIndex={-1}>
-                                                            {columns.map((column) => {
-
-                                                                const value = column.id === "productCustomer" ? row[column.id][column.subId] : row[column.id];
-
-                                                                if (column.id === 'sr') {
-                                                                    sr += 1;
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value === null ? '' : String(sr)}
-                                                                        </TableCell>
-                                                                    );
-                                                                }
-
-                                                                if (column.id === 'compaintStatus') {
-                                                                    // console.log(value);
-                                                                    let labelColor;
-
-                                                                    if (value === 'Pending Assign') {
-                                                                        labelColor = 'error';
-                                                                    } else if (value === 'Engineer Assigned') {
-                                                                        labelColor = 'warning';
-                                                                    } else if (value === 'Completed') {
-                                                                        labelColor = 'success';
-                                                                    } else {
-                                                                        labelColor = 'default';
-                                                                    }
-
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
-                                                                        </TableCell>
-                                                                    );
-                                                                }
-
-                                                                if (column.id === 'priority') {
-                                                                    // console.log(value);
-                                                                    let labelColor;
-
-                                                                    if (value === 'High') {
-                                                                        labelColor = 'error';
-                                                                    } else if (value === 'Normal') {
-                                                                        labelColor = 'warning';
-                                                                    } else if (value === 'Low') {
-                                                                        labelColor = 'success';
-                                                                    } else {
-                                                                        labelColor = 'default';
-                                                                    }
-
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
-                                                                        </TableCell>
-                                                                    );
-                                                                }
-                                                                if (column.id === 'action') {
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            <Button onClick={() => routeChange1(row.id)} variant="contained">Details</Button>
-                                                                        </TableCell>
-                                                                    );
-                                                                }
-
-                                                                if (column.id === 'engineerName') {
-
-                                                                    // console.log(`Desired Value ${  value}`);
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value !== null ? value : 'Pending Assign'}
-                                                                        </TableCell>
-                                                                    );
-
-                                                                }
-
-                                                                if (column.id === 'estimatedDateTime') {
-
-                                                                    console.log(`Desired Value ${value}`);
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value !== null ? formatDateTime(value) : 'Pending Assign'}
-                                                                        </TableCell>
-                                                                    );
-
-                                                                }
-
-                                                                if (column.id === 'createdDateTime') {
-
-                                                                    console.log(`Desired Value ${value}`);
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value !== null ? formatDateTime(value) : ''}
-                                                                        </TableCell>
-                                                                    );
-
-                                                                }
-
-
-                                                                return (
-                                                                    <TableCell key={column.id} align={column.align}>
-                                                                        {value === null ? '' : String(value)}
-                                                                    </TableCell>
-                                                                );
-                                                            })}
-                                                        </TableRow>
-                                                    ))}
-                                        </TableBody> */}
-                                    </Table>
-                                </TableContainer>
-                                {/* <TablePagination
-                                    rowsPerPageOptions={[10, 25, 100]}
-                                    component="div"
-                                    count={rows.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onPageChange={handleChangePage}
-                                    onRowsPerPageChange={handleChangeRowsPerPage}
-                                /> */}
                             </Paper>
 
                         </Card>

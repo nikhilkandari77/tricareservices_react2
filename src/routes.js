@@ -16,8 +16,9 @@ import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import Task from './pages/Task';
 import Taskdetail from './pages/Taskdetail';
+import TaskHistory from './pages/TaskHistory';
 import DashboardAppPage from './pages/DashboardAppPage';
-
+import TaskHistoryDetail from './pages/TaskHistoryDetail';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -30,8 +31,9 @@ export default function Router() {
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'customers', element: <UserPage /> },
         {path: 'task', element: <Task /> },
+        {path:'task-history',element:<TaskHistory/>},
         {path: 'taskdetail', element: <Taskdetail/>},
-        {path:'complaintdetail', element:<Complaintdetail/>},
+        {path:'task-history-details', element:<TaskHistoryDetail/>},
         { path: 'customerdetail', element: <Customerdetail /> },
         {path: 'engineers', element: <Engineers />},
         {path:'engineersdetail', element: <Engineersdetail/>},

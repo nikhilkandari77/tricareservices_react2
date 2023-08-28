@@ -378,7 +378,7 @@ export default function StickyHeadTable() {
 
 
 
-    <div className='container'>
+    <div>
       <Grid  container spacing={1} item xs={12}>
 
 
@@ -548,7 +548,7 @@ export default function StickyHeadTable() {
 
 
               <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 440 }}>
+                <TableContainer sx={{ maxHeight: "70vh" }}>
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                       <TableRow>
@@ -602,7 +602,7 @@ export default function StickyHeadTable() {
                                     return (
                                       <TableCell key={column.id} align={column.align}>
 
-                                        <Button className='responsive-button' onClick={() => handleUpdateOpen(row)} variant="contained" style={{ backgroundColor: 'white', color: 'black' }}>Update</Button>
+                                        <Button  color="error" onClick={() => handleUpdateOpen(row)} variant="contained">Update</Button>
 
                                         <Dialog
                                           open={updateForm}

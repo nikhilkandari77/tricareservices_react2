@@ -29,7 +29,7 @@ export default function ProductsPage() {
         <title> Dashboard: Products</title>
       </Helmet>
 
-      <Grid  maxWidth="xs">
+      <Grid item xs={12}>
         {/* <Typography variant="h4" sx={{ mb: 2 }}>
 
           Products 

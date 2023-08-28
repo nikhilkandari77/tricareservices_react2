@@ -15,8 +15,6 @@ import * as echarts from 'echarts/core';
 import { GaugeChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
-
-
 // components
 import Iconify from '../components/iconify';
 
@@ -53,13 +51,13 @@ export default function DashboardAppPage() {
   const [rows, setRows] = useState({});
   const [todayServiceCount, setServiceCount] = useState(0);
   const theme = useTheme();
-
-
+  const [engineerWorkloadList,setEngineerWorkloadList]=useState([]);
+  const hashMap={};
 
   useEffect(() => {
 
     console.log(`Token${  token}`);
-    fetch(`${baseUrl}/api/user/complaint/countData/`, {
+    fetch(`${baseUrl}/api/user/dashboard/admin/`, {
       method: 'GET',
       mode: 'cors',
       headers: {
@@ -70,10 +68,11 @@ export default function DashboardAppPage() {
       .then(response => response.json())
       .then(json => {
 
-
+        setEngineerWorkloadList(json.data.complaintHistoryGroupByEngineer);
         setRows(json.data);
+        
+         console.log("data",json.data.complaintHistoryGroupByEngineer);
 
-        console.log(json.data);
       });
 
   }, []);
@@ -177,6 +176,19 @@ export default function DashboardAppPage() {
     };
   }, []);
 
+
+
+engineerWorkloadList.forEach(([key, value]) => {
+  hashMap[key] = value;
+});
+if(rows.engineers!==undefined){
+rows.engineers.forEach((engineer)=>{
+  if(hashMap[engineer]===undefined)
+  hashMap[engineer]=0
+});
+}
+
+
   return (
    <>
   <Helmet>
@@ -218,12 +230,9 @@ export default function DashboardAppPage() {
       <ChartEngineerWorkload
         title="Engineer WorkLoads"
         subheader=""
-        chartLabels={[
-          'Rohit', 'Rakesh', 'Sanjay', 'Nikhil', 'Sumit',
-          'Rohan', 'Mukesh', 'Dilip', 'Karan'
-        ]}
+        chartLabels={Object.keys(hashMap)}
         chartData={[
-          { name: 'numberofservices', data: [6, 3, 5, 1, 8, 2, 4, 7, 9] }
+          { name: 'numberofservices', data: Object.values(hashMap) }
         ]}
         width={'100%'}
         height={400} // You can adjust the height as needed

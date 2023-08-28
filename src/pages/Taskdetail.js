@@ -7,6 +7,7 @@ import Select from '@mui/material/Select';
 import { toast } from 'react-toastify';
 import 'react-datepicker/dist/react-datepicker.css';
 import AppBar from '@mui/material/AppBar';
+import { Carousel } from 'react-material-ui-carousel';
 
 import Toolbar from '@mui/material/Toolbar';
 
@@ -59,7 +60,7 @@ export default function Taskdetail() {
     const [engineerId, setEngineerId] = React.useState('');
     const [priority, setPriority] = React.useState('');
 
-
+    const [productImages, setProductImages] = useState('')
     const [task, setTask] = useState({}); /* sets complaint details */
     const [customer, setCustomer] = useState({}); /* gets customer's details */
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
@@ -133,6 +134,7 @@ export default function Taskdetail() {
             complaintType: `${complaintType}`,
             serviceType: `${serviceType}`,
             priority: `${priority}`,
+            visitDatetime: `${`${visitDate} ${visitTime}:00`}`,
             complaintStatus: "Engineer Assigned"
 
         };
@@ -159,7 +161,9 @@ export default function Taskdetail() {
 
     const [estimatedTime, setSelectedTime] = useState(null);
     const [estimatedDate, setSelectedDate] = useState(null);
-
+    const [visitTime, setVisitTime] = useState(null);
+    const [visitDate, setVisitDate] = useState(null);
+    const [product, Images] = useState('');
     const handleTimeChange = (event) => {
         setSelectedTime(event.target.value);
     };
@@ -186,6 +190,21 @@ export default function Taskdetail() {
         setPriority(event.target.value);
     };
 
+    const getProduct = (productId) => {
+        console.log(productId)
+        fetch(`${baseUrl}/api/user/product-master/${productId}`, {
+
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+
+        }).then(response => response.json()).then(data => {
+            setProductImages(data.data.imageName.toString().split(","));
+            console.log("product", data.data.imageName)
+        }).catch(error => console.log(error));
+    }
 
 
 
@@ -220,7 +239,8 @@ export default function Taskdetail() {
 
 
                     setTask(json.data);
-                    console.log(`Task Data ${JSON.stringify(json)}`);
+                    getProduct(json.data.productCustomer.productId);
+                    // console.log(`Task Data ${JSON.stringify(json)}`);
                     // if (json.data.engineerId !== null && json.data.engineerId !== undefined && json.data.engineerId !== 'null') {
                     //     toast.success("Engineer Already Assigned");
                     // }
@@ -242,9 +262,25 @@ export default function Taskdetail() {
                     } else {
                         setSelectedDate(formattedDate);
                         setSelectedTime(formattedTime);
+
+                    }
+                    const visitDatetime = new Date(json.data.visitDatetime);
+
+                    const formattedDate2 = format(visitDatetime, 'yyyy-MM-dd');
+                    const formattedTime2 = format(visitDatetime, 'HH:mm');
+                    // console.log(`Estimated End Date ${  formattedDate}`);
+                    // console.log(`Estimated End Time ${  formattedTime}`);
+                    if (json.data.visitDatetime === null) {
+
+                        setVisitTime("");
+                        setVisitDate("");
+
+                    } else {
+                        setVisitDate(formattedDate2);
+                        setVisitTime(formattedTime2);
                     }
 
-
+                    console.log(formattedDate2)
                     showCustomer(json.data.customerId, token);
 
                 });
@@ -499,13 +535,16 @@ export default function Taskdetail() {
                                         <Typography variant="h6" gutterBottom>
                                             {task.productCustomer.productName}
                                         </Typography>
-
-                                        <img
-                                            style={{ maxWidth: '100%', maxHeight: '150px', marginBottom: '2px' }}
-                                            alt="Customer Profile"
-                                            src="/products_images/rapidtower.png"
-                                        />
-
+                                    
+                                            {
+                                                productImages[0] === undefined ? "" :
+                                                    <img
+                                                        style={{ maxWidth: '100%', maxHeight: '150px', marginBottom: '2px' }}
+                                                        alt="Customer Profile"
+                                                        src={`${baseUrl}/resources/products/${task.productCustomer.productId}/${productImages[0]}`}
+                                                    />
+                                            }
+                                    
                                         <div style={{ display: 'flex', marginTop: '2%', flexDirection: 'column', height: '100%' }}>
                                             <div style={{ width: '100%', justifyContent: 'space-between' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -568,6 +607,33 @@ export default function Taskdetail() {
                                                         <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
                                                             Images
                                                         </Typography>
+                                                        <Grid item xs={12} >
+
+
+
+                                                            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                                                                <div style={{ height: "20vh", width: '100%' }}>
+
+                                                                    {
+                                                                        task.images !== "" && task.images !== null && task.images !== undefined ?
+                                                                            task.images.toString().split(",").map(image =>
+                                                                                <img style={{width:200}}
+                                                                                    align="left"
+                                                                                    alt="Complaint images"
+                                                                                    src={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
+                                                                                />
+                                                                            ) : ""
+
+                                                                    }
+                                                                </div>
+                                                                {
+                                                                    console.log(task.images)
+                                                                }
+
+                                                            </Paper>
+
+
+                                                        </Grid>
                                                     </CardContent>
                                                 </Card>
 
@@ -685,7 +751,7 @@ export default function Taskdetail() {
 
                                         <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
                                             <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                Select Estimated End Date Time
+                                                Select Estimated DateTime
                                             </Typography>
                                         </InputLabel>
 
@@ -713,6 +779,39 @@ export default function Taskdetail() {
                                                 variant="outlined"
                                                 value={estimatedTime}
                                                 onChange={handleTimeChange}
+                                                type="time" // Use type "time" for date picker
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
+                                            <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
+                                                Select Visit Datetime
+                                            </Typography>
+                                        </InputLabel>
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <TextField
+                                                id="datepicker"
+                                                variant="outlined"
+                                                value={visitDate}
+                                                onChange={(e) => setVisitDate(e.target.value)}
+                                                type="date" // Use type "date" for date picker
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                inputProps={{
+                                                    // Set placeholder value here
+                                                    min: new Date().toISOString().split('T')[0],
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <TextField
+                                                id="timepicker"
+                                                variant="outlined"
+                                                value={visitTime}
+                                                onChange={(e) => setVisitTime(e.target.value)}
                                                 type="time" // Use type "time" for date picker
                                                 InputLabelProps={{
                                                     shrink: true,

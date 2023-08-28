@@ -168,12 +168,12 @@ export default function Engineers() {
 
     }
 
-//   const searchItem = rows.filter(row => {
-//    return (search === '')|| columns.map((column)=>row[column.id]!==undefined
-//    &&row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x,y)=>x||y)
-//    ||(row.category.name.toLowerCase().includes(search.toLowerCase()))
-//    ?row:null;
-//   })
+    //   const searchItem = rows.filter(row => {
+    //    return (search === '')|| columns.map((column)=>row[column.id]!==undefined
+    //    &&row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x,y)=>x||y)
+    //    ||(row.category.name.toLowerCase().includes(search.toLowerCase()))
+    //    ?row:null;
+    //   })
 
 
 
@@ -657,148 +657,47 @@ export default function Engineers() {
                 </Grid>
 
 
-                <div className='container'>
+                <div className='container-fluid'>
                     <div className='row'>
-                        <div className=' col-sm-12 col-md-12 col-xl-6'>
 
+                        {data.map(item => (
+                            <div key={item.id} className='col-md-3 col-sm-6'>
 
-                            <div className='container eng-profile'>
-                                <div className='row'>
+                                <Item>
+                                    <Card style={{ backgroundColor: '#007F6D' }}>
+                                        <CardContent>
+                                            <Typography style={{ marginTop: '-5%', color: 'white' }}>
+                                                Junior Engineer
+                                            </Typography>
 
-                                    {data.map(item => (
-                                        <div key={item.id} className=' col-sm-1 col-md-3 col-xl-5'>
-
-
-
-                                            <Item><Card style={{ backgroundColor: '#007F6D' }}>
-                                                <CardContent>
-                                                    <Typography style={{ marginTop: '-5%', color: 'white' }} >
-                                                        Junior Engineer
-                                                    </Typography>
-
-
-
-
-
-
-                                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-                                                        <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/assets/images/avatars/avatar_5.jpg" />
-                                                    </div>
-                                                    <Typography style={{ fontSize: '130%', color: 'white' }} >
-                                                        {item.name}
-                                                    </Typography>
-                                                    <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                        In Progress {item.activeTasks === null || item.activeTasks === undefined ? 0 : item.activeTasks}
-                                                    </Typography>
-
-                                                    <Typography style={{ color: 'white', fontSize: '100%' }} >
-                                                        Completed {item.closedTasks === null || item.closedTasks === undefined ? 0 : item.closedTasks}
-
-                                                    </Typography>
-                                                    <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                        Service Engineer
-
-                                                    </Typography>
-                                                </CardContent>
-                                                <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                                    <Button onClick={() => routeChange1(item.id)} style={{ color: '#131313', backgroundColor: 'white' }}>View Profile</Button>
-                                                </CardActions>
-                                            </Card></Item>
-                                        </div>
-                                    ))}
-
-                                    {/* <div className='col-md-3'>
-
-
-                
-                        <Item><Card style={{ backgroundColor: '#F0F0F0' }}>
-                            <CardContent>
-                                <Typography style={{marginTop:'-5%'}}>
-                                    Junior Engineer
-                                </Typography>
-
-
-
-
-                                
-
-                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-                                        <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/image1/male-user-filled-icon-man-icon-115533970576b3erfsss1.png" />
-                                </div>
-                                <Typography style={{ fontSize: '130%',  color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={routeChange1} style={{ color: '#131313', backgroundColor: 'lightblue' }}>View Profile</Button>
-                                </CardActions>
-                        </Card></Item>
-                        </div>
-                                          
-                                            <div className='col-md-3'>
-
-
-                
-                        <Item><Card style={{ backgroundColor: '#F0F0F0' }}>
-                            <CardContent>
-                                <Typography style={{marginTop:'-5%'}} >
-                                    Junior Engineer
-                                </Typography>
-
-
-
-
-                                
-
-                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-                                        <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/image1/male-user-filled-icon-man-icon-115533970576b3erfsss1.png" />
-                                </div>
-                                <Typography style={{ fontSize: '130%',  color: '#131313' }} >
-                                    Sumit Kumar
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Service Engineers
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }} >
-                                    Inprogress -22
-
-                                </Typography>
-                                <Typography style={{ color: '#131313', fontSize: '100%' }}>
-                                    Completed -24
-
-                                </Typography>
-                            </CardContent>
-                            <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={routeChange1} style={{ color: '#131313', backgroundColor: 'lightblue' }}>View Profile</Button>
-                                </CardActions>
-                        </Card></Item>
-                        </div> */}
-
-
-
-
-
-                                </div>
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                                <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/assets/images/avatars/avatar_5.jpg" />
+                                            </div>
+                                            <Typography style={{ fontSize: '130%', color: 'white' }}>
+                                                {item.name}
+                                            </Typography>
+                                            <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                In Progress {item.activeTasks === null || item.activeTasks === undefined ? 0 : item.activeTasks}
+                                            </Typography>
+                                            <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                Completed {item.closedTasks === null || item.closedTasks === undefined ? 0 : item.closedTasks}
+                                            </Typography>
+                                            <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                Service Engineer
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                            <Button onClick={() => routeChange1(item.id)} style={{ color: '#131313', backgroundColor: 'white' }}>
+                                                View Profile
+                                            </Button>
+                                        </CardActions>
+                                    </Card>
+                                </Item>
                             </div>
+                        ))}
 
-
-
-
-                        </div>
                     </div>
                 </div>
-
 
 
 

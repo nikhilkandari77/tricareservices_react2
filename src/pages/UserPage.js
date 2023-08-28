@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
 
-import { DataGrid } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -654,7 +653,7 @@ export default function StickyHeadTable() {
 
 
               <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 440 }}>
+                <TableContainer sx={{ height: "65vh" }}>
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                       <TableRow>
