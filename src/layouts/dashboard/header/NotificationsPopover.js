@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
 import { faker } from '@faker-js/faker';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import Stomp from 'stompjs';
 // @mui
 import {
   Box,
@@ -99,10 +100,40 @@ export default function NotificationsPopover() {
       }))
     );
   };
+  //  const socket = new WebSocket('ws://localhost:8082/ws');
+
+const token=localStorage.getItem('token')
+// const socket = new WebSocket('ws://localhost:10000/ws', [
+//   'Authorization',
+//   `Bearer ${token}`,
+// ]);
+// const stompClient = Stomp.over(socket);
+// const headers = {
+//     'Authorization': `Bearer ${token}`
+// };
+// useEffect(()=>{
+// stompClient.connect(headers, () => {
+//     // Your WebSocket connection is now established with JWT token authentication
+//     stompClient.subscribe('/topic/new-complaint', (message) => {
+//       const newComplaint = JSON.parse(message.body);
+//       console.log('New complaint:', newComplaint);
+//       // Update your UI or perform any action on new complaint notification
+
+//       stompClient.subscribe('/topic/complaint-update', (message) => {
+//         const updatedComplaint = JSON.parse(message.body);
+//         console.log('Updated complaint:', updatedComplaint);
+//         // Update your UI or perform any action on updated complaint notification
+//     });
+//   });
+// });
+
+// },[]);
+
+
 
   return (
     <>
-      <IconButton color={open ? 'primary' : 'default'}  sx={{ width: 40, height: 40 }}>
+      <IconButton color={open ? 'primary' : 'default'} onClick={handleOpen}  sx={{ width: 40, height: 40 }}>
         <Badge badgeContent={totalUnRead} color="error">
           <Iconify icon="eva:bell-fill" />
         </Badge>
@@ -122,7 +153,7 @@ export default function NotificationsPopover() {
           },
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
+        {/* <Box sx={{ display: 'flex', alignItems: 'center', py: 2, px: 2.5 }}>
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="subtitle1">Notifications</Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -139,9 +170,9 @@ export default function NotificationsPopover() {
           )}
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: 'dashed' }} /> */}
 
-        <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
+        {/* <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
           <List
             disablePadding
             subheader={
@@ -167,7 +198,7 @@ export default function NotificationsPopover() {
               <NotificationItem key={notification.id} notification={notification} />
             ))}
           </List>
-        </Scrollbar>
+        </Scrollbar> */}
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 

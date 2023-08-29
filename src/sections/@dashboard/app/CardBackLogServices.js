@@ -74,7 +74,7 @@ export default function CardBackLogServices({ title, total, completed, icon, col
           <Typography variant="h3">BackLog</Typography>
           <Typography variant="h3">Incomplete</Typography>
           {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
-          <Typography variant="h3">{0}</Typography>
+          <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
       </div>
 
       

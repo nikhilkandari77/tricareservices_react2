@@ -3,14 +3,16 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
 import DashboardTable from 'src/components/tables/DashboardTable';
-import { faker } from '@faker-js/faker';
 // eslint-disable-next-line import/no-unresolved
 import colors from 'src/theme/colors';
 
 
+
 // @mui
-import { useTheme } from '@mui/material/styles';
-import { Card,CardContent, CardHeader, Box, Grid, Container, Typography } from '@mui/material';
+import { useTheme} from '@mui/material/styles';
+
+import { Card, Grid, Typography } from '@mui/material';
+import { PieChart } from '@mui/x-charts/PieChart';
 import * as echarts from 'echarts/core';
 import { GaugeChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
@@ -44,6 +46,8 @@ const token = localStorage.getItem('token');
 
 echarts.use([GaugeChart, CanvasRenderer]);
 
+
+
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
@@ -51,12 +55,14 @@ export default function DashboardAppPage() {
   const [rows, setRows] = useState({});
   const [todayServiceCount, setServiceCount] = useState(0);
   const theme = useTheme();
-  const [engineerWorkloadList,setEngineerWorkloadList]=useState([]);
-  const hashMap={};
+  const [engineerWorkloadList, setEngineerWorkloadList] = useState([]);
+  const hashMap = {};
+  const pieParams = { height: 200, margin: { right: 5 } };
+  const palette = ['red', 'blue', 'green'];
 
   useEffect(() => {
 
-    console.log(`Token${  token}`);
+    console.log(`Token${token}`);
     fetch(`${baseUrl}/api/user/dashboard/admin/`, {
       method: 'GET',
       mode: 'cors',
@@ -70,17 +76,16 @@ export default function DashboardAppPage() {
 
         setEngineerWorkloadList(json.data.complaintHistoryGroupByEngineer);
         setRows(json.data);
-        
-         console.log("data",json.data.complaintHistoryGroupByEngineer);
+
+        console.log("data", json.data.complaintHistoryGroupByEngineer);
 
       });
 
   }, []);
 
-  const chartRef = useRef(null);
 
   useEffect(() => {
-    const myChart = echarts.init(chartRef.current);
+
 
     const option = {
       series: [
@@ -169,78 +174,114 @@ export default function DashboardAppPage() {
     };
 
 
-    myChart.setOption(option);
 
-    return () => {
-      myChart.dispose();
-    };
+
+
   }, []);
 
 
 
-engineerWorkloadList.forEach(([key, value]) => {
-  hashMap[key] = value;
-});
-if(rows.engineers!==undefined){
-rows.engineers.forEach((engineer)=>{
-  if(hashMap[engineer]===undefined)
-  hashMap[engineer]=0
-});
-}
+  engineerWorkloadList.forEach(([key, value]) => {
+    hashMap[key] = value;
+  });
+  if (rows.engineers !== undefined) {
+    rows.engineers.forEach((engineer) => {
+      if (hashMap[engineer] === undefined)
+        hashMap[engineer] = 0
+    });
+  }
+  const sizing = {
+    legend: { hidden: true },
+  };
 
 
   return (
-   <>
-  <Helmet>
-    <title>Tricare Services</title>
-  </Helmet>
+    <>
+      <Helmet>
+        <title>Tricare Services</title>
+      </Helmet>
 
-  <div className="container-fluid mb-5">
-    <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
-      Dashboard
-    </Typography>
+      <div className="container-fluid mb-5">
+        <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
+          Dashboard
+        </Typography>
 
-    <Grid container spacing={3}>
-      <Grid item xs={12} sm={6} md={4}>
-        <CardTodayServices title="" color="info" total={rows.todayService !== 0 ? rows.todayService : "0"} completed={0} />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <CardNextDayServices title="" total={0} color="warning" icon={'ant-design:windows-filled'} />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <CardBackLogServices title="" total={0} color="error" icon={'ant-design:bug-filled'} />
-      </Grid>
-    </Grid>
-  </div>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6} md={4}>
+            <CardTodayServices title="" color="info" total={rows.todayService} completed={0} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <CardNextDayServices title="" total={rows.nextDayScheduled} color="warning" icon={'ant-design:windows-filled'} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <CardBackLogServices title="" total={rows.backLog} color="error" icon={'ant-design:bug-filled'} />
+          </Grid>
+        </Grid>
+      </div>
 
-  <div className="container-fluid">
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <DashboardTable token={token} />
-      </Grid>
-    </Grid>
-  </div>
 
-  <div className="container-fluid">
-  <Grid container spacing={3} justifyContent="center">
-    <Grid item xs={12} md={6}>
-      <div ref={chartRef} style={{ width: '100%', height: '100%', maxWidth: '800px', margin: '0 auto' }} />
-    </Grid>
-    <Grid item xs={12} md={6}>
-      <ChartEngineerWorkload
-        title="Engineer WorkLoads"
-        subheader=""
-        chartLabels={Object.keys(hashMap)}
-        chartData={[
-          { name: 'numberofservices', data: Object.values(hashMap) }
-        ]}
-        width={'100%'}
-        height={400} // You can adjust the height as needed
-        options={{ maintainAspectRatio: false }} // Allow chart to adjust its aspect ratio
-      />
-    </Grid>
-  </Grid>
-</div>
-</>
+      <div className="container-fluid">
+
+        <Grid container spacing={3}>
+
+          <Grid item xs={12}>
+            
+            <DashboardTable token={token} />
+          </Grid>
+        </Grid>
+      </div>
+      <br />
+      <div className="container-fluid">
+
+        <Grid container spacing={4} justifyContent="center">
+          <Grid item xs={12} md={6}>
+            <Card>
+              <PieChart
+                series={[
+                  {
+
+                    data: [
+                      { id: 0, value: rows.backLog, label: `Delayed `, color: "#dc3545" },
+                      { id: 1, value: rows.closedService, label: `Completed `, color: "#198754" },
+                      { id: 2, value: rows.activeService, label: `On-Going `, color: "#ffc107" },
+                    ],
+                  },
+                ]}
+                width="400"
+                height={400}
+                {...sizing}
+              />
+              <div className='comtainer'>
+                <div className='row'>
+
+                  <div className='col-sm-12' style={{ textAlign: "center" }}>
+                    <span className="btn btn-dark">Total {rows.activeService + rows.closedService}</span>&nbsp;
+
+                    <span className="btn btn-danger">Delayed {rows.backLog}</span>&nbsp;
+                    <span className="btn btn-success">Completed {rows.closedService}</span>&nbsp;
+                    <span className="btn btn-warning">On-Going {rows.activeService}</span>
+                  </div>
+                </div>
+                <br />
+              </div>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <ChartEngineerWorkload
+              title="Engineer WorkLoads"
+              subheader=""
+              chartLabels={Object.keys(hashMap)}
+              chartData={[
+                { name: 'numberofservices', data: Object.values(hashMap) }
+              ]}
+              width={'100%'}
+              height={400} // You can adjust the height as needed
+              options={{ maintainAspectRatio: false }} // Allow chart to adjust its aspect ratio
+            />
+          </Grid>
+        </Grid>
+      </div>
+    </>
   );
 }

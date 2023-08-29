@@ -164,10 +164,10 @@ export default function StickyHeadTable() {
 
   // })
   const searchItem = rows.filter(row => {
-   return (search === '')|| columns.map((column)=>row[column.id]!==undefined
-   &&row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x,y)=>x||y)
-   ||(row.category.name.toLowerCase().includes(search.toLowerCase()))
-   ?row:null;
+    return (search === '') || columns.map((column) => row[column.id] !== undefined
+      && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
+      || (row.category.name.toLowerCase().includes(search.toLowerCase()))
+      ? row : null;
   })
 
   const deleteImagesHandler = (e) => {
@@ -379,7 +379,7 @@ export default function StickyHeadTable() {
 
 
     <div>
-      <Grid  container spacing={1} item xs={12}>
+      <Grid container spacing={1} item xs={12}>
 
 
 
@@ -587,12 +587,15 @@ export default function StickyHeadTable() {
                                       // console.log(value.toString().indexOf(","),value);
                                     }
                                     return (
-                                      <TableCell>{
-                                        value === "" || value === undefined || value === null ?
-                                          <img style={{ height: "10vh" }} src="/products/logo.png" alt='product' />
-                                          :
-                                          <img style={{ height: "10vh" }} src={`${baseUrl}/resources/products/${row.id}/${value}`} alt='product' />
-                                      }
+                                      <TableCell margin={0}>
+
+                                        {
+                                          value === "" || value === undefined || value === null ?
+                                            <img style={{ height: "10vh" }} src="/products/logo.png" alt='product' />
+                                            :
+                                            <img style={{ height: "10vh" }} src={`${baseUrl}/resources/products/${row.id}/${value}`} alt='product' />
+                                        }
+
                                       </TableCell>
                                     )
 
@@ -602,7 +605,7 @@ export default function StickyHeadTable() {
                                     return (
                                       <TableCell key={column.id} align={column.align}>
 
-                                        <Button  color="error" onClick={() => handleUpdateOpen(row)} variant="contained">Update</Button>
+                                        <Button color="error" onClick={() => handleUpdateOpen(row)} variant="contained">Update</Button>
 
                                         <Dialog
                                           open={updateForm}
@@ -691,8 +694,31 @@ export default function StickyHeadTable() {
                                                       </Grid>
                                                     </Grid>
                                                   </Grid><br />
-                                                  <Button
 
+
+                                                  <br />
+                                                  <Grid container spacing={3}>
+                                                    {
+                                                      imageList.map(img =>
+
+                                                        <Grid item xs={4} sm={4} margin={"normal"}>
+                                                          {/* <button value={img} className="btn btn-default" onClick={(e)=>{setDeleteImages([...deleteImages,e.target.alt])}}>
+                                                        <img src={`${baseUrl}/resources/products/${id}/${img}`}  alt={`${img}`} />
+                                                      </button> */}
+                                                          <Checkbox
+                                                            value={img}
+                                                            onClick={deleteImagesHandler}
+                                                            icon={<img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} />}
+                                                            checkedIcon={<img src="/assets/icons/delete_icon.png" alt={`${img}`} />} />
+
+                                                        </Grid>
+                                                      )
+                                                    }
+
+                                                  </Grid>
+                                                  <DialogActions>
+                                                  <Button
+                                                    
                                                     variant="contained"
                                                     color="primary"
                                                     onClick={() => handleSubmit("PUT")}
@@ -705,27 +731,11 @@ export default function StickyHeadTable() {
                                                   >
                                                     Close
                                                   </Button>
-                                                </form>
-                                                <br />
-                                                <Grid container spacing={3}>
-                                                  {
-                                                    imageList.map(img =>
+                                                  </DialogActions>
+                                                  
 
-                                                      <Grid item xs={4} sm={4} margin={"normal"}>
-                                                        {/* <button value={img} className="btn btn-default" onClick={(e)=>{setDeleteImages([...deleteImages,e.target.alt])}}>
-                                                        <img src={`${baseUrl}/resources/products/${id}/${img}`}  alt={`${img}`} />
-                                                      </button> */}
-                                                        <Checkbox
-                                                          value={img}
-                                                          onClick={deleteImagesHandler}
-                                                          icon={<img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} />}
-                                                          checkedIcon={<img src="/assets/icons/delete_icon.png" alt={`${img}`} />} />
-
-                                                      </Grid>
-                                                    )
-                                                  }
-
-                                                </Grid>
+                                          
+                                                   </form>
                                               </Container>
                                               {
                                                 console.log("image delete", deleteImages)
@@ -772,36 +782,18 @@ export default function StickyHeadTable() {
 
 
 
-                                                <Grid container spacing={15}>
-                                                  <Grid item xs={6}>
+                                                <Grid container spacing={12}>
+                                                  <Grid item md={12} xs={12}>
 
                                                     <ul style={{ listStyleType: "none" }}>
-                                                      <li>Product Id : </li>
-                                                      <li>Product Name :</li>
-                                                      <li>Category Id :</li>
-                                                      <li>Category Name:</li>
-                                                      <li>Description :</li>
+                                                      <li>Product Id : {id}</li>
+                                                      <li>Product Name : {name}</li>
+                                                      <li>Category Id : {category}</li>
+                                                      <li>Category Name: {categories.filter(c => c.id === id).map(c => c.name)}</li>
+                                                      <li>Description : {description}</li>
 
                                                     </ul>
                                                   </Grid>
-
-
-
-                                                  <Grid item xs={6}>
-                                                    <ul style={{ listStyleType: "none" }}>
-                                                      <li >{id}</li>
-                                                      <li>{name}</li>
-                                                      <li>{category}</li>
-
-                                                      <li>{categories.filter(c => c.id === id).map(c => c.name)}</li>
-
-                                                      <li>{description}</li>
-                                                    </ul>
-
-                                                  </Grid>
-
-
-
 
 
                                                 </Grid>

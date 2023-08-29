@@ -180,7 +180,7 @@ export default function CardTodayServices({ title, total, completed, icon, color
         <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
           <Typography variant="h3">Today</Typography>
           <Typography variant="h3">Services</Typography>
-          <Typography variant="h3">{fShortenNumber(total)}</Typography>
+          <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
 
         </Grid>
 

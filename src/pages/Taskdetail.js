@@ -465,29 +465,29 @@ export default function Taskdetail() {
                                     </div>
                                 ) : (
                                     // If customer data is available
-                                    <Paper style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
+                                    <Paper style={{ height: '100%', alignItems: 'center',padding:20,margin:"auto"}}>
                                         <Typography variant="h6" gutterBottom>
                                             Customer Profile
                                         </Typography>
-                                        <Card style={{ height: '100%', maxWidth: '100%', marginBottom: '2px' }}>
+                                        <Card style={{ height: '100%', maxWidth: '100%', margin: 'auto' }}>
                                             <CardMedia
                                                 component="img"
                                                 alt="/assets/images/avatars/avatar_15.jpg"
                                                 image="/assets/images/avatars/avatar_15.jpg"
-                                                style={{ maxWidth: '100%', maxHeight: '100%', marginBottom: '1px' }}
+                                                style={{ maxWidth: '50%', maxHeight: '50%', margin: 'auto' }}
                                             />
-                                            <CardContent>
+                                            <CardContent style={{ width:"100%",margin:"auto"}}>
                                                 <Typography variant="h5" style={{ marginTop: '1%' }}>
                                                     {customer.name}
                                                 </Typography>
                                                 <Typography variant="subtitle1" style={{ marginTop: '10%' }}>
-                                                    Phone No.
+                                                    Phone No.:
                                                 </Typography>
                                                 <Typography variant="body1">{customer.contact}</Typography>
-                                                <Typography variant="subtitle1">Email Id.</Typography>
+                                                <Typography variant="subtitle1">Email Id:</Typography>
                                                 <Typography variant="body1">{customer.email}</Typography>
                                                 <Typography variant="subtitle1" style={{ marginTop: '10%' }}>
-                                                    Address.
+                                                    Address:
                                                 </Typography>
                                                 <Typography variant="body1">Building No: {task.buildingNo}</Typography>
                                                 <Typography variant="body1">Area: {task.area}</Typography>
@@ -535,16 +535,16 @@ export default function Taskdetail() {
                                         <Typography variant="h6" gutterBottom>
                                             {task.productCustomer.productName}
                                         </Typography>
-                                    
-                                            {
-                                                productImages[0] === undefined ? "" :
-                                                    <img
-                                                        style={{ maxWidth: '100%', maxHeight: '150px', marginBottom: '2px' }}
-                                                        alt="Customer Profile"
-                                                        src={`${baseUrl}/resources/products/${task.productCustomer.productId}/${productImages[0]}`}
-                                                    />
-                                            }
-                                    
+
+                                        {
+                                            productImages[0] === undefined ? "" :
+                                                <img
+                                                    style={{ maxWidth: '100%', maxHeight: '150px', marginBottom: '2px' }}
+                                                    alt="Customer Profile"
+                                                    src={`${baseUrl}/resources/products/${task.productCustomer.productId}/${productImages[0]}`}
+                                                />
+                                        }
+
                                         <div style={{ display: 'flex', marginTop: '2%', flexDirection: 'column', height: '100%' }}>
                                             <div style={{ width: '100%', justifyContent: 'space-between' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -572,12 +572,12 @@ export default function Taskdetail() {
                                             </div>
                                         </div>
 
-                                        <div style={{ display: 'flex', marginTop: '2%', flexDirection: 'column', height: '100%', minWidth: '100%' }}>
-                                            {/* Horizontal Cards */}
+                                        {/* <div style={{ display: 'flex', marginTop: '2%', flexDirection: 'column', height: '100%', minWidth: '100%' }}>
+                                        
                                             <div style={{ display: 'flex', marginTop: '2%' }}>
                                                 <Card style={{ flex: 1, minHeight: 200, minWidth: '50%', marginRight: '10px', border: '2px solid black', borderRadius: '8px' }}>
                                                     <CardContent>
-                                                        {/* Card content for the first card */}
+                                                      
                                                         <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
                                                             Work Performed
                                                         </Typography>
@@ -587,14 +587,14 @@ export default function Taskdetail() {
 
                                                 <Card style={{ flex: 1, minHeight: 200, minWidth: '50%', border: '2px solid black', borderRadius: '8px' }}>
                                                     <CardContent>
-                                                        {/* Card content for the third card */}
+                                                   
                                                         <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%', borderBottom: '2px solid red' }}>
                                                             Signature
                                                         </Typography>
                                                     </CardContent>
                                                 </Card>
                                             </div>
-                                        </div>
+                                        </div> */}
 
                                         <div style={{ display: 'flex', marginTop: '2%', minWidth: '100%', flexDirection: 'column', height: '100%' }}>
                                             {/* Horizontal Cards */}
@@ -617,7 +617,7 @@ export default function Taskdetail() {
                                                                     {
                                                                         task.images !== "" && task.images !== null && task.images !== undefined ?
                                                                             task.images.toString().split(",").map(image =>
-                                                                                <img style={{width:200}}
+                                                                                <img style={{ width: 200 }}
                                                                                     align="left"
                                                                                     alt="Complaint images"
                                                                                     src={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
@@ -662,7 +662,7 @@ export default function Taskdetail() {
                                         <Card style={{ width: '100%', height: '100%', border: '2px solid red', borderRadius: '8px', marginBottom: '10%' }}>
                                             <CardContent>
                                                 <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
-                                                    Problem
+                                                    {task.problem}<br/>
                                                 </Typography>
                                                 {/* <Typography variant="body1" style={{ textAlign: 'center' }}>
                                                     {task.problemDescription}

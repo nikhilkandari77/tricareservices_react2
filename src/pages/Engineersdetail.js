@@ -251,7 +251,8 @@ export default function Customerdetail() {
     const handleClose = () => {
         setOpen(false);
     };
-    const handleClickOpenUserPopup = () => {
+    const handleClickOpenUserPopup = (user) => {
+        setName(user.name)
         setUserOpen(true);
     }
 
@@ -596,7 +597,7 @@ export default function Customerdetail() {
                                                 </div>
                                             </div>
                                             <div className='col-md-3'><br />
-                                                <div><Button onClick={handleClickOpenUserPopup} variant="contained" style={{ color: 'black', backgroundColor: 'white', width: '100%' }}>edit profile</Button></div><br />
+                                                <div><Button onClick={()=>handleClickOpenUserPopup(user)} variant="contained" style={{ color: 'black', backgroundColor: 'white', width: '100%' }}>edit profile</Button></div><br />
 
 
 
@@ -657,7 +658,7 @@ export default function Customerdetail() {
                                                                                 label="Name"
                                                                                 type="text"
                                                                                 name="name"
-                                                                                value={user.name}
+                                                                                value={name}
                                                                                 sx={{ m: 1, width: '250px' }}
                                                                                 onChange={handleInputChange}
 

@@ -74,7 +74,7 @@ export default function CardNextDayServices({ title, total, completed, icon, col
           <Typography variant="h3">Next Day</Typography>
           <Typography variant="h3">Scheduled</Typography>
           {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
-          <Typography variant="h3">{0}</Typography>
+          <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
       </div>
 
       

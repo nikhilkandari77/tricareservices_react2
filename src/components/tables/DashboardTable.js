@@ -2,7 +2,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Button, Grid } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,7 +10,13 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import SearchBar from "material-ui-search-bar";
+import {  styled } from '@mui/material/styles';
+
+import {  Button,Box, Typography } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
+import InputBase from '@mui/material/InputBase';
 import Label from '../label/Label';
 
 import baseUrl from '../../utils/baseUrl';
@@ -48,11 +53,54 @@ const columns = [
   { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
   { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
 ];
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: 'white',
+  '&:hover': {
+    backgroundColor: 'white',
+  },
+  marginLeft: 0,
+  width: '100%',
+  color: 'gray',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(1),
+    width: 'auto',
+  },
+}));
 
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  color: 'gray',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      width: '12ch',
+      '&:focus': {
+        width: '20ch',
+      },
+    },
+  },
+}));
 
 
 export default function DashboardTable({ token }) {
   const navigate = useNavigate();
+  const [search, setSearch] = useState('');
 
   const [page, setPage] = React.useState(0);
 
@@ -140,10 +188,45 @@ export default function DashboardTable({ token }) {
   //     requestSearch(searched);
   //   };
 
+  const searchItems = rows.filter(row => {
+    return (search === '') || columns.map((column) => row[column.id] !== undefined&&row[column.id]!==null
+      && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
+      ? row : null;
+  })
 
 
   return (
-    <Paper  sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <Box sx={{ flexGrow: 6 }}>
+        <AppBar style={{ backgroundColor: '#449355' }} position="static">
+          <Toolbar variant="dense">
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+            >
+              Activities
+            </Typography>
+
+
+
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ 'aria-label': 'search' }}
+                key="password"
+                value={search}
+                autoFocus
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Search>
+          </Toolbar>
+        </AppBar>
+      </Box>
 
       <TableContainer sx={{ minHeight: "40vh" }}>
         <Table stickyHeader aria-label="sticky table">
@@ -168,7 +251,7 @@ export default function DashboardTable({ token }) {
           </TableHead>
           <TableBody>
             {
-              rows
+              searchItems
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow hover role="checkbox" tabIndex={-1}>

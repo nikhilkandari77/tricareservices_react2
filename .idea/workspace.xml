@@ -116,7 +116,21 @@
       <option name="project" value="LOCAL" />
       <updated>1692969505158</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <created>1693199615750</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1693199615751</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <created>1693199645474</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1693199645474</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
