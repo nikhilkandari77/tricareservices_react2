@@ -64,6 +64,7 @@ export default function Engineers() {
     const [password, setPassword] = useState('');
     const [city, setCity] = useState('');
 
+
     const [row, setRow] = useState('');
 
     const [loading, setLoading] = useState(false)
@@ -78,6 +79,11 @@ export default function Engineers() {
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
     const [isFormOpen, setIsFormOpen] = useState(true);
     const [message, setMessage] = useState('');
+
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [contactError, setContactError] = useState('');
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -232,6 +238,107 @@ export default function Engineers() {
             },
         },
     }));
+
+
+    useEffect(() => {
+        // Check if all required fields are valid
+        const isValid =
+            name !== '' &&
+            contact !== '' &&
+            email !== '' &&
+            areaPin !== '' &&
+            address !== '' &&
+            city !== '' &&
+            state !== '' &&
+            emailError === '' &&
+            passwordError === ''&&
+            contactError !== '';
+
+        setIsFormValid(isValid);
+    }, [name, contact, email, areaPin, address, city, state, emailError, passwordError,contactError]);
+
+
+
+
+
+
+
+
+    const validateEmail = (email) => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email);
+    };
+
+    const validateContact = (contact) => {
+        const contactPattern = /^\d{10}$/;
+        return contactPattern.test(contact);
+      };
+
+    const validatePassword = (password) => {
+        return password.length >= 6; // You can adjust the minimum length as needed
+    };
+
+
+
+
+
+
+
+    const handleEmailChange = (e) => {
+        const newEmail = e.target.value;
+        setEmail(newEmail);
+
+        if (newEmail === '' || validateEmail(newEmail)) {
+            setEmailError('');
+        } else {
+            setEmailError('Invalid email format');
+        }
+    };
+
+
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+
+        if (newPassword === '' || validatePassword(newPassword)) {
+            setPasswordError('');
+        } else {
+            setPasswordError('Password must be at least 6 characters long');
+        }
+    };
+
+  
+
+
+    const handleContactChange = (e) => {
+        const newContact = e.target.value;
+    
+        if (/^\d{0,10}$/.test(newContact)) {
+          setContact(newContact);
+          setContactError(newContact.length === 10 ? '' : 'Contact number must be exactly 10 digits');
+        } else {
+          setContactError('Contact number must be up to 10 digits');
+        }
+      };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -421,7 +528,7 @@ export default function Engineers() {
                                     </DialogTitle>
                                     <DialogContent>
                                         <Container maxWidth="md"> {/* Adjusted maxWidth for responsiveness */}
-                                            <form onSubmit={handleSubmit}>
+                                        <form onSubmit={handleSubmit}>
                                                 <Grid container spacing={3}>
 
                                                     <Grid item xs={12}>
@@ -455,7 +562,7 @@ export default function Engineers() {
                                                     {/* Left side fields */}
                                                     {/* Your Name, Contact No, Email, and Area pin fields */}
 
-                                                    <Grid item xs={3} md={6}> {/* Adjusted the Grid layout for responsiveness */}
+                                                    <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
                                                             <TextField
                                                                 label="Name"
@@ -472,23 +579,28 @@ export default function Engineers() {
                                                             <TextField
                                                                 label="Contact No"
                                                                 value={contact}
-                                                                onChange={(e) => setContact(e.target.value)}
+                                                                onChange={handleContactChange}
                                                                 fullWidth
                                                                 required
+                                                                type="tel"
                                                                 // style={{ padding: '7px', width: '250px' }}
                                                                 sx={{ m: 1, width: '250px' }}
+                                                                error={contactError !== ''}
+                                                                helperText={contactError} 
 
                                                             />
 
                                                             <TextField
                                                                 label="Email"
                                                                 value={email}
-                                                                onChange={(e) => setEmail(e.target.value)}
+                                                                onChange={handleEmailChange}
+                                                                name="email"
                                                                 fullWidth
                                                                 required
                                                                 type="email"
-                                                                // style={{ padding: '7px', width: '250px' }}
                                                                 sx={{ m: 1, width: '250px' }}
+                                                                error={emailError !== ''}
+                                                                helperText={emailError}
                                                             />
 
 
@@ -570,23 +682,16 @@ export default function Engineers() {
                                                             <TextField
                                                                 label="Password"
                                                                 value={password}
-                                                                onChange={(e) => setPassword(e.target.value)}
+                                                                onChange={handlePasswordChange}
+                                                                name="password"
                                                                 fullWidth
                                                                 required
-                                                                // style={{ padding: '7px', width: '250px' }}
+                                                                type="password"
                                                                 sx={{ m: 1, width: '250px' }}
-
+                                                                error={passwordError !== ''}
+                                                                helperText={passwordError}
                                                             />
-                                                            {/* <TextField
-                              label="Confirm Password"
-                              value={confirmpassword}
-                              onChange={(e) => setConfirmpassword(e.target.value)}
-                              fullWidth
-                              required
-                              type="password"
-                              // style={{ padding: '7px', width: '250px' }}
-                              sx={{ m: 1, width: '250px' }}
-                            /> */}
+                           
 
 
                                                         </div>
@@ -612,10 +717,10 @@ export default function Engineers() {
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
+                                                            <Button type="submit" variant="contained" color="primary"  style={{ float: 'right', marginRight: '-5px' }}>
                                                                 Submit
                                                             </Button>
-                                                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
+                                                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red',marginRight:'4%' }}  >
                                                                 Close
                                                             </Button>
                                                         </>

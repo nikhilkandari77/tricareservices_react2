@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
+import {useLocation, useParams, Navigate, useNavigate} from 'react-router-dom';
 
-import { useLocation, useParams } from 'react-router-dom';
+// import { useLocation, useParams } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 
 import Toolbar from '@mui/material/Toolbar';
@@ -47,9 +48,9 @@ import baseUrl from '../utils/baseUrl';
 
 const columns = [
     { id: 'srno', label: 'Sr.No', minWidth: 14, align: 'center' },
-    { id: 'name', label: 'Engineer Name.', minWidth: 140, align: 'center' },
-    { id: 'contact', label: 'Contact', minWidth: 100, align: 'center' },
-    { id: 'email', label: 'Email Id', minWidth: 100, align: 'center' },
+    { id: 'problem', label: 'Problem', minWidth: 140, align: 'center' },
+    { id: 'customerName', label: 'Customer Name', minWidth: 140, align: 'center' },
+    { id: 'city', label: 'City', minWidth: 100, align: 'center' },
     // {
     //     id: 'areapin',
     //     label: 'Areapin',
@@ -58,15 +59,51 @@ const columns = [
     //     // format: (value) => value.toLocaleString('en-US'),
     // },
     {
-        id: 'city',
-        label: 'City',
+        id: 'complaintStatus',
+        label: 'Status',
         minWidth: 140,
         align: 'center',
         // format: (value) => value.toLocaleString('en-US'),
     },
     {
-        id: 'state',
-        label: 'State',
+        id: 'priority',
+        label: 'Priority',
+        minWidth: 140,
+        align: 'center',
+        // format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'button',
+        label: 'Action',
+        minWidth: 140,
+        align: 'center',
+        // format: (value) => value.toFixed(2),
+    },
+];
+
+
+const columnscurrent = [
+    { id: 'srno', label: 'Sr.No', minWidth: 14, align: 'center' },
+    { id: 'problem', label: 'Problem', minWidth: 140, align: 'center' },
+    { id: 'customerName', label: 'Customer Name', minWidth: 100, align: 'center' },
+    { id: 'city', label: 'City', minWidth: 100, align: 'center' },
+    // {
+    //     id: 'areapin',
+    //     label: 'Areapin',
+    //     minWidth: 140,
+    //     align: 'center',
+    //     // format: (value) => value.toLocaleString('en-US'),
+    // },
+    {
+        id: 'complaintStatus',
+        label: 'Status',
+        minWidth: 140,
+        align: 'center',
+        // format: (value) => value.toLocaleString('en-US'),
+    },
+    {
+        id: 'priority',
+        label: 'Priority',
         minWidth: 140,
         align: 'center',
         // format: (value) => value.toLocaleString('en-US'),
@@ -88,28 +125,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-// function createData(customername, area, noofproduct, contactno, joindate, prr, button) {
-//     // const density = asset / serialno;
-//     return { customername, area, noofproduct, contactno, joindate, prr, button };
-// }
 
-
-
-// const rows = [
-//     createData('1', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'High', 'Details'),
-//     createData('2', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'Completed', 'Normal', 'Details'),
-//     createData('3', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'High', 'Details'),
-//     createData('4', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'Normal', 'Details'),
-//     createData('4', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'Normal', 'Details'),
-//     createData('5', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'Normal', 'Details'),
-//     createData('6', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'Normal', 'Details'),
-//     createData('7', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'Normal', 'Details'),
-//     createData('8', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'Normal', 'Details'),
-//     createData('9', 'Phone mather Board spea..', 'Guddu', 'Noida sector 7', 'In Progress', 'Normal', 'Details'),
-
-//     // createData('mohit', 'nagpur', 'Charger pod', '7564444444', '23/2/2023', 'Details'),
-
-// ];
 
 
 
@@ -145,12 +161,14 @@ export default function Customerdetail() {
 
 
 
-
+    
+    const [rowscurrent, setRowscurrent] = useState([])
     const [rowsCompt, setRowsCompt] = useState([])
     const [rows, setRows] = useState([])
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const { id } = useParams();
+    const navigate = useNavigate();
 
 
 
@@ -158,6 +176,7 @@ export default function Customerdetail() {
     const [contactNo, setContactNo] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
+    const [areaPin, setAreaPin] = useState('');
 
     const [areapin, setAreapin] = useState('');
     const [city, setCity] = useState('');
@@ -169,6 +188,11 @@ export default function Customerdetail() {
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmpassword] = useState('');
     const [isFormOpen, setIsFormOpen] = useState(true);
+
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [contactError, setContactError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
 
 
     const [meter, setMeter] = useState('');
@@ -184,6 +208,8 @@ export default function Customerdetail() {
     const [dateofinstallation, setInstallation] = useState('');
     const [nextsheduledmaintenance, setNextsheduledmaintenance] = useState('');
     const [controller, setController] = useState('');
+    const[task, settask] = useState('');
+    const[Params, setParams] = useState('');
 
 
     const [value, setValue] = React.useState('1');
@@ -252,7 +278,14 @@ export default function Customerdetail() {
         setOpen(false);
     };
     const handleClickOpenUserPopup = (user) => {
-        setName(user.name)
+        setName(user.name);
+        setContact(user.contact);
+        setEmail(user.email);
+        setAreapin(user.areaPin);
+        setAddress(user.address);
+        setCity(user.city);
+        setState(user.state);
+       
         setUserOpen(true);
     }
 
@@ -309,8 +342,120 @@ export default function Customerdetail() {
     };
 
 
+    const handleChange7 = (event) => {
+
+        const token = localStorage.getItem('token');
+        setLoading(true);
+        fetch(`${baseUrl}/api/user/complaint/engineer/${userId}`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+
+        })
+
+            .then(response => response.json())
+            .then(json => {
+                console.log("Fetched data:", json.data); // This line will print the data to the console
+                // setUsers(json);
+                setRowscurrent(json.data)
+                console.log("rowdata", rowscurrent)
 
 
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+
+    };
+
+
+
+
+
+
+    useEffect(() => {
+        // Check if all required fields are valid
+        const isValid =
+            name !== '' &&
+            contact !== '' &&
+            email !== '' &&
+            areaPin !== '' &&
+            address !== '' &&
+            city !== '' &&
+            state !== '' &&
+            emailError === '' &&
+            passwordError === '' &&
+            contactError !== '';
+
+        setIsFormValid(isValid);
+    }, [name, contact, email, areaPin, address, city, state, emailError, passwordError, contactError]);
+
+
+
+
+
+
+
+
+    const validateEmail = (email) => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email);
+    };
+
+    const validateContact = (contact) => {
+        const contactPattern = /^\d{10}$/;
+        return contactPattern.test(contact);
+    };
+
+    const validatePassword = (password) => {
+        return password.length >= 6; // You can adjust the minimum length as needed
+    };
+
+
+
+
+
+
+
+    const handleEmailChange = (e) => {
+        const newEmail = e.target.value;
+        setEmail(newEmail);
+
+        if (newEmail === '' || validateEmail(newEmail)) {
+            setEmailError('');
+        } else {
+            setEmailError('Invalid email format');
+        }
+    };
+
+
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+
+        if (newPassword === '' || validatePassword(newPassword)) {
+            setPasswordError('');
+        } else {
+            setPasswordError('Password must be at least 6 characters long');
+        }
+    };
+
+
+
+
+    const handleContactChange = (e) => {
+        const newContact = e.target.value;
+    
+        if (/^\d{0,10}$/.test(newContact)) {
+          setContact(newContact);
+          setContactError(newContact.length === 10 ? '' : 'Contact number must be exactly 10 digits');
+        } else {
+          setContactError('Contact number must be up to 10 digits');
+        }
+      };
 
 
 
@@ -386,7 +531,7 @@ export default function Customerdetail() {
 
         const token = localStorage.getItem('token');
         setLoading(true);
-        fetch(`${baseUrl}/api/user/hasRole/3`, {
+        fetch(`${baseUrl}/api/user/complaint-history/engineer/${userId}`, {
             method: 'GET',
             mode: 'cors',
             headers: {
@@ -421,11 +566,11 @@ export default function Customerdetail() {
         const formData = {
 
             //   adminId: 1,
-
+            id: userId,
             name,
             contact,
             email,
-            areaPin: areapin,
+            areaPin,
             address,
             city,
             state,
@@ -436,7 +581,7 @@ export default function Customerdetail() {
 
 
             role: {
-                id: 2,
+                id: 3,
             },
         };
 
@@ -484,36 +629,23 @@ export default function Customerdetail() {
 
 
 
+    const routeChange1 = (id) => {
+
+        console.log(id)
+
+         navigate("/dashboard/task-history-details", { state: { taskId: id } });
 
 
+    }
+    
+    const routeChange2 = (id) => {
+
+        console.log(id)
+
+         navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 
@@ -546,6 +678,7 @@ export default function Customerdetail() {
             });
 
         handleChange6();
+        handleChange7();
 
 
         // handleChange7();
@@ -597,7 +730,7 @@ export default function Customerdetail() {
                                                 </div>
                                             </div>
                                             <div className='col-md-3'><br />
-                                                <div><Button onClick={()=>handleClickOpenUserPopup(user)} variant="contained" style={{ color: 'black', backgroundColor: 'white', width: '100%' }}>edit profile</Button></div><br />
+                                                <div><Button onClick={() => handleClickOpenUserPopup(user)} variant="contained" style={{ color: 'black', backgroundColor: 'white', width: '100%' }}>edit profile</Button></div><br />
 
 
 
@@ -618,7 +751,7 @@ export default function Customerdetail() {
                                                     </DialogTitle>
                                                     <DialogContent>
                                                         <Container maxWidth="md"> {/* Adjusted maxWidth for responsiveness */}
-                                                            <form onSubmit={handleSubmit1}>
+                                                        <form onSubmit={handleSubmit1}>
                                                                 <Grid container spacing={3}>
 
                                                                     <Grid item xs={12}>
@@ -660,7 +793,7 @@ export default function Customerdetail() {
                                                                                 name="name"
                                                                                 value={name}
                                                                                 sx={{ m: 1, width: '250px' }}
-                                                                                onChange={handleInputChange}
+                                                                                onChange={(e) => setName(e.target.value)}
 
                                                                                 fullWidth
                                                                                 required
@@ -671,36 +804,36 @@ export default function Customerdetail() {
 
                                                                             <TextField
                                                                                 label="Contact No"
-                                                                                type='number'
-                                                                                value={user.contact}
-                                                                                onChange={handleInputChange}
-
-                                                                                name="contact"
-
+                                                                                value={contact}
+                                                                                onChange={handleContactChange}
                                                                                 fullWidth
                                                                                 required
+                                                                                type="tel"
                                                                                 // style={{ padding: '7px', width: '250px' }}
                                                                                 sx={{ m: 1, width: '250px' }}
+                                                                                error={contactError !== ''}
+                                                                                helperText={contactError}
 
                                                                             />
 
                                                                             <TextField
                                                                                 label="Email"
-                                                                                value={user.email}
-                                                                                onChange={handleInputChange}
+                                                                                value={email}
+                                                                                onChange={handleEmailChange}
                                                                                 name="email"
                                                                                 fullWidth
                                                                                 required
                                                                                 type="email"
-                                                                                // style={{ padding: '7px', width: '250px' }}
                                                                                 sx={{ m: 1, width: '250px' }}
+                                                                                error={emailError !== ''}
+                                                                                helperText={emailError}
                                                                             />
 
 
                                                                             <TextField
                                                                                 label="Area pin"
-                                                                                value={user.areaPin}
-                                                                                onChange={handleInputChange}
+                                                                                value={areaPin}
+                                                                                onChange={(e) => setAreaPin(e.target.value)}
                                                                                 name="areaPin"
                                                                                 fullWidth
                                                                                 required
@@ -727,8 +860,8 @@ export default function Customerdetail() {
 
                                                                             <TextField
                                                                                 label="Address"
-                                                                                value={user.address}
-                                                                                onChange={handleInputChange}
+                                                                                value={address}
+                                                                                onChange={(e) => setAddress(e.target.value)}
                                                                                 name="address"
                                                                                 fullWidth
                                                                                 multilin
@@ -740,8 +873,8 @@ export default function Customerdetail() {
 
                                                                             <TextField
                                                                                 label="City"
-                                                                                value={user.city}
-                                                                                onChange={handleInputChange}
+                                                                                value={city}
+                                                                                onChange={(e) => setCity(e.target.value)}
                                                                                 name="city"
                                                                                 fullWidth
                                                                                 multilin
@@ -752,8 +885,8 @@ export default function Customerdetail() {
                                                                             />
                                                                             <TextField
                                                                                 label="State"
-                                                                                value={user.state}
-                                                                                onChange={handleInputChange}
+                                                                                value={state}
+                                                                                onChange={(e) => setState(e.target.value)}
                                                                                 name="state"
                                                                                 fullWidth
                                                                                 multilin
@@ -803,14 +936,17 @@ export default function Customerdetail() {
 
 
 
-                                                                    <button onClick={handleSaveClick} style={{ float: 'right', marginRight: '-5px', borderRadius: '7px', backgroundColor: 'primary' }} >Save</button>
+                                                                    {/* <button onClick={handleSaveClick} style={{ float: 'right', marginRight: '-5px', borderRadius: '7px', backgroundColor: 'primary' }} >Save</button> */}
+                                                                    <Button onClick={handleSaveClick} type="submit" variant="contained" color="primary"   style={{ float: 'right', marginBottom: '100%' }}>Save</Button>
 
 
 
 
-                                                                    <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }} >Close</Button>
+                                                                    <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }} >Close</Button>
 
                                                                 </div>
+
+
 
 
 
@@ -873,7 +1009,9 @@ export default function Customerdetail() {
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider', background: "#007F6D" }}>
                                 <TabList onChange={handleChange} aria-label="lab API tabs example">
-                                    <Tab style={{ color: 'white', marginLeft: '1%' }} label="History" value="1" />
+                                <Tab style={{ color: 'white' }} label="Current" value="1" />
+                                    <Tab style={{ color: 'white', marginLeft: '1%' }} label="History" value="2" />
+                                    
 
                                     {/* <Tab label="Item Three" value="3" /> */}
                                 </TabList>
@@ -882,7 +1020,7 @@ export default function Customerdetail() {
 
 
 
-                            <TabPanel value="1">
+                            <TabPanel value="2">
                                 <Item>
                                     <Card>
 
@@ -903,7 +1041,8 @@ export default function Customerdetail() {
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                        {rows
+                                                        {rows===undefined||rows===null?"":
+                                                        rows
                                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                                             .map((row) => {
                                                                 return (
@@ -936,7 +1075,369 @@ export default function Customerdetail() {
 
                                                                                         {/* view dialog box customerdetail */}
 
-                                                                                        <Button onClick={handleClickOpen} variant="contained"> Details </Button>
+                                                                                        <Button onClick={() => routeChange1(row.id)} variant="contained"> Details </Button>
+                                                                                        <Dialog
+                                                                                            open={open}
+                                                                                            onClose={handleClose}
+                                                                                            aria-labelledby="alert-dialog-title"
+                                                                                            aria-describedby="alert-dialog-description"
+
+
+                                                                                        >
+                                                                                            <DialogTitle id="alert-dialog-title">
+                                                                                                {"View Details"}
+
+                                                                                                <div>
+                                                                                                    {/* Add more input fields as needed */}
+                                                                                                    {/* <button style={{ marginLeft: '75%',color:'white',backgroundColor:'blue',width:'24%',height:'39px',borderRadius:'7px' }}  onClick={handleToggleEdit}>
+                                                                                                            {isEditable ? 'Disable Editing' : ' Editing'}
+                                                                                                        </button> */}
+                                                                                                </div>
+
+
+                                                                                            </DialogTitle>
+                                                                                            <DialogContent>
+                                                                                                <DialogContentText>
+
+                                                                                                    <div style={{ padding: '20px', }}>
+
+                                                                                                        {/* <img style={{ width: 125, height: 70, marginLeft: '90px', marginTop: '-30px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
+
+                                                                                                        <Grid container spacing={5}>
+                                                                                                            <Grid item xs={6}>
+
+                                                                                                                {/* <ul>
+                                                                                                                        <li > Asset id  </li>
+                                                                                                                        <li> Serial no  </li>
+                                                                                                                        <li>SLA        </li>
+                                                                                                                        <li> Date of Manufacturing</li>
+                                                                                                                        <li> Date of installation </li>
+                                                                                                                        <li> Next shadule maintanance</li>
+                                                                                                                        <li> Controller  </li>
+                                                                                                                        <li> Meter   </li>
+                                                                                                                        <li>RCD     </li>
+                                                                                                                        <li>MCB     </li>
+                                                                                                                        <li>Connector</li>
+                                                                                                                        <li>Display  </li>
+                                                                                                                        <li>LED      </li>
+                                                                                                                        <li> Latitude </li>
+                                                                                                                        <li>Longitude</li>
+                                                                                                                    </ul> */}
+
+
+                                                                                                                {/* <label htmlFor={id}>{label}</label> */}
+
+                                                                                                                {/* <input style={{ marginTop: '40%' }} type="text" value="Field 1" disabled={!isEditable} />
+                                                                                                                        <input type="text" value="Field 2" disabled={!isEditable} />
+                                                                                                                        <input type="text" value="Field 2" disabled={!isEditable} />
+                                                                                                                        <input type="text" value="Field 2" disabled={!isEditable} />
+                                                                                                                        <input type="text" value="Field 2" disabled={!isEditable} /> */}
+
+                                                                                                                <div>
+                                                                                                                    <form>
+
+
+
+
+
+                                                                                                                        <Grid container spacing={5}>
+                                                                                                                            <Grid item xs={6}>
+
+
+
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Product Name"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Product Type"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Serial No"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Constraction Type"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Rating"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Dispatch Date"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                            </Grid>
+
+
+                                                                                                                            <Grid item xs={6}>
+
+
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Purchase Date"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Manufacturing Date"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Installation Date"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Warranty Period"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <TextField
+                                                                                                                                        label="Additional Files"
+                                                                                                                                        // id="outlined-start-adornment"
+                                                                                                                                        sx={{ m: 1, width: '25ch' }}
+                                                                                                                                        onChange={handleInputChange}
+                                                                                                                                        disabled={!isEditable}
+                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                    />
+
+                                                                                                                                </div>
+                                                                                                                                <div>
+                                                                                                                                    <FormControl sx={{ m: 1, minWidth: 195, minHeight: '40', backgroundColor: 'white', marginTop: '15%', marginLeft: '150%', borderRadius: '5px', width: '1%' }} size="small">
+                                                                                                                                        <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Category</InputLabel>
+                                                                                                                                        <Select
+                                                                                                                                            labelId="demo-select-small-label"
+                                                                                                                                            id="demo-select-small"
+                                                                                                                                            value={category}
+                                                                                                                                            label="Category"
+                                                                                                                                            onChange={handleChange3}
+
+                                                                                                                                        >
+                                                                                                                                            <MenuItem value="">
+                                                                                                                                                <em>None</em>
+                                                                                                                                            </MenuItem>
+                                                                                                                                            <MenuItem value={10}>1 </MenuItem>
+                                                                                                                                            <MenuItem value={20}>2</MenuItem>
+                                                                                                                                            <MenuItem value={30}>3</MenuItem>
+
+                                                                                                                                        </Select>
+                                                                                                                                    </FormControl>
+                                                                                                                                </div>
+
+
+
+
+
+
+                                                                                                                            </Grid>
+
+                                                                                                                        </Grid>
+
+
+                                                                                                                    </form>
+
+                                                                                                                </div>
+
+                                                                                                            </Grid>
+
+                                 
+                                                                                                        </Grid>
+
+
+
+                                                                                                    </div>
+
+
+
+                                                                                                </DialogContentText>
+                                                                                            </DialogContent>
+                                                                                            <DialogActions>
+                                                                                                <Button onClick={handleClose} style={{ color: 'red', marginRight: '4%' }} >Close</Button>
+                                                                                                {isEditable ? (
+                                                                                                    <button onClick={handleSaveClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7PX' }} >Save</button>
+                                                                                                ) : (
+                                                                                                    <button onClick={handleEditClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7PX' }} >Edit</button>
+                                                                                                )}
+                                                                                            </DialogActions>
+                                                                                        </Dialog>
+                                                                                    </TableCell>
+
+                                                                                );
+
+
+                                                                            }
+
+
+                                                                            return (
+                                                                                <TableCell key={column.id} align={column.align}>
+                                                                                    {value}
+                                                                                </TableCell>
+
+                                                                            );
+                                                                        })}
+                                                                    </TableRow>
+
+                                                                );
+                                                            })}
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                            <TablePagination
+                                                rowsPerPageOptions={[10, 25, 100]}
+                                                component="div"
+                                                count={rows===null?0:rows.length}
+                                                rowsPerPage={rowsPerPage}
+                                                page={page}
+                                                onPageChange={handleChangePage}
+                                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                            />
+                                        </Paper>
+
+                                    </Card>
+
+                                </Item>
+
+
+
+
+                            </TabPanel>
+                                        
+                            <TabPanel value="1">
+                                <Item>
+                                    <Card>
+
+                                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                                            <TableContainer sx={{ maxHeight: 440 }}>
+                                                <Table stickyHeader aria-label="sticky table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            {columnscurrent.map((column) => (
+                                                                <TableCell
+                                                                    key={column.id}
+                                                                    align={column.align}
+                                                                    style={{ minWidth: column.minWidth }}
+                                                                >
+                                                                    {column.label}
+                                                                </TableCell>
+                                                            ))}
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        {rowscurrent
+                                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                            .map((row) => {
+                                                                return (
+                                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                                        {columnscurrent.map((column) => {
+
+                                                                            const value = row[column.id];
+
+                                                                            if (column.id === 'srno') {
+                                                                                sr += 1;
+                                                                                return (
+                                                                                    <TableCell key={column.id} align={column.align}>
+                                                                                        {value === null ? '' : String(sr)}
+                                                                                    </TableCell>
+                                                                                );
+                                                                            }
+
+
+
+
+
+
+
+
+
+                                                                            console.log(column)
+                                                                            if (column.id === 'button') {
+                                                                                return (
+                                                                                    <TableCell key={column.id} align={column.align}>
+
+                                                                                        {/* view dialog box customerdetail */}
+
+                                                                                        <Button onClick={() => routeChange2(row.id)} variant="contained"> Details </Button>
                                                                                         <Dialog
                                                                                             open={open}
                                                                                             onClose={handleClose}
@@ -1248,7 +1749,7 @@ export default function Customerdetail() {
                                             <TablePagination
                                                 rowsPerPageOptions={[10, 25, 100]}
                                                 component="div"
-                                                count={rows.length}
+                                                count={rows===null?0:rows.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={handleChangePage}
@@ -1264,7 +1765,6 @@ export default function Customerdetail() {
 
 
                             </TabPanel>
-                            {/* <TabPanel value="3">Item Three</TabPanel> */}
                         </TabContext>
                     </Box>
 
