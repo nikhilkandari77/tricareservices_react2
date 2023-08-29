@@ -130,7 +130,7 @@ export default function StickyHeadTable() {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [contactno, setContactno] = useState('');
-  const [search,setSearch]=useState('');
+  const [search, setSearch] = useState('');
 
   const [message, setMessage] = useState('');
 
@@ -151,6 +151,10 @@ export default function StickyHeadTable() {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [contactError, setContactError] = useState('');
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -158,6 +162,9 @@ export default function StickyHeadTable() {
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
     }
+
+  
+
   };
 
 
@@ -169,10 +176,10 @@ export default function StickyHeadTable() {
 
 
   const searchItem = rows.filter(row => {
-    return (search === '')|| columns.map((column)=>row[column.id]!==undefined
-    &&row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x,y)=>x||y)
-    ?row:null;
-   })
+    return (search === '') || columns.map((column) => row[column.id] !== undefined
+      && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
+      ? row : null;
+  })
 
 
 
@@ -207,6 +214,94 @@ export default function StickyHeadTable() {
   const handleClickOpen1 = () => {
     setUserOpen(false);
   }
+
+
+  useEffect(() => {
+    // Check if all required fields are valid
+    const isValid =
+      name !== '' &&
+      contact.length === 10 &&
+      email !== '' &&
+      areaPin !== '' &&
+      address !== '' &&
+      city !== '' &&
+      state !== '' &&
+      emailError === '' &&
+      passwordError === '' &&
+      contactError !== '';
+
+    setIsFormValid(isValid);
+  }, [name, contact, email, areaPin, address, city, state, emailError, passwordError, contactError]);
+
+
+
+
+
+
+
+
+  const validateEmail = (email) => {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+  };
+
+  const validateContact = (contact) => {
+    const contactPattern = /^\d{10}$/;
+    return contactPattern.test(contact);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6; // You can adjust the minimum length as needed
+  };
+
+
+
+
+
+
+
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+
+    if (newEmail === '' || validateEmail(newEmail)) {
+      setEmailError('');
+    } else {
+      setEmailError('Invalid email format');
+    }
+  };
+
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+
+    if (newPassword === '' || validatePassword(newPassword)) {
+      setPasswordError('');
+    } else {
+      setPasswordError('Password must be at least 6 characters long');
+    }
+  };
+
+
+
+
+  const handleContactChange = (e) => {
+    const newContact = e.target.value;
+
+    if (/^\d{0,10}$/.test(newContact)) {
+      setContact(newContact);
+      setContactError(newContact.length === 10 ? '' : 'Contact number must be exactly 10 digits');
+    } else {
+      setContactError('Contact number must be up to 10 digits');
+    }
+  };
+
+
+
+
+
+
 
 
 
@@ -273,7 +368,7 @@ export default function StickyHeadTable() {
 
   };
 
- 
+
 
   // const routeChange = () => {
   //   window.location.href = "/dashboard/customerdetail";
@@ -290,7 +385,7 @@ export default function StickyHeadTable() {
   }
 
 
-  
+
 
 
 
@@ -370,7 +465,7 @@ export default function StickyHeadTable() {
                 <StyledInputBase
                   placeholder="Search…"
                   inputProps={{ 'aria-label': 'search' }}
-                  onChange={(e)=>setSearch(e.target.value)}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
               </Search>
 
@@ -382,7 +477,7 @@ export default function StickyHeadTable() {
                             <Search> */}&nbsp;
               <div>
                 <Button className='responsive-button' onClick={handleClickOpenUserPopup} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
-                  <Iconify icon="eva:plus-fill" /> 
+                  <Iconify icon="eva:plus-fill" />
                 </Button>
               </div>
 
@@ -408,6 +503,7 @@ export default function StickyHeadTable() {
                               type="file"
                               id="imageUpload"
                               style={{ display: 'none' }}
+                              accept="image/*" // Restrict to image files,
                               onChange={handleImageChange} // Define your image change handler
                             />
                             <InputLabel htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'block' }}>
@@ -420,12 +516,14 @@ export default function StickyHeadTable() {
                                   backgroundSize: 'cover',
                                   backgroundPosition: 'center',
                                   backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
+                                  
                                 }}
                               >
                                 {/* Content of the button */}
                               </Button>
                               <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
                             </InputLabel>
+                          
                           </div>
                         </Grid>
 
@@ -450,23 +548,29 @@ export default function StickyHeadTable() {
                             <TextField
                               label="Contact No"
                               value={contact}
-                              onChange={(e) => setContact(e.target.value)}
+                              onChange={handleContactChange}
                               fullWidth
                               required
+                              type="tel"
                               // style={{ padding: '7px', width: '250px' }}
                               sx={{ m: 1, width: '250px' }}
+                              error={contactError !== ''}
+                              helperText={contactError}
 
                             />
+
 
                             <TextField
                               label="Email"
                               value={email}
-                              onChange={(e) => setEmail(e.target.value)}
+                              onChange={handleEmailChange}
+                              name="email"
                               fullWidth
                               required
                               type="email"
-                              // style={{ padding: '7px', width: '250px' }}
                               sx={{ m: 1, width: '250px' }}
+                              error={emailError !== ''}
+                              helperText={emailError}
                             />
 
 
@@ -548,12 +652,14 @@ export default function StickyHeadTable() {
                             <TextField
                               label="Password"
                               value={password}
-                              onChange={(e) => setPassword(e.target.value)}
+                              onChange={handlePasswordChange}
+                              name="password"
                               fullWidth
                               required
-                              // style={{ padding: '7px', width: '250px' }}
+                              type="password"
                               sx={{ m: 1, width: '250px' }}
-
+                              error={passwordError !== ''}
+                              helperText={passwordError}
                             />
                             {/* <TextField
                               label="Confirm Password"
@@ -593,7 +699,7 @@ export default function StickyHeadTable() {
                             <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
                               Submit
                             </Button>
-                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
+                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
                               Close
                             </Button>
                           </>
