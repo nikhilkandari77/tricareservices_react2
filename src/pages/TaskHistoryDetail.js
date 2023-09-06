@@ -128,7 +128,8 @@ export default function TaskHistoryDetail() {
 
         try {
             setIsTaskLoading(true);
-            fetch(`${baseUrl}/api/user/complaint-history/${location.state.taskId}`, {
+            const taskId=location.state.taskId;
+            fetch(`${baseUrl}/api/user/complaint-history/${taskId}`, {
 
                 method: 'GET',
                 mode: 'cors',
@@ -141,11 +142,11 @@ export default function TaskHistoryDetail() {
                     if (!response.ok) {
                         toast.error("Something Went Wrong");
                         // Clear the user's authentication token or session-related data
-                        localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
-                        localStorage.removeItem("isLoggedIn");
-                        localStorage.clear();
-                        // history.push('/login'); // Replace '/login' with the route for your login page
-                        navigate("/login");
+                        // localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
+                        // localStorage.removeItem("isLoggedIn");
+                        // localStorage.clear();
+                        // // history.push('/login'); // Replace '/login' with the route for your login page
+                        // navigate("/login");
 
                     }
                     return response.json();

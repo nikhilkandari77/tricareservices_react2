@@ -209,11 +209,12 @@ export default function Taskdetail() {
 
 
     useEffect(() => {
-
+        const taskId=location.state.taskId
 
         try {
             setIsTaskLoading(true);
-            fetch(`${baseUrl}/api/user/complaint/${location.state.taskId}`, {
+
+            fetch(`${baseUrl}/api/user/complaint/${taskId}`, {
 
                 method: 'GET',
                 mode: 'cors',
@@ -225,13 +226,7 @@ export default function Taskdetail() {
                 .then(response => {
                     if (!response.ok) {
                         toast.error("Something Went Wrong");
-                        // Clear the user's authentication token or session-related data
-                        localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
-                        localStorage.removeItem("isLoggedIn");
-                        localStorage.clear();
-                        // history.push('/login'); // Replace '/login' with the route for your login page
-                        navigate("/login");
-
+                        
                     }
                     return response.json();
                 })
@@ -286,6 +281,7 @@ export default function Taskdetail() {
                 });
         } catch (error) {
             console.error("Error:", error);
+            navigate("dashboard/task")
         } finally {
             setIsTaskLoading(false);
         }

@@ -12,7 +12,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
+import { toast } from 'react-toastify';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -154,7 +154,7 @@ export default function StickyHeadTable() {
     setImages(array);
 
   }
-
+  const token = localStorage.getItem('token');
 
   // const searchItem = rows.filter(row => {
   //   return (search === '')
@@ -220,9 +220,10 @@ export default function StickyHeadTable() {
     setUpdateOpen(false);
   }
 
-  const submitDeleteImages = async (token) => {
+  const submitDeleteImages = async () => {
     const imageListForm = new FormData()
     deleteImages.map(image => imageListForm.append("imageList", image))
+    console.log(deleteImages)
     try {
       const response = await fetch(`${baseUrl}/api/user/product-master/image/${id}`, {
         method: "DELETE",
@@ -235,24 +236,62 @@ export default function StickyHeadTable() {
       });
 
       if (response.ok) {
-        console.log('Product created successfully');
+        console.log('image deleted');
         destroyData();
         handleClickClose1();
         handleUpdateClose();
       } else {
-        console.error('Failed to create product');
+        console.error('failed to delete');
       }
     } catch (error) {
-      console.error('Error while creating product:', error);
+      console.error('error for deletion', error);
     }
   }
 
 
 
   // Form submission handler
-  const handleSubmit = async (methodType) => {
+  const handleSubmit = async () => {
 
-    const token = localStorage.getItem('token');
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("category.id", category);
+    formData.append("description", description);
+    for (let i = 0; i < images.length; i += 1) {
+      formData.append(`images`, images[i])
+    }
+    try {
+      const response = await fetch(`${baseUrl}/api/user/product-master/`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+
+        },
+
+        body: formData,
+      });
+
+      if (response.ok) {
+        console.log('Product added successfully');
+        destroyData();
+        handleClickClose1();
+        handleUpdateClose();
+        toast.success('Product added successfully'); // Display success toast
+      } else {
+        console.error('Failed to add product');
+        toast.error('Failed to add product'); // Display error toast
+      }
+    } catch (error) {
+      console.error('Error while adding product:', error);
+      toast.error('Error while adding product'); // Display error toast
+    }
+  };
+
+
+
+  const handleSubmit2 = async () => {
+
 
     if (deleteImages.length > 0)
       submitDeleteImages(token)
@@ -270,7 +309,7 @@ export default function StickyHeadTable() {
     }
     try {
       const response = await fetch(`${baseUrl}/api/user/product-master/`, {
-        method: methodType,
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`
 
@@ -280,20 +319,23 @@ export default function StickyHeadTable() {
       });
 
       if (response.ok) {
-        console.log('Product created successfully');
+        console.log('Product updated successfully');
         destroyData();
         handleClickClose1();
         handleUpdateClose();
+        toast.success('Product updated successfully'); // Display success toast
       } else {
-        console.error('Failed to create product');
+        console.error('Failed to update product');
+        toast.error('Failed to update product'); // Display error toast
       }
     } catch (error) {
-      console.error('Error while creating product:', error);
+      console.error('Error while updating product:', error);
+      toast.error('Error while updating product'); // Display error toast
     }
   };
 
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
     setLoading(true);
     fetch(`${baseUrl}/api/user/product-master/`, {
       method: 'GET',
@@ -315,7 +357,7 @@ export default function StickyHeadTable() {
         setLoading(false);
       });
 
-  }, [updateForm, open]);
+  }, [updateForm, openUser]);
 
   const getCategories = (token) => {
     fetch(`${baseUrl}/api/user/category/`, {
@@ -512,7 +554,7 @@ export default function StickyHeadTable() {
                           <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => handleSubmit("POST")}
+                            onClick={handleSubmit}
                           >
                             Submit
                           </Button>
@@ -717,25 +759,25 @@ export default function StickyHeadTable() {
 
                                                   </Grid>
                                                   <DialogActions>
-                                                  <Button
-                                                    
-                                                    variant="contained"
-                                                    color="primary"
-                                                    onClick={() => handleSubmit("PUT")}
-                                                  >
-                                                    Submit
-                                                  </Button>
-                                                  <Button
-                                                    onClick={handleUpdateClose}
-                                                    style={{ color: 'red', }}
-                                                  >
-                                                    Close
-                                                  </Button>
-                                                  </DialogActions>
-                                                  
+                                                    <Button
 
-                                          
-                                                   </form>
+                                                      variant="contained"
+                                                      color="primary"
+                                                      onClick={handleSubmit2}
+                                                    >
+                                                      Submit
+                                                    </Button>
+                                                    <Button
+                                                      onClick={handleUpdateClose}
+                                                      style={{ color: 'red', }}
+                                                    >
+                                                      Close
+                                                    </Button>
+                                                  </DialogActions>
+
+
+
+                                                </form>
                                               </Container>
                                               {
                                                 console.log("image delete", deleteImages)

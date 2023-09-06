@@ -3,6 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import { Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
 // hooks
+import Box from "@mui/material/Box";
+import Card from '@mui/material/Card';
 import useResponsive from '../hooks/useResponsive';
 // components
 import Logo from '../components/logo';
@@ -50,57 +52,37 @@ export default function LoginPage() {
       </Helmet>
 
       <StyledRoot>
-        <Logo
-          sx={{
-            position: 'fixed',
-            top: { xs: 16, sm: 24, md: 40 },
-            left: { xs: 16, sm: 24, md: 40 },
-          }}
-        />
 
-        {/* {mdUp && (
-          <StyledSection>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
-            <img src="/assets/illustrations/illustration_login.png" alt="login" />
-          </StyledSection>
-        )} */}
-
-        <Container maxWidth="sm">
-          <StyledContent>
-            <Typography style={{marginLeft:'40%',marginTop:'-5%',paddingBottom:'9%'}} variant="h4" gutterBottom>
-              Sign in 
-            </Typography>
-
-            {/* <Typography variant="body2" sx={{ mb: 5 }}>
-              Don’t have an account? {''}
-              <Link variant="subtitle2">Get started</Link>
-            </Typography> */}
-
-            {/* <Stack direction="row" spacing={2}>
-              <Button fullWidth size="large" color="inherit" variant="outlined">
-                <Iconify icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
-              </Button>
-
-              <Button fullWidth size="large" color="inherit" variant="outlined">
-                <Iconify icon="eva:facebook-fill" color="#1877F2" width={22} height={22} />
-              </Button>
-
-              <Button fullWidth size="large" color="inherit" variant="outlined">
-                <Iconify icon="eva:twitter-fill" color="#1C9CEA" width={22} height={22} />
-              </Button>
-            </Stack> */}
-
-            {/* <Divider sx={{ my: 3 }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                OR
-              </Typography>
-            </Divider> */}
-
-            <LoginForm />
-          </StyledContent>
-        </Container>
+        <div className='container-fluid'>
+          <div className='row'>
+            <div className='col-md-6' style={{background:"#007F6D",borderRadius:"0 0 100px 0"}}><br/>
+              <Logo />
+              <Box
+                sx={{
+                  display: 'flex',
+                 
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: '95vh', // Set the minimum height to full viewport height
+                }}
+              >
+                <Card variant="outlined" sx={{  borderRadius:'30px',minWidth: 275, maxWidth: 600, padding: 2 ,height:"70vh",boxShadow:"5px 5px 10px black"}}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' ,padding:'20px'}}>
+                    <Typography variant="h4" gutterBottom>
+                      TriCare Services
+                    </Typography><br/>
+                    <LoginForm />
+                  </Box>
+                </Card>
+              </Box>
+            </div>
+            <div className='col-md-6'>
+                <Box>
+                  <img src='/assets/login.png' alt='login'/>
+                </Box>
+            </div>
+          </div>
+        </div>
       </StyledRoot>
     </>
   );

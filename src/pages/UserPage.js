@@ -22,6 +22,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import { toast } from 'react-toastify';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -163,7 +164,7 @@ export default function StickyHeadTable() {
       setSelectedImage(URL.createObjectURL(file));
     }
 
-  
+
 
   };
 
@@ -344,17 +345,18 @@ export default function StickyHeadTable() {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (response.ok) {
       setUserOpen(false);
-      alert('Form submitted successfuly');
+      toast.success('Form submitted successfully', {
+        position: toast.POSITION.TOP_CENTER,
+      });
       window.location.reload();
-
     } else {
-      setMessage(data.message);
+      toast.error(data.message || 'An error occurred', {
+        position: toast.POSITION.TOP_CENTER,
+      });
     }
-
 
     console.log('Form data submitted:', formData);
     // Now you can close the form.
@@ -516,14 +518,14 @@ export default function StickyHeadTable() {
                                   backgroundSize: 'cover',
                                   backgroundPosition: 'center',
                                   backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
-                                  
+
                                 }}
                               >
                                 {/* Content of the button */}
                               </Button>
                               <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
                             </InputLabel>
-                          
+
                           </div>
                         </Grid>
 

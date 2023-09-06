@@ -42,10 +42,7 @@ import {
 } from '../sections/@dashboard/app';
 
 
-const token = localStorage.getItem('token');
-
 echarts.use([GaugeChart, CanvasRenderer]);
-
 
 
 // ----------------------------------------------------------------------
@@ -59,8 +56,15 @@ export default function DashboardAppPage() {
   const hashMap = {};
   const pieParams = { height: 200, margin: { right: 5 } };
   const palette = ['red', 'blue', 'green'];
+  const [loading, setLoading] = useState(false)
+  const token = localStorage.getItem('token');
+
+
+
 
   useEffect(() => {
+    setLoading(true);
+
 
     console.log(`Token${token}`);
     fetch(`${baseUrl}/api/user/dashboard/admin/`, {
@@ -74,13 +78,13 @@ export default function DashboardAppPage() {
       .then(response => response.json())
       .then(json => {
 
-        setEngineerWorkloadList(json.data.complaintHistoryGroupByEngineer);
+        setEngineerWorkloadList(json.data.complaintGroupByEngineer);
         setRows(json.data);
 
-        console.log("data", json.data.complaintHistoryGroupByEngineer);
+        console.log("data", json.data.complaintGroupByEngineer);
 
       });
-
+      setLoading(false);
   }, []);
 
 
@@ -194,6 +198,9 @@ export default function DashboardAppPage() {
     legend: { hidden: true },
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -208,6 +215,7 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
+            
             <CardTodayServices title="" color="info" total={rows.todayService} completed={0} />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -249,6 +257,8 @@ export default function DashboardAppPage() {
                 ]}
                 width="400"
                 height={400}
+                outerRadius={2}
+                innerRadius={1}
                 {...sizing}
               />
               <div className='comtainer'>

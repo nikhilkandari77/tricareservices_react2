@@ -12,6 +12,7 @@
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, CircularProgress, Typography } from '@mui/material';
+import DonutChart from 'react-donut-chart';
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
 // components
@@ -50,34 +51,43 @@ export default function CardBackLogServices({ title, total, completed, icon, col
 
 
   return (
-    <Card
-      sx={{
-        py: 2,
-        px: 5,
-        boxShadow: 5,
-        textAlign: 'start',
-        // color: (theme) => theme.palette[color].darker,
-        // bgcolor: (theme) => theme.palette[color].lighter,
-        width: '350px', // Specify the desired width
-        height: '180px', // Specify the desired height
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: 'rgba(255, 255, 255, 1)',
-        bgcolor: 'rgba(0, 130, 148, 1)',
-        ...sx,
-      }}
-      {...other}
-    >
+    <div style={{ color: 'rgba(255, 255, 255, 1)', backgroundColor: 'rgba(0, 130, 148, 1)', borderRadius: '12px' }}>
+      <div className='row'>
 
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-          <Typography variant="h3">BackLog</Typography>
-          <Typography variant="h3">Incomplete</Typography>
-          {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
-          <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
+        <div className='col-md-3 col-sm-4 col-3'>
+          <Iconify icon="mdi:clipboard-text-clock" width="60px" />
+        </div>
+
+        <div className='col-md-9 col-sm-8 col-9'>
+          <Card
+            sx={{
+              py: 2,
+              boxShadow: 5,
+              textAlign: 'start',
+              // color: (theme) => theme.palette[color].darker,
+              // bgcolor: (theme) => theme.palette[color].lighter,
+
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: 'rgba(255, 255, 255, 1)',
+              bgcolor: 'rgba(0, 130, 148, 1)',
+              ...sx,
+            }}
+            {...other}
+          >
+
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+              <Typography variant="h3">BackLog</Typography>
+              <Typography variant="h3">Incomplete</Typography>
+              {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
+              <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
+            </div>
+
+
+          </Card>
+        </div>
       </div>
-
       
-    </Card>
+    </div>
   );
 }

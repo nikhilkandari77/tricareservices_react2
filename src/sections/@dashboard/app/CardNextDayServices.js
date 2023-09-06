@@ -50,34 +50,44 @@ export default function CardNextDayServices({ title, total, completed, icon, col
 
 
   return (
-    <Card
-      sx={{
-        py: 2,
-        px: 5,
-        boxShadow: 5,
-        textAlign: 'start',
-        // color: (theme) => theme.palette[color].darker,
-        // bgcolor: (theme) => theme.palette[color].lighter,
-        width: '350px', // Specify the desired width
-        height: '180px', // Specify the desired height
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: 'rgba(255, 255, 255, 1)',
-        bgcolor: 'rgba(68, 147, 85, 1)',
-        ...sx,
-      }}
-      {...other}
-    >
+    <div style={{ color: 'rgba(255, 255, 255, 1)', backgroundColor: 'rgba(68, 147, 85, 1)', borderRadius: '12px' }}>
+      <div className='row'>
+        <div className='col-md-3 col-sm-4 col-3'>
+          <div style={{ textAlign: "center", margin: "10% 0 0 20%", backgroundColor: "white", color: "black", borderRadius: "30px" }}>
+            <b style={{ color: "red", lineHeight: 1 }}>{new Date(new Date().getTime() + (24 * 60 * 60 * 1000)).toLocaleString('en-EN', { weekday: "long" }).substring(0, 3).toUpperCase()}</b>
+            <h3 style={{ lineHeight: 1 }}>{new Date().getDate() + 1}</h3>
+          </div>
+        </div>
+        <div className='col-md-9 col-sm-8 col-9'>
+          <Card
+            sx={{
+              py: 2,
+              backgroundColor: 'rgba(68, 147, 85, 1)',
+              color: 'rgba(255, 255, 255, 1)',
+              // color: (theme) => theme.palette[color].darker,
+              // bgcolor: (theme) => theme.palette[color].lighter,
 
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-          <Typography variant="h3">Next Day</Typography>
-          <Typography variant="h3">Scheduled</Typography>
-          {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
-          <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
+              textAlign: "center",
+              margin: "auto"
+
+
+
+
+            }}
+            {...other}
+          >
+
+            <div style={{ alignItems: 'center', }}>
+              <Typography variant="h3">Next Day</Typography>
+              <Typography variant="h3">Scheduled</Typography>
+              {/* <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
+              <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
+            </div>
+
+
+          </Card>
+        </div>
       </div>
-
-      
-    </Card>
+    </div>
   );
 }

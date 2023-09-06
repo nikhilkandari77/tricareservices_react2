@@ -7,7 +7,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts/core';
 import { TooltipComponent, LegendComponent } from 'echarts/components';
-import { PieChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 // import colors from 'src/theme/colors';
@@ -16,10 +15,13 @@ import { CanvasRenderer } from 'echarts/renderers';
 import PropTypes from 'prop-types';
 import { alpha, styled } from '@mui/material/styles';
 import { Card, CircularProgress, Grid, Typography } from '@mui/material';
+import DonutChart from 'react-donut-chart';
+
 // utils
 import { fShortenNumber } from '../../../utils/formatNumber';
 // components
 import Iconify from '../../../components/iconify';
+
 
 
 
@@ -59,74 +61,11 @@ const options = {
   },
 };
 
-echarts.use([
-  TooltipComponent,
-  LegendComponent,
-  PieChart,
-  CanvasRenderer,
-  LabelLayout
-]);
-
 
 
 
 export default function CardTodayServices({ title, total, completed, icon, color, sx, ...other }) {
 
-  // const chartRef = useRef(null);
-
-  // useEffect(() => {
-  //   const myChart = echarts.init(chartRef.current);
-
-  //   const option = {
-  //     tooltip: {
-  //       trigger: 'item'
-  //     },
-  //     legend: {
-  //       top: '5%',
-  //       left: 'center'
-  //     },
-  //     series: [
-  //       {
-  //         name: '',
-  //         type: 'pie',
-  //         radius: ['40%', '70%'],
-  //         avoidLabelOverlap: true,
-  //         itemStyle: {
-  //           borderRadius: 5,
-  //           borderColor: '#fff',
-  //           borderWidth: 2
-  //         },
-  //         label: {
-  //           show: false,
-  //           position: 'center'
-  //         },
-  //         emphasis: {
-  //           label: {
-  //             show: false,
-  //             fontSize: 20,
-  //             fontWeight: 'normal'
-  //           }
-  //         },
-  //         labelLine: {
-  //           show: false
-  //         },
-  //         data: [
-  //           { value: total, name: 'Pending' },
-  //           // { value: 580, name: 'Email' },
-  //           // { value: 484, name: 'Union Ads' },
-  //           // { value: 300, name: 'Video Ads' }
-  //         ]
-  //       }
-  //     ]
-  //   };
-
-
-  //   myChart.setOption(option);
-
-  //   return () => {
-  //     myChart.dispose();
-  //   };
-  // }, [total, completed]);
 
   const data = {
     labels: [`Completed `, `In Progress `],
@@ -149,73 +88,87 @@ export default function CardTodayServices({ title, total, completed, icon, color
     ],
   };
 
+
   return (
-    <Card
-      sx={{
-        py: 2,
-        px: 10,
-        boxShadow: 10,
-        textAlign: 'start',
-        // color: (theme) => theme.palette[color].darker,
-        // bgcolor: (theme) => theme.palette[color].lighter,
-        width: '350px', // Specify the desired width
-        height: '180px', // Specify the desired height
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        color: 'rgba(255, 255, 255, 1)',
-        bgcolor: 'rgba(0, 91, 167, 1)',
-        ...sx,
-      }}
-      {...other}
-    >
-
-      {/* <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+    <div className='container-fluid' style={{ color: 'rgba(255, 255, 255, 1)', backgroundColor: 'rgba(0, 91, 167, 1)', borderRadius: '12px' }}>
+      <div className='row'>
+        <div className='col-md-3 col-sm-4 col-3'>
+          <div style={{ textAlign: "center", margin: "10% 0 0 20%", backgroundColor: "white", color: "black", borderRadius: "3rem" }}>
+            <b style={{ color: "red", lineHeight: 1 }}>{new Date().toLocaleString('en-EN', { weekday: "long" }).substring(0, 3).toUpperCase()}</b>
+            <h3 style={{ lineHeight: 1 }}>{new Date().getDate()}</h3>
+          </div><br/>
+         <div style={{margin:"15%"}} >
+         <DonutChart  className='donutchart'
+         label={{
+          fill: 'white',
+          fontSize: '10px'
+     }}
         
-      </div> */}
+          formatValues={(values, total) =>"5"}
+          color="white"
+          for
+            width={65}
+            height={65}
+            innerRadius={.6}
+            outerRadius={1}
+            colors={['green','white']}
+            labels={ ["Blue", "Green", "Red"]}
+            onClick={false}
+            legend={false}
+            colorFunction={(colors, index) => colors[(index % colors.length)]}
+            data={[
+              {
+               label:"`",
+                value: 0,
+                color: "green",
+                isEmpty:true
+              },
+              {
+         
+                value: 65,
+                color: "white"
+              },
+              {
+      
+                value: 25,
+                color: "green"
+              }
+            ]}
+            
+          />
+         </div>
+        </div>
+        <div className='col-md-9 col-sm-8 col-9'>
+          <Card
+            sx={{
+              py: 2,
+              backgroundColor: 'rgba(0, 91, 167, 1)',
+              color: 'rgba(255, 255, 255, 1)',
+              // color: (theme) => theme.palette[color].darker,
+              // bgcolor: (theme) => theme.palette[color].lighter,
 
-      <Grid style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', }}>
+
+              textAlign: "center",
+              margin: "auto"
+            }}
+          >
+            <Grid style={{ alignItems: 'center', }}>
 
 
-        <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
-          <Typography variant="h3">Today</Typography>
-          <Typography variant="h3">Services</Typography>
-          <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
+              <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+                <Typography variant="h3">Today</Typography>
+                <Typography variant="h3">Services </Typography>
+                <Typography variant="h3">{total !== 0 ? total : "0"}</Typography>
 
-        </Grid>
+              </Grid>
 
-        <Grid style={{ display: 'flex', flexDirection: 'column', alignItems: 'end', }}>
-          {/* <div ref={chartRef} style={{ width: '100%', height: '100%' }} /> */}
-        </Grid>
-
-      </Grid>
-
-      {/* <Typography variant="h3">Today</Typography>
-
-      <Typography variant="h3">Services</Typography>
-
-      <Typography variant="h3">{fShortenNumber(total)}</Typography> */}
-
-      {/* <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        {title}
-      </Typography> */}
-
-      {/* <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '80%',
-        width: '100%',
-      }}
-      >
-        
-      </div> */}
+            </Grid>
 
 
-
-
-    </Card>
+          </Card>
+        </div>
+      </div>
+      
+    </div>
   );
 }
