@@ -22,7 +22,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
-import { toast } from 'react-toastify';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -164,7 +163,7 @@ export default function StickyHeadTable() {
       setSelectedImage(URL.createObjectURL(file));
     }
 
-
+  
 
   };
 
@@ -344,18 +343,24 @@ export default function StickyHeadTable() {
       body: requestBody,
     });
 
-    const data = await response.json();
+      const data = await response.json();
+      console.log(data);
 
-    if (response.ok) {
-      setUserOpen(false);
-      toast.success('Form submitted successfully', {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      window.location.reload();
-    } else {
-      toast.error(data.message || 'An error occurred', {
-        position: toast.POSITION.TOP_CENTER,
-      });
+      if (response.ok) {
+        setUserOpen(false);
+        toast.success('Form submitted successfully');
+        window.location.reload();
+      } else {
+        toast.error('sorry! already exist user id & email id');
+        setMessage(data.message);
+
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+
+      window.alert('An error occurred while submitting the form.');
+      // Handle the error here, such as displaying an alert or setting an error state
+      setMessage('An error occurred while submitting the form.');
     }
 
     console.log('Form data submitted:', formData);
@@ -518,14 +523,14 @@ export default function StickyHeadTable() {
                                   backgroundSize: 'cover',
                                   backgroundPosition: 'center',
                                   backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
-
+                                  
                                 }}
                               >
                                 {/* Content of the button */}
                               </Button>
                               <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
                             </InputLabel>
-
+                          
                           </div>
                         </Grid>
 
