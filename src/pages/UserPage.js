@@ -23,6 +23,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import { toast } from 'react-toastify';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -32,6 +33,7 @@ import baseUrl from '../utils/baseUrl';
 
 
 import Iconify from '../components/iconify';
+
 
 
 
@@ -163,7 +165,7 @@ export default function StickyHeadTable() {
       setSelectedImage(URL.createObjectURL(file));
     }
 
-  
+
 
   };
 
@@ -306,12 +308,74 @@ export default function StickyHeadTable() {
 
 
   // Form submission handler
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   const token = localStorage.getItem('token');
+  //   const adminId1 = localStorage.getItem('adminId');
+
+
+  //   const formData = {
+  //     name,
+  //     adminId: adminId1,
+  //     contact,
+  //     password,
+  //     areaPin,
+  //     city,
+  //     state,
+  //     email,
+  //     address,
+  //     role: {
+  //       id: 2,
+  //     },
+  //   };
+
+  //   // Convert form data object to JSON
+  //   const requestBody = JSON.stringify(formData);
+
+  //   console.log(formData);
+  //   console.log(token);
+
+  //   const response = await fetch(`${baseUrl}/api/user/`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Bearer ${token}`
+  //     },
+  //     body: requestBody,
+  //   });
+
+  //   const data = await response.json();
+  //   console.log(data);
+
+  //   if (response.ok) {
+  //     setUserOpen(false);
+  //     alert('Form submitted successfuly');
+  //     window.location.reload();
+
+  //   } else {
+  //     setMessage(data.message);
+  //   }
+
+
+  //   console.log('Form data submitted:', formData);
+  //   // Now you can close the form.
+  //   setIsFormOpen(false);
+
+
+
+
+
+
+
+  // };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem('token');
     const adminId1 = localStorage.getItem('adminId');
-
 
     const formData = {
       name,
@@ -328,45 +392,47 @@ export default function StickyHeadTable() {
       },
     };
 
-    // Convert form data object to JSON
-    const requestBody = JSON.stringify(formData);
+    try {
+      // Convert form data object to JSON
+      const requestBody = JSON.stringify(formData);
 
-    console.log(formData);
-    console.log(token);
+      console.log(formData);
+      console.log(token);
 
-    const response = await fetch(`${baseUrl}/api/user/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: requestBody,
-    });
+      const response = await fetch(`${baseUrl}/api/user/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: requestBody,
+      });
 
-    const data = await response.json();
-    console.log(data);
+      const data = await response.json();
+      console.log(data);
 
-    if (response.ok) {
-      setUserOpen(false);
-      alert('Form submitted successfuly');
-      window.location.reload();
+      if (response.ok) {
+        setUserOpen(false);
+        toast.success('Form submitted successfully');
+        window.location.reload();
+      } else {
+        toast.error('sorry! already exist user id & email id');
+        setMessage(data.message);
 
-    } else {
-      setMessage(data.message);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+
+      window.alert('An error occurred while submitting the form.');
+      // Handle the error here, such as displaying an alert or setting an error state
+      setMessage('An error occurred while submitting the form.');
     }
-
 
     console.log('Form data submitted:', formData);
     // Now you can close the form.
     setIsFormOpen(false);
-
-
-
-
-
-
-
   };
+
 
 
 
@@ -516,14 +582,14 @@ export default function StickyHeadTable() {
                                   backgroundSize: 'cover',
                                   backgroundPosition: 'center',
                                   backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
-                                  
+
                                 }}
                               >
                                 {/* Content of the button */}
                               </Button>
                               <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
                             </InputLabel>
-                          
+
                           </div>
                         </Grid>
 
@@ -580,6 +646,7 @@ export default function StickyHeadTable() {
                               onChange={(e) => setAreaPin(e.target.value)}
                               fullWidth
                               required
+
                               // style={{ padding: '7px', width: '250px' }}
                               sx={{ m: 1, width: '250px' }}
 
@@ -757,7 +824,6 @@ export default function StickyHeadTable() {
           <Item>
             <Card >
 
-
               <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <TableContainer sx={{ height: "65vh" }}>
                   <Table stickyHeader aria-label="sticky table">
@@ -776,92 +842,101 @@ export default function StickyHeadTable() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {searchItem
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => {
-                          return (
-                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                              {columns.map((column) => {
-                                const value = row[column.id];
+                      {rows.length === 0 ? (<TableCell colSpan={columns.length}>
+                        <Typography
+                          variant="p"
+                          component="div"
+                          style={{ textAlign: 'center', padding: '20px' }} // Adjust padding as needed
+                        >
+                          No Data Available
+                        </Typography>
+                      </TableCell>) :
+                        searchItem
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((row) => {
+                            return (
+                              <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                {columns.map((column) => {
+                                  const value = row[column.id];
 
-                                if (column.id === 'srno') {
-                                  sr += 1;
+                                  if (column.id === 'srno') {
+                                    sr += 1;
+                                    return (
+                                      <TableCell key={column.id} align={column.align}>
+                                        {value === null ? '' : String(sr)}
+                                      </TableCell>
+                                    );
+                                  }
+
+
+                                  if (column.id === 'button') {
+                                    return (
+                                      <TableCell key={column.id} align={column.align}>
+                                        <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button>
+                                        <Dialog
+                                          open={open}
+                                          onClose={handleClose}
+                                          aria-labelledby="alert-dialog-title"
+                                          aria-describedby="alert-dialog-description"
+
+                                        >
+                                          <DialogTitle id="alert-dialog-title">
+                                            {"View Details"}
+                                          </DialogTitle>
+                                          <DialogContent>
+                                            <DialogContentText>
+
+                                              <div>
+                                                <Container>
+                                                  <Grid container spacing={2}>
+                                                    <Grid item xs={10}>
+                                                      <Item>xs=8</Item>
+                                                    </Grid>
+                                                    <Grid item xs={10}>
+                                                      <Item>xs=4</Item>
+                                                    </Grid>
+                                                    <Grid item xs={4}>
+                                                      <Item>xs=4</Item>
+                                                    </Grid>
+                                                    <Grid item xs={8}>
+                                                      <Item>xs=8</Item>
+                                                    </Grid>
+                                                  </Grid>
+
+                                                </Container>
+                                              </div>
+
+
+
+
+                                            </DialogContentText>
+                                          </DialogContent>
+                                          <DialogActions>
+                                            <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
+                                            <Button onClick={handleClose} autoFocus>
+                                              Accept
+                                            </Button>
+                                          </DialogActions>
+                                        </Dialog>
+                                      </TableCell>
+
+                                    );
+
+
+                                  }
+
+
                                   return (
                                     <TableCell key={column.id} align={column.align}>
-                                      {value === null ? '' : String(sr)}
-                                    </TableCell>
-                                  );
-                                }
-
-
-                                if (column.id === 'button') {
-                                  return (
-                                    <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button>
-                                      <Dialog
-                                        open={open}
-                                        onClose={handleClose}
-                                        aria-labelledby="alert-dialog-title"
-                                        aria-describedby="alert-dialog-description"
-
-                                      >
-                                        <DialogTitle id="alert-dialog-title">
-                                          {"View Details"}
-                                        </DialogTitle>
-                                        <DialogContent>
-                                          <DialogContentText>
-
-                                            <div>
-                                              <Container>
-                                                <Grid container spacing={2}>
-                                                  <Grid item xs={10}>
-                                                    <Item>xs=8</Item>
-                                                  </Grid>
-                                                  <Grid item xs={10}>
-                                                    <Item>xs=4</Item>
-                                                  </Grid>
-                                                  <Grid item xs={4}>
-                                                    <Item>xs=4</Item>
-                                                  </Grid>
-                                                  <Grid item xs={8}>
-                                                    <Item>xs=8</Item>
-                                                  </Grid>
-                                                </Grid>
-
-                                              </Container>
-                                            </div>
-
-
-
-
-                                          </DialogContentText>
-                                        </DialogContent>
-                                        <DialogActions>
-                                          <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
-                                          <Button onClick={handleClose} autoFocus>
-                                            Accept
-                                          </Button>
-                                        </DialogActions>
-                                      </Dialog>
+                                      {value}
                                     </TableCell>
 
                                   );
+                                })}
+                              </TableRow>
 
-
-                                }
-
-
-                                return (
-                                  <TableCell key={column.id} align={column.align}>
-                                    {value}
-                                  </TableCell>
-
-                                );
-                              })}
-                            </TableRow>
-
-                          );
-                        })}
+                            );
+                          })}
                     </TableBody>
 
 
