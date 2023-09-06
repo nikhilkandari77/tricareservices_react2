@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect } from 'react';
-import {useLocation, useParams, Navigate, useNavigate} from 'react-router-dom';
+import { useLocation, useParams, Navigate, useNavigate } from 'react-router-dom';
 
 // import { useLocation, useParams } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 
 import Toolbar from '@mui/material/Toolbar';
-
+import { toast } from 'react-toastify';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -128,13 +128,6 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 
-
-
-
-
-
-
-
 export default function Customerdetail() {
 
     const location = useLocation();
@@ -161,7 +154,7 @@ export default function Customerdetail() {
 
 
 
-    
+
     const [rowscurrent, setRowscurrent] = useState([])
     const [rowsCompt, setRowsCompt] = useState([])
     const [rows, setRows] = useState([])
@@ -208,13 +201,13 @@ export default function Customerdetail() {
     const [dateofinstallation, setInstallation] = useState('');
     const [nextsheduledmaintenance, setNextsheduledmaintenance] = useState('');
     const [controller, setController] = useState('');
-    const[task, settask] = useState('');
-    const[Params, setParams] = useState('');
+    const [task, settask] = useState('');
+    const [Params, setParams] = useState('');
 
 
     const [value, setValue] = React.useState('1');
 
-    const[formData, setformData]= useState([]);
+    const [formData, setformData] = useState([]);
     const [isEditable, setIsEditable] = useState(false);
 
     const [category, setCategory] = useState('');
@@ -232,19 +225,6 @@ export default function Customerdetail() {
             setSelectedImage(URL.createObjectURL(file));
         }
     };
-
-
-   
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -281,11 +261,11 @@ export default function Customerdetail() {
         setName(user.name);
         setContact(user.contact);
         setEmail(user.email);
-        setAreapin(user.areaPin);
+        setAreaPin(user.areaPin);
         setAddress(user.address);
         setCity(user.city);
         setState(user.state);
-       
+
         setUserOpen(true);
     }
 
@@ -448,14 +428,14 @@ export default function Customerdetail() {
 
     const handleContactChange = (e) => {
         const newContact = e.target.value;
-    
+
         if (/^\d{0,10}$/.test(newContact)) {
-          setContact(newContact);
-          setContactError(newContact.length === 10 ? '' : 'Contact number must be exactly 10 digits');
+            setContact(newContact);
+            setContactError(newContact.length === 10 ? '' : 'Contact number must be exactly 10 digits');
         } else {
-          setContactError('Contact number must be up to 10 digits');
+            setContactError('Contact number must be up to 10 digits');
         }
-      };
+    };
 
 
 
@@ -539,14 +519,22 @@ export default function Customerdetail() {
             },
 
         })
+            .then(response => {
 
-            .then(response => response.json())
+                if (!response.ok) {
+                    // toast.error("Something Went Wrong");
+
+
+                }
+                return response.json();
+            })
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
                 // setUsers(json);
                 setRows(json.data)
                 console.log("rowdata", rows)
 
+           
 
             })
             .finally(() => {
@@ -557,73 +545,138 @@ export default function Customerdetail() {
     };
 
 
+    // const handleSubmit1 = async (e) => {
+    //     e.preventDefault();
+
+    //     const token = localStorage.getItem('token');
+
+
+    // const formData = {
+
+    //     //   adminId: 1,
+    //     id: userId,
+    //     name,
+    //     contact,
+    //     email,
+    //     areaPin,
+    //     address,
+    //     city,
+    //     state,
+    //     // password,
+    //     // confirmpassword,
+
+
+
+
+    //     role: {
+    //         id: 3,
+    //     },
+    // };
+
+    //     // Convert form data object to JSON
+    //     const requestBody = JSON.stringify(formData);
+
+    //     console.log(formData);
+    //     console.log(token);
+
+    //     const response = await fetch(`${baseUrl}/api/user/`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${token}`
+    //         },
+    //         body: requestBody,
+    //     });
+
+    //     const data = await response.json();
+    //     console.log(data);
+
+    //     if (response.ok) {
+    //         setUserOpenProduct(false);
+    //         alert('Form submitted successfuly');
+    //         window.location.reload();
+
+    //     } else {
+    //         setMessage(data.message);
+    //     }
+
+
+    //     console.log('Form data submitted:', formData);
+    //     // Now you can close the form.
+    //     setIsFormOpen(false);
+
+
+
+
+
+
+
+    // };
+
+
+
     const handleSubmit1 = async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('token');
+        try {
+            const token = localStorage.getItem('token');
+
+            const formData = {
+
+                //   adminId: 1,
+                id: userId,
+                name,
+                contact,
+                email,
+                areaPin,
+                address,
+                city,
+                state,
+                // password,
+                // confirmpassword,
 
 
-        const formData = {
-
-            //   adminId: 1,
-            id: userId,
-            name,
-            contact,
-            email,
-            areaPin,
-            address,
-            city,
-            state,
-            // password,
-            // confirmpassword,
 
 
+                role: {
+                    id: 3,
+                },
+            };
 
+            const requestBody = JSON.stringify(formData);
 
-            role: {
-                id: 3,
-            },
-        };
+            console.log(formData);
+            console.log(token);
 
-        // Convert form data object to JSON
-        const requestBody = JSON.stringify(formData);
+            const response = await fetch(`${baseUrl}/api/user/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: requestBody,
+            });
 
-        console.log(formData);
-        console.log(token);
+            const data = await response.json();
+            console.log(data);
 
-        const response = await fetch(`${baseUrl}/api/user/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: requestBody,
-        });
+            if (response.ok) {
+                setUserOpenProduct(false);
+                toast.success('Form submitted successfully');
+                window.location.reload();
+            } else {
+                setMessage(data.message);
+                toast.error('sorry! already exist user id & email id');
+            }
 
-        const data = await response.json();
-        console.log(data);
-
-        if (response.ok) {
-            setUserOpenProduct(false);
-            alert('Form submitted successfuly');
-            window.location.reload();
-
-        } else {
-            setMessage(data.message);
+            console.log('Form data submitted:', formData);
+            setIsFormOpen(false);
+        } catch (error) {
+            console.error('An error occurred:', error);
+            // Handle the error here, show a user-friendly message, etc.
         }
-
-
-        console.log('Form data submitted:', formData);
-        // Now you can close the form.
-        setIsFormOpen(false);
-
-
-
-
-
-
-
     };
+
 
 
 
@@ -631,62 +684,102 @@ export default function Customerdetail() {
 
     const routeChange1 = (id) => {
 
+
         console.log(id)
 
-         navigate("/dashboard/task-history-details", { state: { taskId: id } });
+        navigate("/dashboard/task-history-details", { state: { taskId: id } });
 
 
     }
-    
+
     const routeChange2 = (id) => {
 
         console.log(id)
 
          navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
-
-
+    
     }
 
 
+
+
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token');
+    //     setLoading(true);
+    //     fetch(`${baseUrl}/api/user/${userId}`, {
+    //         method: 'GET',
+    //         mode: 'cors',
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         },
+
+    //     })
+
+    //         .then(response => response.json())
+    //         .then(json => {
+    //             console.log("Fetched data:", json.data); // This line will print the data to the console
+    //             setUser(json.data)
+
+
+
+
+
+
+    //         })
+    //         .finally(() => {
+    //             setLoading(false);
+    //         });
+
+    //     handleChange6();
+    //     handleChange7();
+
+
+    //     // handleChange7();
+    // }, []);
+
+    // if (loading) {
+    //     return <div>Loading...</div>;
+    // }
 
 
     useEffect(() => {
         const token = localStorage.getItem('token');
         setLoading(true);
-        fetch(`${baseUrl}/api/user/${userId}`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-
-        })
-
-            .then(response => response.json())
+    
+        try {
+            fetch(`${baseUrl}/api/user/${userId}`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    toast.error('No data available');
+                }
+                return response.json();
+            })
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
-                setUser(json.data)
-
-
-
-
-
-
+                setUser(json.data);
+                handleChange6();
+                handleChange7();
+            })
+            .catch(error => {
+                console.error("An error occurred during fetch:", error);
+                // Handle the error as needed (e.g., set an error state)
             })
             .finally(() => {
                 setLoading(false);
             });
-
-        handleChange6();
-        handleChange7();
-
-
-        // handleChange7();
+        } catch (error) {
+            console.error("An error occurred:", error);
+            // Handle the error as needed (e.g., set an error state)
+            setLoading(false);
+        }
     }, []);
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    
 
 
 
@@ -751,7 +844,7 @@ export default function Customerdetail() {
                                                     </DialogTitle>
                                                     <DialogContent>
                                                         <Container maxWidth="md"> {/* Adjusted maxWidth for responsiveness */}
-                                                        <form onSubmit={handleSubmit1}>
+                                                            <form onSubmit={handleSubmit1}>
                                                                 <Grid container spacing={3}>
 
                                                                     <Grid item xs={12}>
@@ -937,7 +1030,7 @@ export default function Customerdetail() {
 
 
                                                                     {/* <button onClick={handleSaveClick} style={{ float: 'right', marginRight: '-5px', borderRadius: '7px', backgroundColor: 'primary' }} >Save</button> */}
-                                                                    <Button onClick={handleSaveClick} type="submit" variant="contained" color="primary"   style={{ float: 'right', marginBottom: '100%' }}>Save</Button>
+                                                                    <Button onClick={handleSaveClick} type="submit" variant="contained" color="primary" style={{ float: 'right', marginBottom: '100%' }}>Save</Button>
 
 
 
@@ -1009,9 +1102,9 @@ export default function Customerdetail() {
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider', background: "#007F6D" }}>
                                 <TabList onChange={handleChange} aria-label="lab API tabs example">
-                                <Tab style={{ color: 'white' }} label="Current" value="1" />
+                                    <Tab style={{ color: 'white' }} label="Current" value="1" />
                                     <Tab style={{ color: 'white', marginLeft: '1%' }} label="History" value="2" />
-                                    
+
 
                                     {/* <Tab label="Item Three" value="3" /> */}
                                 </TabList>
@@ -1041,11 +1134,18 @@ export default function Customerdetail() {
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                        {rows===undefined||rows===null?"":
-                                                        rows
-                                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                            .map((row) => {
-                                                                return (
+                                                        {rows===null||rows===undefined ? (<TableCell colSpan={columns.length}>
+                                                            <Typography
+                                                                variant="p"
+                                                                component="div"
+                                                                style={{ textAlign: 'center', padding: '20px' }} // Adjust padding as needed
+                                                            >
+                                                                No Data Available
+                                                            </Typography>
+                                                        </TableCell>) :
+                                                            rows
+                                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                                .map((row) => (
                                                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                                                         {columns.map((column) => {
 
@@ -1321,7 +1421,7 @@ export default function Customerdetail() {
 
                                                                                                             </Grid>
 
-                                 
+
                                                                                                         </Grid>
 
 
@@ -1358,16 +1458,14 @@ export default function Customerdetail() {
                                                                         })}
                                                                     </TableRow>
 
-                                                                );
-                                                            })}
+                                                                ))}
                                                     </TableBody>
                                                 </Table>
                                             </TableContainer>
                                             <TablePagination
                                                 rowsPerPageOptions={[10, 25, 100]}
                                                 component="div"
-                                                count={rows===null?0:rows.length}
-                                                rowsPerPage={rowsPerPage}
+                                         rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={handleChangePage}
                                                 onRowsPerPageChange={handleChangeRowsPerPage}
@@ -1382,7 +1480,7 @@ export default function Customerdetail() {
 
 
                             </TabPanel>
-                                        
+
                             <TabPanel value="1">
                                 <Item>
                                     <Card>
@@ -1404,71 +1502,80 @@ export default function Customerdetail() {
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                        {rowscurrent
-                                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                            .map((row) => {
-                                                                return (
-                                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                                        {columnscurrent.map((column) => {
+                                                        {rowscurrent.length === 0 ? (<TableCell colSpan={columnscurrent.length}>
+                                                            <Typography
+                                                                variant="p"
+                                                                component="div"
+                                                                style={{ textAlign: 'center', padding: '20px' }} // Adjust padding as needed
+                                                            >
+                                                                No Data Available
+                                                            </Typography>
+                                                        </TableCell>) :
+                                                            rowscurrent
+                                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                                .map((row) => {
+                                                                    return (
+                                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                                            {columnscurrent.map((column) => {
 
-                                                                            const value = row[column.id];
+                                                                                const value = row[column.id];
 
-                                                                            if (column.id === 'srno') {
-                                                                                sr += 1;
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        {value === null ? '' : String(sr)}
-                                                                                    </TableCell>
-                                                                                );
-                                                                            }
-
-
-
-
-
-
-
-
-
-                                                                            console.log(column)
-                                                                            if (column.id === 'button') {
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-
-                                                                                        {/* view dialog box customerdetail */}
-
-                                                                                        <Button onClick={() => routeChange2(row.id)} variant="contained"> Details </Button>
-                                                                                        <Dialog
-                                                                                            open={open}
-                                                                                            onClose={handleClose}
-                                                                                            aria-labelledby="alert-dialog-title"
-                                                                                            aria-describedby="alert-dialog-description"
+                                                                                if (column.id === 'srno') {
+                                                                                    sr += 1;
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {value === null ? '' : String(sr)}
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                }
 
 
-                                                                                        >
-                                                                                            <DialogTitle id="alert-dialog-title">
-                                                                                                {"View Details"}
 
-                                                                                                <div>
-                                                                                                    {/* Add more input fields as needed */}
-                                                                                                    {/* <button style={{ marginLeft: '75%',color:'white',backgroundColor:'blue',width:'24%',height:'39px',borderRadius:'7px' }}  onClick={handleToggleEdit}>
+
+
+
+
+
+
+                                                                                console.log(column)
+                                                                                if (column.id === 'button') {
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+
+                                                                                            {/* view dialog box customerdetail */}
+
+                                                                                            <Button onClick={() => routeChange2(row.id)} variant="contained"> Details </Button>
+                                                                                            <Dialog
+                                                                                                open={open}
+                                                                                                onClose={handleClose}
+                                                                                                aria-labelledby="alert-dialog-title"
+                                                                                                aria-describedby="alert-dialog-description"
+
+
+                                                                                            >
+                                                                                                <DialogTitle id="alert-dialog-title">
+                                                                                                    {"View Details"}
+
+                                                                                                    <div>
+                                                                                                        {/* Add more input fields as needed */}
+                                                                                                        {/* <button style={{ marginLeft: '75%',color:'white',backgroundColor:'blue',width:'24%',height:'39px',borderRadius:'7px' }}  onClick={handleToggleEdit}>
                                                                                                             {isEditable ? 'Disable Editing' : ' Editing'}
                                                                                                         </button> */}
-                                                                                                </div>
+                                                                                                    </div>
 
 
-                                                                                            </DialogTitle>
-                                                                                            <DialogContent>
-                                                                                                <DialogContentText>
+                                                                                                </DialogTitle>
+                                                                                                <DialogContent>
+                                                                                                    <DialogContentText>
 
-                                                                                                    <div style={{ padding: '20px', }}>
+                                                                                                        <div style={{ padding: '20px', }}>
 
-                                                                                                        {/* <img style={{ width: 125, height: 70, marginLeft: '90px', marginTop: '-30px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
+                                                                                                            {/* <img style={{ width: 125, height: 70, marginLeft: '90px', marginTop: '-30px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
 
-                                                                                                        <Grid container spacing={5}>
-                                                                                                            <Grid item xs={6}>
+                                                                                                            <Grid container spacing={5}>
+                                                                                                                <Grid item xs={6}>
 
-                                                                                                                {/* <ul>
+                                                                                                                    {/* <ul>
                                                                                                                         <li > Asset id  </li>
                                                                                                                         <li> Serial no  </li>
                                                                                                                         <li>SLA        </li>
@@ -1487,203 +1594,203 @@ export default function Customerdetail() {
                                                                                                                     </ul> */}
 
 
-                                                                                                                {/* <label htmlFor={id}>{label}</label> */}
+                                                                                                                    {/* <label htmlFor={id}>{label}</label> */}
 
-                                                                                                                {/* <input style={{ marginTop: '40%' }} type="text" value="Field 1" disabled={!isEditable} />
+                                                                                                                    {/* <input style={{ marginTop: '40%' }} type="text" value="Field 1" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} /> */}
 
-                                                                                                                <div>
-                                                                                                                    <form>
+                                                                                                                    <div>
+                                                                                                                        <form>
 
 
 
 
 
-                                                                                                                        <Grid container spacing={5}>
-                                                                                                                            <Grid item xs={6}>
+                                                                                                                            <Grid container spacing={5}>
+                                                                                                                                <Grid item xs={6}>
 
 
 
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Product Name"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%' }}
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Product Name"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%' }}
 
-                                                                                                                                    />
+                                                                                                                                        />
 
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Product Type"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%' }}
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Product Type"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%' }}
 
-                                                                                                                                    />
+                                                                                                                                        />
 
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Serial No"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%' }}
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Serial No"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%' }}
 
-                                                                                                                                    />
+                                                                                                                                        />
 
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Constraction Type"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%' }}
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Constraction Type"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%' }}
 
-                                                                                                                                    />
+                                                                                                                                        />
 
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Rating"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%' }}
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Rating"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%' }}
 
-                                                                                                                                    />
+                                                                                                                                        />
 
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Dispatch Date"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%' }}
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Dispatch Date"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%' }}
 
-                                                                                                                                    />
+                                                                                                                                        />
 
-                                                                                                                                </div>
+                                                                                                                                    </div>
+                                                                                                                                </Grid>
+
+
+                                                                                                                                <Grid item xs={6}>
+
+
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Purchase Date"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                        />
+
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Manufacturing Date"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                        />
+
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Installation Date"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                        />
+
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Warranty Period"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                        />
+
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <TextField
+                                                                                                                                            label="Additional Files"
+                                                                                                                                            // id="outlined-start-adornment"
+                                                                                                                                            sx={{ m: 1, width: '25ch' }}
+                                                                                                                                            onChange={handleInputChange}
+                                                                                                                                            disabled={!isEditable}
+                                                                                                                                            style={{ width: '210%', marginLeft: '150%' }}
+
+                                                                                                                                        />
+
+                                                                                                                                    </div>
+                                                                                                                                    <div>
+                                                                                                                                        <FormControl sx={{ m: 1, minWidth: 195, minHeight: '40', backgroundColor: 'white', marginTop: '15%', marginLeft: '150%', borderRadius: '5px', width: '1%' }} size="small">
+                                                                                                                                            <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Category</InputLabel>
+                                                                                                                                            <Select
+                                                                                                                                                labelId="demo-select-small-label"
+                                                                                                                                                id="demo-select-small"
+                                                                                                                                                value={category}
+                                                                                                                                                label="Category"
+                                                                                                                                                onChange={handleChange3}
+
+                                                                                                                                            >
+                                                                                                                                                <MenuItem value="">
+                                                                                                                                                    <em>None</em>
+                                                                                                                                                </MenuItem>
+                                                                                                                                                <MenuItem value={10}>1 </MenuItem>
+                                                                                                                                                <MenuItem value={20}>2</MenuItem>
+                                                                                                                                                <MenuItem value={30}>3</MenuItem>
+
+                                                                                                                                            </Select>
+                                                                                                                                        </FormControl>
+                                                                                                                                    </div>
+
+
+
+
+
+
+                                                                                                                                </Grid>
+
                                                                                                                             </Grid>
 
 
-                                                                                                                            <Grid item xs={6}>
+                                                                                                                        </form>
 
+                                                                                                                    </div>
 
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Purchase Date"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
+                                                                                                                </Grid>
 
-                                                                                                                                    />
-
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Manufacturing Date"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
-
-                                                                                                                                    />
-
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Installation Date"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
-
-                                                                                                                                    />
-
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Warranty Period"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
-
-                                                                                                                                    />
-
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <TextField
-                                                                                                                                        label="Additional Files"
-                                                                                                                                        // id="outlined-start-adornment"
-                                                                                                                                        sx={{ m: 1, width: '25ch' }}
-                                                                                                                                        onChange={handleInputChange}
-                                                                                                                                        disabled={!isEditable}
-                                                                                                                                        style={{ width: '210%', marginLeft: '150%' }}
-
-                                                                                                                                    />
-
-                                                                                                                                </div>
-                                                                                                                                <div>
-                                                                                                                                    <FormControl sx={{ m: 1, minWidth: 195, minHeight: '40', backgroundColor: 'white', marginTop: '15%', marginLeft: '150%', borderRadius: '5px', width: '1%' }} size="small">
-                                                                                                                                        <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Category</InputLabel>
-                                                                                                                                        <Select
-                                                                                                                                            labelId="demo-select-small-label"
-                                                                                                                                            id="demo-select-small"
-                                                                                                                                            value={category}
-                                                                                                                                            label="Category"
-                                                                                                                                            onChange={handleChange3}
-
-                                                                                                                                        >
-                                                                                                                                            <MenuItem value="">
-                                                                                                                                                <em>None</em>
-                                                                                                                                            </MenuItem>
-                                                                                                                                            <MenuItem value={10}>1 </MenuItem>
-                                                                                                                                            <MenuItem value={20}>2</MenuItem>
-                                                                                                                                            <MenuItem value={30}>3</MenuItem>
-
-                                                                                                                                        </Select>
-                                                                                                                                    </FormControl>
-                                                                                                                                </div>
-
-
-
-
-
-
-                                                                                                                            </Grid>
-
-                                                                                                                        </Grid>
-
-
-                                                                                                                    </form>
-
-                                                                                                                </div>
-
-                                                                                                            </Grid>
-
-                                                                                                            {/* <Grid item xs={6}>
+                                                                                                                {/* <Grid item xs={6}>
 
                                                                                                                     <li>Rapid Pod</li>
                                                                                                                     <li>Rapid Pod TRI01 </li>
@@ -1705,51 +1812,50 @@ export default function Customerdetail() {
 
 
                                                                                                                 </Grid> */}
-                                                                                                        </Grid>
+                                                                                                            </Grid>
 
 
 
-                                                                                                    </div>
+                                                                                                        </div>
 
 
 
-                                                                                                </DialogContentText>
-                                                                                            </DialogContent>
-                                                                                            <DialogActions>
-                                                                                                <Button onClick={handleClose} style={{ color: 'red', marginRight: '4%' }} >Close</Button>
-                                                                                                {isEditable ? (
-                                                                                                    <button onClick={handleSaveClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7PX' }} >Save</button>
-                                                                                                ) : (
-                                                                                                    <button onClick={handleEditClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7PX' }} >Edit</button>
-                                                                                                )}
-                                                                                            </DialogActions>
-                                                                                        </Dialog>
+                                                                                                    </DialogContentText>
+                                                                                                </DialogContent>
+                                                                                                <DialogActions>
+                                                                                                    <Button onClick={handleClose} style={{ color: 'red', marginRight: '4%' }} >Close</Button>
+                                                                                                    {isEditable ? (
+                                                                                                        <button onClick={handleSaveClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7PX' }} >Save</button>
+                                                                                                    ) : (
+                                                                                                        <button onClick={handleEditClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7PX' }} >Edit</button>
+                                                                                                    )}
+                                                                                                </DialogActions>
+                                                                                            </Dialog>
+                                                                                        </TableCell>
+
+                                                                                    );
+
+
+                                                                                }
+
+
+                                                                                return (
+                                                                                    <TableCell key={column.id} align={column.align}>
+                                                                                        {value}
                                                                                     </TableCell>
 
                                                                                 );
+                                                                            })}
+                                                                        </TableRow>
 
-
-                                                                            }
-
-
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {value}
-                                                                                </TableCell>
-
-                                                                            );
-                                                                        })}
-                                                                    </TableRow>
-
-                                                                );
-                                                            })}
+                                                                    );
+                                                                })}
                                                     </TableBody>
                                                 </Table>
                                             </TableContainer>
                                             <TablePagination
                                                 rowsPerPageOptions={[10, 25, 100]}
                                                 component="div"
-                                                count={rows===null?0:rows.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={handleChangePage}

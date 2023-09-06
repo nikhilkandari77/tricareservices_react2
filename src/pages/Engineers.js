@@ -17,15 +17,18 @@ import TableRow from '@mui/material/TableRow';
 import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
+
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import InputBase from '@mui/material/InputBase';
+import { toast } from 'react-toastify';
 import baseUrl from '../utils/baseUrl';
 
 import Iconify from '../components/iconify';
+
 
 
 
@@ -251,11 +254,11 @@ export default function Engineers() {
             city !== '' &&
             state !== '' &&
             emailError === '' &&
-            passwordError === ''&&
+            passwordError === '' &&
             contactError !== '';
 
         setIsFormValid(isValid);
-    }, [name, contact, email, areaPin, address, city, state, emailError, passwordError,contactError]);
+    }, [name, contact, email, areaPin, address, city, state, emailError, passwordError, contactError]);
 
 
 
@@ -272,7 +275,7 @@ export default function Engineers() {
     const validateContact = (contact) => {
         const contactPattern = /^\d{10}$/;
         return contactPattern.test(contact);
-      };
+    };
 
     const validatePassword = (password) => {
         return password.length >= 6; // You can adjust the minimum length as needed
@@ -307,19 +310,19 @@ export default function Engineers() {
         }
     };
 
-  
+
 
 
     const handleContactChange = (e) => {
         const newContact = e.target.value;
-    
+
         if (/^\d{0,10}$/.test(newContact)) {
-          setContact(newContact);
-          setContactError(newContact.length === 10 ? '' : 'Contact number must be exactly 10 digits');
+            setContact(newContact);
+            setContactError(newContact.length === 10 ? '' : 'Contact number must be exactly 10 digits');
         } else {
-          setContactError('Contact number must be up to 10 digits');
+            setContactError('Contact number must be up to 10 digits');
         }
-      };
+    };
 
 
 
@@ -338,6 +341,71 @@ export default function Engineers() {
 
 
 
+
+
+
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     const token = localStorage.getItem('token');
+    //     const adminId1 = localStorage.getItem('adminId');
+
+
+    //     const formData = {
+    //         name,
+    //         adminId: adminId1,
+    //         contact,
+    //         password,
+    //         areaPin,
+    //         city,
+    //         state,
+    //         email,
+    //         address,
+    //         role: {
+    //             id: 3,
+    //         },
+    //     };
+
+    //     // Convert form data object to JSON
+    //     const requestBody = JSON.stringify(formData);
+
+    //     console.log(formData);
+    //     console.log(token);
+
+    //     const response = await fetch(`${baseUrl}/api/user/`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${token}`
+    //         },
+    //         body: requestBody,
+    //     });
+
+    //     const data = await response.json();
+    //     console.log(data);
+
+    //     if (response.ok) {
+    //         setUserOpen(false);
+    //         alert('Form submitted successfuly');
+    //         window.location.reload();
+
+    //     } else {
+    //         setMessage(data.message);
+    //     }
+
+
+    //     console.log('Form data submitted:', formData);
+    //     // Now you can close the form.
+    //     setIsFormOpen(false);
+
+
+
+
+
+
+
+    // };
 
 
 
@@ -347,7 +415,6 @@ export default function Engineers() {
 
         const token = localStorage.getItem('token');
         const adminId1 = localStorage.getItem('adminId');
-
 
         const formData = {
             name,
@@ -364,45 +431,44 @@ export default function Engineers() {
             },
         };
 
-        // Convert form data object to JSON
-        const requestBody = JSON.stringify(formData);
+        try {
+            // Convert form data object to JSON
+            const requestBody = JSON.stringify(formData);
 
-        console.log(formData);
-        console.log(token);
+            console.log(formData);
+            console.log(token);
 
-        const response = await fetch(`${baseUrl}/api/user/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: requestBody,
-        });
+            const response = await fetch(`${baseUrl}/api/user/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: requestBody,
+            });
 
-        const data = await response.json();
-        console.log(data);
+            const data = await response.json();
+            console.log(data);
 
-        if (response.ok) {
-            setUserOpen(false);
-            alert('Form submitted successfuly');
-            window.location.reload();
-
-        } else {
-            setMessage(data.message);
+            if (response.ok) {
+                setUserOpen(false);
+                toast.success('Form submitted successfully');
+                window.location.reload();
+            } else {
+                setMessage(data.message);
+                toast.error('sorry! already exist user id & email id'); // Display the error message in an alert
+            }
+        } catch (error) {
+            console.error('An error occurred:', error);
+            // Display a generic error alert
+            alert('An error occurred while submitting the form.');
         }
-
 
         console.log('Form data submitted:', formData);
         // Now you can close the form.
         setIsFormOpen(false);
-
-
-
-
-
-
-
     };
+
 
 
 
@@ -444,7 +510,7 @@ export default function Engineers() {
 
 
 
-
+    
 
 
 
@@ -464,13 +530,6 @@ export default function Engineers() {
 
         <div>
             <Grid container spacing={1}>
-
-
-
-
-
-
-
 
 
                 <Grid item xs={12}>
@@ -528,7 +587,7 @@ export default function Engineers() {
                                     </DialogTitle>
                                     <DialogContent>
                                         <Container maxWidth="md"> {/* Adjusted maxWidth for responsiveness */}
-                                        <form onSubmit={handleSubmit}>
+                                            <form onSubmit={handleSubmit}>
                                                 <Grid container spacing={3}>
 
                                                     <Grid item xs={12}>
@@ -586,7 +645,7 @@ export default function Engineers() {
                                                                 // style={{ padding: '7px', width: '250px' }}
                                                                 sx={{ m: 1, width: '250px' }}
                                                                 error={contactError !== ''}
-                                                                helperText={contactError} 
+                                                                helperText={contactError}
 
                                                             />
 
@@ -691,7 +750,7 @@ export default function Engineers() {
                                                                 error={passwordError !== ''}
                                                                 helperText={passwordError}
                                                             />
-                           
+
 
 
                                                         </div>
@@ -717,10 +776,10 @@ export default function Engineers() {
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <Button type="submit" variant="contained" color="primary"  style={{ float: 'right', marginRight: '-5px' }}>
+                                                            <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
                                                                 Submit
                                                             </Button>
-                                                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red',marginRight:'4%' }}  >
+                                                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}  >
                                                                 Close
                                                             </Button>
                                                         </>
@@ -743,16 +802,6 @@ export default function Engineers() {
                                 </Dialog>
 
 
-
-
-
-
-
-
-
-
-
-
                             </Toolbar>
                         </AppBar>
                     </Box>
@@ -765,78 +814,57 @@ export default function Engineers() {
                 <div className='container-fluid'>
                     <div className='row'>
 
-                        {data.map(item => (
-                            <div key={item.id} className='col-md-3 col-sm-6'>
+                        {data.length === 0 ? (
+                            <Typography
+                                variant="p"
+                                component="div"
+                                style={{ textAlign: 'center', padding: '20px' }} // Adjust padding as needed
+                            >
+                                No Data Available
+                            </Typography>
+                        ) :
 
-                                <Item>
-                                    <Card style={{ backgroundColor: '#007F6D' }}>
-                                        <CardContent>
-                                            <Typography style={{ marginTop: '-5%', color: 'white' }}>
-                                                Junior Engineer
-                                            </Typography>
+                            data.map(item => (
+                                <div key={item.id} className='col-md-3 col-sm-6'>
 
-                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-                                                <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/assets/images/avatars/avatar_5.jpg" />
-                                            </div>
-                                            <Typography style={{ fontSize: '130%', color: 'white' }}>
-                                                {item.name}
-                                            </Typography>
-                                            <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                In Progress {item.activeTasks === null || item.activeTasks === undefined ? 0 : item.activeTasks}
-                                            </Typography>
-                                            <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                Completed {item.closedTasks === null || item.closedTasks === undefined ? 0 : item.closedTasks}
-                                            </Typography>
-                                            <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                Service Engineer
-                                            </Typography>
-                                        </CardContent>
-                                        <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                            <Button onClick={() => routeChange1(item.id)} style={{ color: '#131313', backgroundColor: 'white' }}>
-                                                View Profile
-                                            </Button>
-                                        </CardActions>
-                                    </Card>
-                                </Item>
-                            </div>
-                        ))}
+                                    <Item>
+                                        <Card style={{ backgroundColor: '#007F6D' }}>
+                                            <CardContent>
+                                                <Typography style={{ marginTop: '-5%', color: 'white' }}>
+                                                    Junior Engineer
+                                                </Typography>
+
+                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                                    <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/assets/images/avatars/avatar_5.jpg" />
+                                                </div>
+                                                <Typography style={{ fontSize: '130%', color: 'white' }}>
+                                                    {item.name}
+                                                </Typography>
+
+                                                <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                    In Progress {item.activeTasks === null || item.activeTasks === undefined ? 0 : item.activeTasks}
+                                                </Typography>
+                                                <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                    Completed {item.closedTasks === null || item.closedTasks === undefined ? 0 : item.closedTasks}
+                                                </Typography>
+
+                            
+                                                <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                    Service Engineer
+                                                </Typography>
+                                            </CardContent>
+                                            <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                                <Button onClick={() => routeChange1(item.id)} style={{ color: '#131313', backgroundColor: 'white' }}>
+                                                    View Profile
+                                                </Button>
+                                            </CardActions>
+                                        </Card>
+                                    </Item>
+                                </div>
+                            ))}
 
                     </div>
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
