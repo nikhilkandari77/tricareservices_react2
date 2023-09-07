@@ -83,8 +83,10 @@ export default function DashboardAppPage() {
 
         console.log("data", json.data.complaintGroupByEngineer);
 
+      }).finally(()=>{
+        setLoading(false);
       });
-      setLoading(false);
+     
   }, []);
 
 

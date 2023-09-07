@@ -7,7 +7,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 
-
+import { toast } from 'react-toastify';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
@@ -333,6 +333,7 @@ export default function StickyHeadTable() {
 
     console.log(formData);
     console.log(token);
+    try{
 
     const response = await fetch(`${baseUrl}/api/user/`, {
       method: 'POST',
@@ -355,7 +356,8 @@ export default function StickyHeadTable() {
         setMessage(data.message);
 
       }
-    } catch (error) {
+      
+    } catch(error) {
       console.error('An error occurred:', error);
 
       window.alert('An error occurred while submitting the form.');
