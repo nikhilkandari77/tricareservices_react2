@@ -1,7 +1,10 @@
 
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Component } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import ReactDOM from 'react-dom';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader  
+import { Carousel } from 'react-responsive-carousel';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -434,7 +437,7 @@ export default function StickyHeadTable() {
                 component="div"
                 sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
               >
-                Customer
+                Products
               </Typography>
 
 
@@ -805,6 +808,8 @@ export default function StickyHeadTable() {
                                           aria-labelledby="alert-dialog-title"
                                           aria-describedby="alert-dialog-description"
                                           data={data}
+                                          fullWidth
+                                          maxWidth="lg"
                                         >
                                           <DialogTitle id="alert-dialog-title">
                                             {"View Details"}
@@ -812,35 +817,82 @@ export default function StickyHeadTable() {
                                           <DialogContent>
                                             <DialogContentText>
 
-                                              <div style={{ padding: '20px', }}>
+                                              <div className='Container'>
 
                                                 {/* {
                                                   imageList.map(img =>
                                                     <img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} />
                                                   )
                                                 } */}
+                                                <div className='row'>
+                                                  <div className='col-md-6'>
+                                                    <Carousel
+                                                      showThumbs={false}
+                                                      dynamicHeight={false}
 
-                                                <ImageSlide />
+                                                    >
+                                                      <div>
+                                                        <img width="100%" src="/products_images/front 23-01-2023.png" alt='p1' />
+                                                        {/* <p className="legend">Legend 1</p> */}
+                                                      </div>
+                                                      <div>
+                                                        <img src="assets/2.jpeg" alt='p2' />
+                                                        {/* <p className="legend">Legend 2</p> */}
+                                                      </div>
+                                                      <div>
+                                                        <img src="/products_images/front 23-01-2023.png" alt='p3' />
+                                                        {/* <p className="legend">Legend 3</p> */}
+                                                      </div>
+                                                    </Carousel>
+                                                  </div>
 
 
+                                                  <div className='col-md-6'>
 
-                                                <Grid container spacing={12}>
-                                                  <Grid item md={12} xs={12}>
+                                                    <Box
+                                                      sx={{
+                                                        display: 'flex',
 
-                                                    <ul style={{ listStyleType: "none" }}>
-                                                      <li>Product Id : {id}</li>
-                                                      <li>Product Name : {name}</li>
-                                                      <li>Category Id : {category}</li>
-                                                      <li>Category Name: {categories.filter(c => c.id === id).map(c => c.name)}</li>
-                                                      <li>Description : {description}</li>
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        minHeight: '40vh', // Set the minimum height to full viewport height
+                                                      }}
+                                                    >
 
-                                                    </ul>
-                                                  </Grid>
+                                                      <table width={"100%"} style={{ lineHeight: "40px" }}>
+                                                        <tr>
+                                                          <th><b>Product Id :</b></th><td>{id}</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <th><b>Product Name :</b></th><td>{name}</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <th><b>Category Id : </b></th><td>{category}</td>
+                                                        </tr>
+                                                        <tr>
+                                                          <th><b>Category Name: </b></th><td>{categories.filter(c => c.id === id).map(c => c.name)}</td>
+                                                        </tr>
+                                                      </table>
 
+                                                    </Box>
 
-                                                </Grid>
+                                                  </div>
+                                                </div>
+                                                <div className='row'>
+                                                <h5>Description</h5>
 
+                                                  <Box
+                                                    sx={{
+                                                      display: 'flex',
 
+                                                      alignItems: 'center',
+                                                      justifyContent: 'center',
+                                                    }}
+                                                  >
+                                                    <p>{description}</p>
+
+                                                  </Box>
+                                                </div>
 
 
                                               </div>

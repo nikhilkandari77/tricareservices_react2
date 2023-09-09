@@ -311,6 +311,11 @@ export default function Task() {
 
 
 
+    if (loading) {
+        return <div>Loading...</div>;
+      }
+    
+    
 
 
     return (

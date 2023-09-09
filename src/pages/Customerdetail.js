@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect } from 'react';
-
+import FileSaver from 'file-saver';
 
 import { useLocation, useParams, Navigate, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
@@ -218,7 +218,7 @@ export default function Customerdetail() {
     const [productCustomerData, setProductCustomerData] = useState({})
     const [categories, setCategories] = useState([]);
     const [getCategory, setgetCategory] = useState([]);
-    const [productImages,setProductsImages]=useState([]);
+    const [productImages, setProductsImages] = useState([]);
 
 
 
@@ -248,7 +248,7 @@ export default function Customerdetail() {
     const handleProductDetails = (row) => {
         setProductCustomerData(row);
         setProductsImages(row.productImageName.split(","))
-        console.log( "jbhbjb",row.productImageName.split(","));
+        console.log("jbhbjb", row.productImageName.split(","));
         setOpenProductDetails(true);
     }
 
@@ -437,7 +437,7 @@ export default function Customerdetail() {
             "customer": {
                 "id": userId
             },
-            product:selectedProduct,
+            product: selectedProduct,
             productType,
             serialNo,
             constructionType,
@@ -470,7 +470,7 @@ export default function Customerdetail() {
         if (response.ok) {
             setUserOpenProduct(false);
             toast.success('Form submitted successfully');
-             window.location.reload();
+            window.location.reload();
         } else {
             setMessage(data.message);
             toast.error('somthing went worng');
@@ -729,37 +729,37 @@ export default function Customerdetail() {
 
     // };
 
- const getAllProductCategory = () => {
+    const getAllProductCategory = () => {
 
-         const token = localStorage.getItem('token');
-         setLoading(true);
-         fetch(`${baseUrl}/api/user/category/`, {
-             method: 'GET',
-             mode: 'cors',
-             headers: {
-                 Authorization: `Bearer ${token}`
-             },
+        const token = localStorage.getItem('token');
+        setLoading(true);
+        fetch(`${baseUrl}/api/user/category/`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
 
-         })
+        })
 
-             .then(response => response.json())
-             .then(json => {
-                 console.log("Fetched data:", json.data); // This line will print the data to the console
-                 // setUsers(json);
-                 // setRowsCompt(json.data);
-                 setCategories(json.data);
+            .then(response => response.json())
+            .then(json => {
+                console.log("Fetched data:", json.data); // This line will print the data to the console
+                // setUsers(json);
+                // setRowsCompt(json.data);
+                setCategories(json.data);
 
 
-     // };
+                // };
 
-             })
-             .finally(() => {
-                 setLoading(false);
-             });
+            })
+            .finally(() => {
+                setLoading(false);
+            });
 
-     //     setCategory(event.target.value);
+        //     setCategory(event.target.value);
 
-     };
+    };
 
 
 
@@ -899,8 +899,8 @@ export default function Customerdetail() {
 
                                                                     <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
                                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                                            
-                                                                        <FormControl sx={{ minWidth: 200, marginTop: '7%' }} size="small" fullWidth>
+
+                                                                            <FormControl sx={{ minWidth: 200, marginTop: '7%' }} size="small" fullWidth>
                                                                                 <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>Category</InputLabel>
                                                                                 <Select
                                                                                     labelId="demo-select-small-label"
@@ -919,8 +919,8 @@ export default function Customerdetail() {
                                                                                     ))}
                                                                                 </Select>
                                                                             </FormControl>
-                                                                            
-                                                                          
+
+
 
 
                                                                             <TextField
@@ -986,9 +986,9 @@ export default function Customerdetail() {
                                                                         {/* Your Address, City, Password, and Confirm Password fields */}
 
                                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                                       
 
-                                                                        <FormControl sx={{ m: 1, minWidth: 230, backgroundColor: 'white', borderRadius: '5px', marginTop: '7%' }}>
+
+                                                                            <FormControl sx={{ m: 1, minWidth: 230, backgroundColor: 'white', borderRadius: '5px', marginTop: '7%' }}>
                                                                                 <InputLabel id="Select-Product">Select Product</InputLabel>
                                                                                 <Select
                                                                                     labelId="Select-Product"
@@ -1113,7 +1113,7 @@ export default function Customerdetail() {
                                                                             />
 
 
-                                                                           
+
 
 
 
@@ -1452,164 +1452,167 @@ export default function Customerdetail() {
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                        { rowsCompt===null||rowsCompt===undefined||rowsCompt.length===0?
-                                                        <TableRow style={{textAlign:"center",margin:"auto"}}>
-                                                            no rows
-                                                            </TableRow>:
-                                                        rowsCompt
-                                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                            .map((row) => {
-                                                                return (
-                                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                                        {columnsCompt.map((column) => {
+                                                        {rowsCompt === null || rowsCompt === undefined || rowsCompt.length === 0 ?
+                                                            <TableRow style={{ textAlign: "center", margin: "auto" }}>
+                                                                no rows
+                                                            </TableRow> :
+                                                            rowsCompt
+                                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                                .map((row) => {
+                                                                    return (
+                                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                                            {columnsCompt.map((column) => {
 
 
-                                                                            const value = column.id === "productCustomer" ? row[column.id][column.subId] : row[column.id];
+                                                                                const value = column.id === "productCustomer" ? row[column.id][column.subId] : row[column.id];
 
-                                                                            if (column.id === 'srno') {
-                                                                                sr += 1;
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        {value === null ? '' : String(sr)}
-                                                                                    </TableCell>
-                                                                                );
-                                                                            }
-
-
+                                                                                if (column.id === 'srno') {
+                                                                                    sr += 1;
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {value === null ? '' : String(sr)}
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                }
 
 
-                                                                            if (column.id === 'button') {
-                                                                                
-                                                                                return (
-                                                                                   
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        <Button onClick={() => handleProductDetails(row)} variant="contained"> Details </Button>
-                                                                                        <Dialog
-
-                                                                                            open={openProductDetails}
-                                                                                            onClose={handleClose}
-                                                                                            aria-labelledby="alert-dialog-title"
-                                                                                            aria-describedby="alert-dialog-description"
-                                                                                            style={{ height: '100vh' }}
-                                                                                            fullWidth
-                                                                                            maxWidth="lg"
-
-                                                                                        >
-                                                                                            <div className='container-fluid' style={{ padding: "20px" }}>
-                                                                                                <div className='row' style={{ textAlign: "center" }}>
-                                                                                                    <h3 id="alert-dialog-title">
-                                                                                                        Product Details
-                                                                                                    </h3>
-                                                                                                </div><br />
-                                                                                                <div className="row" >
-
-                                                                                                    <div className='col-md-4'>
-                                                                                                    
-                                                                                                        
-                                                                                                    
-
-                                                                                                        <DialogContent>
-                                                                                                           
-                                                                                                           
-                                                                                                            <img src={`${baseUrl}/resources/products/${productCustomerData.productId}/${productImages[0]}`} alt='product' />
-
-                                                                                                        </DialogContent>
-                                                                                                        <DialogContent>
-                                                                                                           
-                                                                                                           
-                                                                                                            <img src={`${baseUrl}/resources/${productCustomerData.qrImageName}`} alt='product' />
-
-                                                                                                        </DialogContent>
-                                                                                                    </div>
 
 
-                                                                                                    <div className='col-md-8'>
-                                                                                                        <table style={{ width: "100%", lineHeight: "40px" }}>
-                                                                                                            <tr>
-                                                                                                                {
-                                                                                                                    console.log("product data:",productCustomerData)
-                                                                                                                }
-                                                                                                                <th>Product Name : </th>
-                                                                                                                <td>{productCustomerData.productName}</td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Product Category : </th>
-                                                                                                                <td>{productCustomerData.productCategoryName}</td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Product Id : </th>
-                                                                                                                <td>{productCustomerData.productId}</td>
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Product Type : </th>
-                                                                                                                <td>{productCustomerData.productType}</td>
+                                                                                if (column.id === 'button') {
 
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Serial No. :</th>
-                                                                                                                <td>{productCustomerData.serialNo}</td>
+                                                                                    return (
 
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Warranty :</th>
-                                                                                                                <td>{productCustomerData.warrantyPeriod}</td>
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            <Button onClick={() => handleProductDetails(row)} variant="contained"> Details </Button>
+                                                                                            <Dialog
 
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Rating :</th>
-                                                                                                                <td>{productCustomerData.rating}</td>
+                                                                                                open={openProductDetails}
+                                                                                                onClose={handleClose}
+                                                                                                aria-labelledby="alert-dialog-title"
+                                                                                                aria-describedby="alert-dialog-description"
+                                                                                                style={{ height: '100vh' }}
+                                                                                                fullWidth
+                                                                                                maxWidth="lg"
 
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Manufacturing Date :</th>
-                                                                                                                <td>{productCustomerData.manufacturingDate}</td>
+                                                                                            >
+                                                                                                <div className='container-fluid' style={{ padding: "20px" }}>
+                                                                                                    <div className='row' style={{ textAlign: "center" }}>
+                                                                                                        <h3 id="alert-dialog-title">
+                                                                                                            Product Details
+                                                                                                        </h3>
+                                                                                                    </div><br />
+                                                                                                    <div className="row" >
 
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Installation Date : </th>
-                                                                                                                <td>{productCustomerData.installationDate}</td>
+                                                                                                        <div className='col-md-4'>
 
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>Dispatch Date :</th>
-                                                                                                                <td>{productCustomerData.dispatchDate}</td>
 
-                                                                                                            </tr>
-                                                                                                            <tr>
-                                                                                                                <th>constructionType</th>
-                                                                                                                <td>{productCustomerData.constructionType}</td>
-                                                                                                            </tr>
-                                                                                                        </table>
+
+
+                                                                                                            <DialogContent textAlign="center">
+
+
+                                                                                                                <img src={`${baseUrl}/resources/products/${productCustomerData.productId}/${productImages[0]}`} alt='product' />
+                                                                                                                <div style={{margin:"auto",textAlign:"center",padding:"10"}}><button className='btn btn-primary' onClick={() => FileSaver.saveAs(`${baseUrl}/resources/products/${productCustomerData.productId}/${productImages[0]}`, `${productImages[0]}`)} >Download</button></div>
+                                                                                                            </DialogContent>
+                                                                                                            <DialogContent>
+
+
+                                                                                                                <img src={`${baseUrl}/resources/${productCustomerData.qrImageName}`} alt='product' />
+                                                                                                                <div style={{margin:"auto",textAlign:"center",padding:"10"}}>
+                                                                                                                <button className='btn btn-success' onClick={() => FileSaver.saveAs(`${baseUrl}/resources/${productCustomerData.qrImageName}`, `${productCustomerData.qrImageName}`)} >Download</button>
+                                                                                                                </div>
+
+                                                                                                            </DialogContent>
+                                                                                                        </div>
+
+
+                                                                                                        <div className='col-md-8'>
+                                                                                                            <table style={{ width: "100%", lineHeight: "40px" }}>
+                                                                                                                <tr>
+                                                                                                                    {
+                                                                                                                        console.log("product data:", productCustomerData)
+                                                                                                                    }
+                                                                                                                    <th>Product Name : </th>
+                                                                                                                    <td>{productCustomerData.productName}</td>
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Product Category : </th>
+                                                                                                                    <td>{productCustomerData.productCategoryName}</td>
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Product Id : </th>
+                                                                                                                    <td>{productCustomerData.productId}</td>
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Product Type : </th>
+                                                                                                                    <td>{productCustomerData.productType}</td>
+
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Serial No. :</th>
+                                                                                                                    <td>{productCustomerData.serialNo}</td>
+
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Warranty :</th>
+                                                                                                                    <td>{productCustomerData.warrantyPeriod}</td>
+
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Rating :</th>
+                                                                                                                    <td>{productCustomerData.rating}</td>
+
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Manufacturing Date :</th>
+                                                                                                                    <td>{productCustomerData.manufacturingDate}</td>
+
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Installation Date : </th>
+                                                                                                                    <td>{productCustomerData.installationDate}</td>
+
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>Dispatch Date :</th>
+                                                                                                                    <td>{productCustomerData.dispatchDate}</td>
+
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <th>constructionType</th>
+                                                                                                                    <td>{productCustomerData.constructionType}</td>
+                                                                                                                </tr>
+                                                                                                            </table>
+                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
-                                                                                            </div>
 
-                                                                                        </Dialog>
-
+                                                                                            </Dialog>
 
 
 
 
 
+
+                                                                                        </TableCell>
+
+                                                                                    );
+
+
+                                                                                }
+
+
+                                                                                return (
+                                                                                    <TableCell key={column.id} align={column.align}>
+                                                                                        {value}
                                                                                     </TableCell>
 
                                                                                 );
+                                                                            })}
+                                                                        </TableRow>
 
-
-                                                                            }
-
-
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {value}
-                                                                                </TableCell>
-
-                                                                            );
-                                                                        })}
-                                                                    </TableRow>
-
-                                                                );
-                                                            })}
+                                                                    );
+                                                                })}
                                                     </TableBody>
                                                 </Table>
                                             </TableContainer>
@@ -1656,158 +1659,158 @@ export default function Customerdetail() {
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                        {  rows===null||rows===undefined||rows.length===0?
-                                                        <TableRow style={{textAlign:"center",margin:"auto"}}>
-                                                            no rows
-                                                            </TableRow>:
-                                                        rows
-                                                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                            .map((row) => {
-                                                                return (
-                                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                                        {columns.map((column) => {
+                                                        {rows === null || rows === undefined || rows.length === 0 ?
+                                                            <TableRow style={{ textAlign: "center", margin: "auto" }}>
+                                                                no rows
+                                                            </TableRow> :
+                                                            rows
+                                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                                .map((row) => {
+                                                                    return (
+                                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                                            {columns.map((column) => {
 
-                                                                            const value = column.id === "productCustomer" ? row[column.id][column.subId] : row[column.id];
+                                                                                const value = column.id === "productCustomer" ? row[column.id][column.subId] : row[column.id];
 
-                                                                            if (column.id === 'sr') {
-                                                                                sr += 1;
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        {value === null ? '' : String(sr)}
-                                                                                    </TableCell>
-                                                                                );
-                                                                            }
-
-                                                                            if (column.id === 'compaintStatus') {
-                                                                                // console.log(value);
-                                                                                let labelColor;
-
-                                                                                if (value === 'Pending Assign') {
-                                                                                    labelColor = 'error';
-                                                                                } else if (value === 'Engineer Assigned') {
-                                                                                    labelColor = 'warning';
-                                                                                } else if (value === 'Completed') {
-                                                                                    labelColor = 'success';
-                                                                                } else {
-                                                                                    labelColor = 'default';
+                                                                                if (column.id === 'sr') {
+                                                                                    sr += 1;
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {value === null ? '' : String(sr)}
+                                                                                        </TableCell>
+                                                                                    );
                                                                                 }
 
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
-                                                                                    </TableCell>
-                                                                                );
-                                                                            }
+                                                                                if (column.id === 'compaintStatus') {
+                                                                                    // console.log(value);
+                                                                                    let labelColor;
 
-                                                                            if (column.id === 'priority') {
-                                                                                // console.log(value);
-                                                                                let labelColor;
+                                                                                    if (value === 'Pending Assign') {
+                                                                                        labelColor = 'error';
+                                                                                    } else if (value === 'Engineer Assigned') {
+                                                                                        labelColor = 'warning';
+                                                                                    } else if (value === 'Completed') {
+                                                                                        labelColor = 'success';
+                                                                                    } else {
+                                                                                        labelColor = 'default';
+                                                                                    }
 
-                                                                                if (value === 'High') {
-                                                                                    labelColor = 'error';
-                                                                                } else if (value === 'Normal') {
-                                                                                    labelColor = 'warning';
-                                                                                } else if (value === 'Low') {
-                                                                                    labelColor = 'success';
-                                                                                } else {
-                                                                                    labelColor = 'default';
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
+                                                                                        </TableCell>
+                                                                                    );
                                                                                 }
 
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
-                                                                                    </TableCell>
-                                                                                );
-                                                                            }
-                                                                            if (column.id === 'action') {
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        <Button onClick={() => routeChange1(row.id)} variant="contained">Details</Button>
-                                                                                    </TableCell>
-                                                                                );
-                                                                            }
+                                                                                if (column.id === 'priority') {
+                                                                                    // console.log(value);
+                                                                                    let labelColor;
 
-                                                                            if (column.id === 'engineerName') {
+                                                                                    if (value === 'High') {
+                                                                                        labelColor = 'error';
+                                                                                    } else if (value === 'Normal') {
+                                                                                        labelColor = 'warning';
+                                                                                    } else if (value === 'Low') {
+                                                                                        labelColor = 'success';
+                                                                                    } else {
+                                                                                        labelColor = 'default';
+                                                                                    }
 
-                                                                                // console.log(`Desired Value ${  value}`);
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        {value !== null ? value : 'Pending Assign'}
-                                                                                    </TableCell>
-                                                                                );
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                }
+                                                                                if (column.id === 'action') {
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            <Button onClick={() => routeChange1(row.id)} variant="contained">Details</Button>
+                                                                                        </TableCell>
+                                                                                    );
+                                                                                }
 
-                                                                            }
+                                                                                if (column.id === 'engineerName') {
 
-                                                                            if (column.id === 'estimatedDate') {
+                                                                                    // console.log(`Desired Value ${  value}`);
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {value !== null ? value : 'Pending Assign'}
+                                                                                        </TableCell>
+                                                                                    );
 
-                                                                                console.log(`Desired Value ${value}`);
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        {value !== null ? formatDateTime(value) : 'Pending Assign'}
-                                                                                    </TableCell>
-                                                                                );
+                                                                                }
 
-                                                                            }
+                                                                                if (column.id === 'estimatedDate') {
 
-                                                                            if (column.id === 'createdDateTime') {
+                                                                                    console.log(`Desired Value ${value}`);
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {value !== null ? formatDateTime(value) : 'Pending Assign'}
+                                                                                        </TableCell>
+                                                                                    );
 
-                                                                                console.log(`Desired Value ${value}`);
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-                                                                                        {value !== null ? formatDateTime(value) : ''}
-                                                                                    </TableCell>
-                                                                                );
+                                                                                }
 
-                                                                            }
+                                                                                if (column.id === 'createdDateTime') {
 
+                                                                                    console.log(`Desired Value ${value}`);
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+                                                                                            {value !== null ? formatDateTime(value) : ''}
+                                                                                        </TableCell>
+                                                                                    );
 
-
-
-
-
-
-
-
-
-                                                                            console.log(column)
-                                                                            if (column.id === 'button') {
-                                                                                return (
-                                                                                    <TableCell key={column.id} align={column.align}>
-
-                                                                                        {/* view dialog box customerdetail */}
-
-                                                                                        <Button onClick={() => routeChange2(row.id)} variant="contained"> Details </Button>
-                                                                                        <Dialog
-                                                                                            open={open}
-                                                                                            onClose={handleClose}
-                                                                                            aria-labelledby="alert-dialog-title"
-                                                                                            aria-describedby="alert-dialog-description"
+                                                                                }
 
 
-                                                                                        >
-                                                                                            <DialogTitle id="alert-dialog-title">
-                                                                                                {"View Details"}
 
-                                                                                                <div>
-                                                                                                    {/* Add more input fields as needed */}
-                                                                                                    {/* <button style={{ marginLeft: '75%',color:'white',backgroundColor:'blue',width:'24%',height:'39px',borderRadius:'7px' }}  onClick={handleToggleEdit}>
+
+
+
+
+
+
+
+                                                                                console.log(column)
+                                                                                if (column.id === 'button') {
+                                                                                    return (
+                                                                                        <TableCell key={column.id} align={column.align}>
+
+                                                                                            {/* view dialog box customerdetail */}
+
+                                                                                            <Button onClick={() => routeChange2(row.id)} variant="contained"> Details </Button>
+                                                                                            <Dialog
+                                                                                                open={open}
+                                                                                                onClose={handleClose}
+                                                                                                aria-labelledby="alert-dialog-title"
+                                                                                                aria-describedby="alert-dialog-description"
+
+
+                                                                                            >
+                                                                                                <DialogTitle id="alert-dialog-title">
+                                                                                                    {"View Details"}
+
+                                                                                                    <div>
+                                                                                                        {/* Add more input fields as needed */}
+                                                                                                        {/* <button style={{ marginLeft: '75%',color:'white',backgroundColor:'blue',width:'24%',height:'39px',borderRadius:'7px' }}  onClick={handleToggleEdit}>
                                                                                                             {isEditable ? 'Disable Editing' : ' Editing'}
                                                                                                         </button> */}
-                                                                                                </div>
+                                                                                                    </div>
 
 
-                                                                                            </DialogTitle>
-                                                                                            <DialogContent>
-                                                                                                <DialogContentText>
+                                                                                                </DialogTitle>
+                                                                                                <DialogContent>
+                                                                                                    <DialogContentText>
 
-                                                                                                    <div style={{ padding: '20px', }}>
+                                                                                                        <div style={{ padding: '20px', }}>
 
-                                                                                                        {/* <img style={{ width: 125, height: 70, marginLeft: '90px', marginTop: '-30px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
+                                                                                                            {/* <img style={{ width: 125, height: 70, marginLeft: '90px', marginTop: '-30px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
 
-                                                                                                        <Grid container spacing={5}>
-                                                                                                            <Grid item xs={6}>
+                                                                                                            <Grid container spacing={5}>
+                                                                                                                <Grid item xs={6}>
 
-                                                                                                                {/* <ul>
+                                                                                                                    {/* <ul>
                                                                                                                         <li > Asset id  </li>
                                                                                                                         <li> Serial no  </li>
                                                                                                                         <li>SLA        </li>
@@ -1826,23 +1829,23 @@ export default function Customerdetail() {
                                                                                                                     </ul> */}
 
 
-                                                                                                                {/* <label htmlFor={id}>{label}</label> */}
+                                                                                                                    {/* <label htmlFor={id}>{label}</label> */}
 
-                                                                                                                {/* <input style={{ marginTop: '40%' }} type="text" value="Field 1" disabled={!isEditable} />
+                                                                                                                    {/* <input style={{ marginTop: '40%' }} type="text" value="Field 1" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} /> */}
 
-                                                                                                                <div>
-                                                                                                                    <form>
+                                                                                                                    <div>
+                                                                                                                        <form>
 
 
 
 
 
-                                                                                                                        <Grid container spacing={5}>
-                                                                                                                            {/* <Grid item xs={6}>
+                                                                                                                            <Grid container spacing={5}>
+                                                                                                                                {/* <Grid item xs={6}>
 
 
 
@@ -2013,16 +2016,16 @@ export default function Customerdetail() {
 
                                                                                                                             </Grid> */}
 
-                                                                                                                        </Grid>
+                                                                                                                            </Grid>
 
 
-                                                                                                                    </form>
+                                                                                                                        </form>
 
-                                                                                                                </div>
+                                                                                                                    </div>
 
-                                                                                                            </Grid>
+                                                                                                                </Grid>
 
-                                                                                                            {/* <Grid item xs={6}>
+                                                                                                                {/* <Grid item xs={6}>
 
                                                                                                                     <li>Rapid Pod</li>
                                                                                                                     <li>Rapid Pod TRI01 </li>
@@ -2044,44 +2047,44 @@ export default function Customerdetail() {
 
 
                                                                                                                 </Grid> */}
-                                                                                                        </Grid>
+                                                                                                            </Grid>
 
 
 
-                                                                                                    </div>
+                                                                                                        </div>
 
 
 
-                                                                                                </DialogContentText>
-                                                                                            </DialogContent>
-                                                                                            <DialogActions>
-                                                                                                <Button onClick={handleClose} style={{ color: 'red', marginRight: '4%' }} >Close</Button>
-                                                                                                {isEditable ? (
-                                                                                                    <button onClick={handleSaveClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7px' }} >Save</button>
-                                                                                                ) : (
-                                                                                                    <button onClick={handleEditClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7px' }} >Edit</button>
-                                                                                                )}
-                                                                                            </DialogActions>
-                                                                                        </Dialog>
+                                                                                                    </DialogContentText>
+                                                                                                </DialogContent>
+                                                                                                <DialogActions>
+                                                                                                    <Button onClick={handleClose} style={{ color: 'red', marginRight: '4%' }} >Close</Button>
+                                                                                                    {isEditable ? (
+                                                                                                        <button onClick={handleSaveClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7px' }} >Save</button>
+                                                                                                    ) : (
+                                                                                                        <button onClick={handleEditClick} style={{ width: '15%', marginRight: '4%', color: 'white', backgroundColor: 'blue', height: '35px', borderRadius: '7px' }} >Edit</button>
+                                                                                                    )}
+                                                                                                </DialogActions>
+                                                                                            </Dialog>
+                                                                                        </TableCell>
+
+                                                                                    );
+
+
+                                                                                }
+
+
+                                                                                return (
+                                                                                    <TableCell key={column.id} align={column.align}>
+                                                                                        {value}
                                                                                     </TableCell>
 
                                                                                 );
+                                                                            })}
+                                                                        </TableRow>
 
-
-                                                                            }
-
-
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {value}
-                                                                                </TableCell>
-
-                                                                            );
-                                                                        })}
-                                                                    </TableRow>
-
-                                                                );
-                                                            })}
+                                                                    );
+                                                                })}
                                                     </TableBody>
                                                 </Table>
                                             </TableContainer>

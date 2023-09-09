@@ -107,7 +107,7 @@ export default function Taskdetail() {
             ticketStatus: "Closed"
         };
         postComplaintDetails(d);
-        toast.warn("Complaint has been rejected sucessfully");
+        toast.warn("Complaint has been closed sucessfully");
         setTimeout(() => {
             navigate("/dashboard/task");
 

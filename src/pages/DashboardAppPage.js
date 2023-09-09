@@ -80,8 +80,8 @@ export default function DashboardAppPage() {
 
         setEngineerWorkloadList(json.data.complaintGroupByEngineer);
         setRows(json.data);
-
-        console.log("data", json.data.complaintGroupByEngineer);
+       
+        console.log("data", json.data.todayCompletedService);
 
       }).finally(()=>{
         setLoading(false);
@@ -218,7 +218,7 @@ export default function DashboardAppPage() {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
             
-            <CardTodayServices title="" color="info" total={rows.todayService} completed={0} />
+            <CardTodayServices title="" color="info" totalCompleted={rows.todayCompletedService} total={rows.todayService} completed={0} />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <CardNextDayServices title="" total={rows.nextDayScheduled} color="warning" icon={'ant-design:windows-filled'} />

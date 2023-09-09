@@ -64,7 +64,7 @@ const options = {
 
 
 
-export default function CardTodayServices({ title, total, completed, icon, color, sx, ...other }) {
+export default function CardTodayServices({ title, total,completed, totalCompleted, icon, color, sx, ...other }) {
 
 
   const data = {
@@ -104,38 +104,55 @@ export default function CardTodayServices({ title, total, completed, icon, color
           fontSize: '10px'
      }}
         
-          formatValues={(values, total) =>"5"}
+          formatValues={(values, total) =>total}
           color="white"
           for
             width={65}
             height={65}
             innerRadius={.6}
             outerRadius={1}
-            colors={['green','white']}
-            labels={ ["Blue", "Green", "Red"]}
+            colors={total+totalCompleted===0?['red','white',]:['red','red','green']}
+            labels={ ["Blue", "Red", "Red"]}
             onClick={false}
             legend={false}
             colorFunction={(colors, index) => colors[(index % colors.length)]}
-            data={[
+            data={total+totalCompleted===0?[
               {
                label:"`",
                 value: 0,
-                color: "green",
+                color: "red",
                 isEmpty:true
               },
+
               {
          
-                value: 65,
+                value: 0,
                 color: "white"
               },
+            ]:
+            [
               {
-      
-                value: 25,
-                color: "green"
-              }
-            ]}
+                label:"`",
+                 value: 0,
+                 color: "red",
+                 isEmpty:true
+               },
+               {
+       
+                 value: total,
+                 color: "red"
+               },
+               {
+       
+                 value: totalCompleted,
+                 color: "green"
+               }
+            ]
+          
+          }
             
           />
+        
          </div>
         </div>
         <div className='col-md-9 col-sm-8 col-9'>
