@@ -184,6 +184,20 @@ export default function Task() {
             )
 
         },
+        { id: 'id', field: 'id', headerName: 'ComplaintId', minWidth: 50 },
+        {
+            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
+
+            renderCell: (params) => (
+                <Label
+
+                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
+                >
+                    {params.row.priority}
+                </Label>
+            )
+
+        },
         { id: 'id', field: 'id', headerName: 'Complaint Id', minWidth: 50 },
         {
             id: 'productCustomer',
@@ -239,6 +253,7 @@ export default function Task() {
             type: "date"
         },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
+      
         
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
         {

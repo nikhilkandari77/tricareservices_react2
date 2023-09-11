@@ -789,6 +789,19 @@ export default function StickyHeadTable() {
                                             <DialogContentText>
 
                                               <div className='Container'>
+                                                <div className='row' >
+                                               <div className='col-md-12' >
+                                               <table width={"70%"} style={{margin:"auto",textAlign:"center"}}>
+                                                        <tr>
+                                                          <th><b>Product Id :</b></th><td>{id}</td>
+                                                          <th><b>Product Name :</b></th><td>{name}</td>
+                                                          <th><b>Category Name: </b></th><td>{categories.filter(c => c.id === category).map(c => c.name)}</td>
+
+                                                        </tr>
+                                                      
+                                                      </table>
+                                               </div>
+                                                </div>
 
                                                 {/* {
                                                   imageList.map(img =>
@@ -802,18 +815,17 @@ export default function StickyHeadTable() {
                                                       dynamicHeight={false}
 
                                                     >
-                                                      <div>
-                                                        <img width="100%" src="/products_images/front 23-01-2023.png" alt='p1' />
-                                                        {/* <p className="legend">Legend 1</p> */}
-                                                      </div>
-                                                      <div>
-                                                        <img src="assets/2.jpeg" alt='p2' />
-                                                        {/* <p className="legend">Legend 2</p> */}
-                                                      </div>
-                                                      <div>
-                                                        <img src="/products_images/front 23-01-2023.png" alt='p3' />
-                                                        {/* <p className="legend">Legend 3</p> */}
-                                                      </div>
+                                                    
+                                                      
+                                                      {
+                                                  imageList.map(img =>
+                                                    <div><img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} /></div>
+                                                  )
+                                                }
+                                                    {/* <p className="legend">Legend 3</p> */}
+
+                                                      
+                                                     
                                                     </Carousel>
                                                   </div>
 
@@ -829,41 +841,20 @@ export default function StickyHeadTable() {
                                                         minHeight: '40vh', // Set the minimum height to full viewport height
                                                       }}
                                                     >
+                                                      <div>
+                                                      <h5 style={{textAlign:"center"}}>Description</h5>
 
-                                                      <table width={"100%"} style={{ lineHeight: "40px" }}>
-                                                        <tr>
-                                                          <th><b>Product Id :</b></th><td>{id}</td>
-                                                        </tr>
-                                                        <tr>
-                                                          <th><b>Product Name :</b></th><td>{name}</td>
-                                                        </tr>
-                                                        <tr>
-                                                          <th><b>Category Id : </b></th><td>{category}</td>
-                                                        </tr>
-                                                        <tr>
-                                                          <th><b>Category Name: </b></th><td>{categories.filter(c => c.id === id).map(c => c.name)}</td>
-                                                        </tr>
-                                                      </table>
+                                                 
+                                                        <p>{description}</p>
+                                                      </div>
+
+                                                     
 
                                                     </Box>
 
                                                   </div>
                                                 </div>
-                                                <div className='row'>
-                                                <h5>Description</h5>
-
-                                                  <Box
-                                                    sx={{
-                                                      display: 'flex',
-
-                                                      alignItems: 'center',
-                                                      justifyContent: 'center',
-                                                    }}
-                                                  >
-                                                    <p>{description}</p>
-
-                                                  </Box>
-                                                </div>
+                                                
 
 
                                               </div>
