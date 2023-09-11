@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import Paper from '@mui/material/Paper';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -17,10 +17,12 @@ import { ClipLoader } from "react-spinners";
 
 
 import Chip from '@mui/material/Chip';
-import { Button, Card, TextField, Typography, Grid } from '@mui/material';
+import { Button, Card, TextField, Typography, Grid, DialogContent, DialogContentText } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 // import Input from '@mui/joy/Input';
 
@@ -47,7 +49,7 @@ const override = css`
 
 export default function TaskHistoryDetail() {
     const location = useLocation();
-
+    const taskId = location.state?.taskId;
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +81,9 @@ export default function TaskHistoryDetail() {
     const [visitTime, setVisitTime] = useState(null);
     const [visitDate, setVisitDate] = useState(null);
     const [product, Images] = useState('');
+
+  
+
     const handleTimeChange = (event) => {
         setSelectedTime(event.target.value);
     };
@@ -128,7 +133,7 @@ export default function TaskHistoryDetail() {
 
         try {
             setIsTaskLoading(true);
-            const taskId=location.state.taskId;
+            
             fetch(`${baseUrl}/api/user/complaint-history/${taskId}`, {
 
                 method: 'GET',
@@ -167,10 +172,10 @@ export default function TaskHistoryDetail() {
                     setEngineerId(json.data.engineerId);
                     setEngineer(json.data.engineerName);
 
-                    const { formattedDate, formattedTime } = formatDateTime(json.data.estimatedDateTime);
+                    const { formattedDate, formattedTime } = formatDateTime(json.data.closeDateTime);
                     // console.log(`Estimated End Date ${  formattedDate}`);
                     // console.log(`Estimated End Time ${  formattedTime}`);
-                    if (json.data.estimatedDateTime === null) {
+                    if (json.data.closeDateTime === null) {
 
                         setSelectedDate("");
                         setSelectedTime("");
@@ -451,16 +456,16 @@ export default function TaskHistoryDetail() {
                                         <Typography variant="h6" gutterBottom>
                                             {task.productCustomer.productName}
                                         </Typography>
-                                    
-                                            {
-                                                productImages[0] === undefined ? "" :
-                                                    <img
-                                                        style={{ maxWidth: '100%', maxHeight: '150px', marginBottom: '2px' }}
-                                                        alt="Customer Profile"
-                                                        src={`${baseUrl}/resources/products/${task.productCustomer.productId}/${productImages[0]}`}
-                                                    />
-                                            }
-                                    
+
+                                        {
+                                            productImages[0] === undefined ? "" :
+                                                <img
+                                                    style={{ maxWidth: '100%', maxHeight: '150px', marginBottom: '2px' }}
+                                                    alt="Customer Profile"
+                                                    src={`${baseUrl}/resources/products/${task.productCustomer.productId}/${productImages[0]}`}
+                                                />
+                                        }
+
                                         <div style={{ display: 'flex', marginTop: '2%', flexDirection: 'column', height: '100%' }}>
                                             <div style={{ width: '100%', justifyContent: 'space-between' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -488,29 +493,6 @@ export default function TaskHistoryDetail() {
                                             </div>
                                         </div>
 
-                                        <div style={{ display: 'flex', marginTop: '2%', flexDirection: 'column', height: '100%', minWidth: '100%' }}>
-                                            {/* Horizontal Cards */}
-                                            <div style={{ display: 'flex', marginTop: '2%' }}>
-                                                <Card style={{ flex: 1, minHeight: 200, minWidth: '50%', marginRight: '10px', border: '2px solid black', borderRadius: '8px' }}>
-                                                    <CardContent>
-                                                        {/* Card content for the first card */}
-                                                        <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
-                                                            Work Performed
-                                                        </Typography>
-                                                    </CardContent>
-                                                </Card>
-
-
-                                                <Card style={{ flex: 1, minHeight: 200, minWidth: '50%', border: '2px solid black', borderRadius: '8px' }}>
-                                                    <CardContent>
-                                                        {/* Card content for the third card */}
-                                                        <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%', borderBottom: '2px solid red' }}>
-                                                            Signature
-                                                        </Typography>
-                                                    </CardContent>
-                                                </Card>
-                                            </div>
-                                        </div>
 
                                         <div style={{ display: 'flex', marginTop: '2%', minWidth: '100%', flexDirection: 'column', height: '100%' }}>
                                             {/* Horizontal Cards */}
@@ -528,19 +510,31 @@ export default function TaskHistoryDetail() {
 
 
                                                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                                                                <div style={{ height: "20vh", width: '100%' }}>
+                                                                <div style={{ width: '100%' }}>
 
                                                                     {
                                                                         task.images !== "" && task.images !== null && task.images !== undefined ?
                                                                             task.images.toString().split(",").map(image =>
-                                                                                <img style={{width:200}}
-                                                                                    align="left"
-                                                                                    alt="Complaint images"
-                                                                                    src={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
-                                                                                />
+                                                                                <Button
+                                                                                    value={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
+                                                                                 //   onClick={() => handleOpenImage(e.target.value)}
+                                                                                >
+                                                                                    <img style={{ width: 200 }}
+                                                                                        align="left"
+                                                                                        alt="Complaint images"
+                                                                                        src={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
+                                                                                    />
+                                                                                </Button>
                                                                             ) : ""
 
                                                                     }
+                                                                    {/* <Dialog
+                                                                        open={openImage}
+                                                                       // onClose={closeImage}
+                                                                        aria-labelledby="alert-dialog-title"
+                                                                        aria-describedby="alert-dialog-description"
+                                                                        style={{ height: 'auto', maxWidth: '100%' }} // Adjusted height and maxWidth for responsiveness
+                                                                    ></Dialog> */}
                                                                 </div>
                                                                 {
                                                                     console.log(task.images)
@@ -561,8 +555,152 @@ export default function TaskHistoryDetail() {
                                 )
                             }
                         </Grid>
+                        <Grid item xs={12} md={3}>
+                            {/* {
+                                Object.keys(task).length === 0  ? null : (
+                                    
+                                )
+                            } */}
+
+                            <Paper style={{ height: '100%', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+
+                                <Card style={{ width: '100%', height: '100%' }}>
+                                    <CardContent>
+
+                                        <Card style={{ width: '100%', height: '100%', border: '2px solid red', borderRadius: '8px', marginBottom: '10%' }}>
+                                            <CardContent>
+                                                <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
+                                                    {task.problem}<br />
+                                                </Typography>
+                                                {/* <Typography variant="body1" style={{ textAlign: 'center' }}>
+                                                    {task.problemDescription}
+                                                </Typography> */}
+                                                {
+
+                                                    Object.keys(task).length !== 0 ? (
+                                                        <Typography variant="body1" style={{ textAlign: 'center' }}>
+                                                            {task.problemDescription}
+                                                        </Typography>
+                                                    ) : (
+                                                        <div
+                                                            style={{
+                                                                display: "flex",
+                                                                justifyContent: "center",
+                                                                alignItems: "center",
+                                                                height: "100%",
+                                                                marginTop: '10%'
+                                                            }}
+                                                        >
+                                                            <ClipLoader
+                                                                color={"#007F6D"}
+                                                                loading
+                                                                css={override}
+                                                                size={10}
+                                                            />
+                                                        </div>
+                                                    )
+
+                                                }
+                                            </CardContent>
+                                        </Card>
+
+                                        <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
+                                            <InputLabel id="labelServiceType">Service Type</InputLabel>
+                                            <Select
+                                                labelId="labelServiceType"
+                                                id="selectServiceType"
+                                                value={serviceType}
+                                                label="Service Type"
+                                                onChange={handleChangeServiceType}
+                                                disabled
+
+                                            >
+
+                                                <MenuItem value="Free">Free</MenuItem>
+                                                <MenuItem value="Paid">Paid</MenuItem>
+                                            </Select>
+                                        </FormControl>
+
+                                        <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
+                                            <InputLabel id="demo-select-small-label">Task Type</InputLabel>
+                                            <Select
+                                                labelId="demo-select-small-label"
+                                                id="demo-select-small"
+                                                value={complaintType}
+                                                label="Task Type"
+                                                onChange={handleChangeComplaintType}
+                                                disabled
+                                            >
+
+                                                <MenuItem value="Remote Support">Remote Support</MenuItem>
+                                                <MenuItem value="On Site Visit">On Site Visit</MenuItem>
+                                            </Select>
+                                        </FormControl>
+
+                                        <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
+                                            <InputLabel id="slectEngineerLabel">
+                                                Select Engineer
+                                            </InputLabel>
+                                            <Select
+                                                labelId="slectEngineerLabel"
+                                                id="slectEngineer"
+                                                value={engineerId}
+                                                label="Select Engineer"
+                                                onChange={handleChangeEngineer}
+                                                disabled
+                                            >
+
+
+                                                {Object.keys(engineers).length === 0 ? null : (
+                                                    engineers.map(engineer0 => (
+                                                        <MenuItem key={engineer0.id} value={engineer0.id}>
+                                                            {engineer0.name}
+                                                        </MenuItem>
+                                                    ))
+                                                )}
+                                            </Select>
+                                        </FormControl>
+
+
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+
+                                            <div><b>Closed Date : </b>{estimatedDate}</div>
+                                        </FormControl>
+
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+
+                                            <div><b>Closed Time : </b>{estimatedTime}</div>
+                                        </FormControl>
+
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <div><b>Visit Date : </b>{visitDate}</div>
+                                        </FormControl>
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <div><b>Visit Time : </b>{visitTime}</div>
+
+                                        </FormControl>
+                                        <FormControl sx={{ width: '100%', marginBottom: '2%' }} size="small">
+
+                                            <div><b>Priority : </b>{priority}</div>
+
+                                        </FormControl>
+
+
+
+
+
+                                    </CardContent>
+
+                                </Card>
+                            </Paper>
+
+
+                        </Grid>
+
 
                     </Grid>
+
+
 
                 </div>
 

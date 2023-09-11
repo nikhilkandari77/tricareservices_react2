@@ -47,7 +47,8 @@ const override = css`
 
 export default function Taskdetail() {
     const location = useLocation();
-
+    const taskId = location.state?.taskId;
+    const { state } = useLocation();
     const navigate = useNavigate();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -102,7 +103,7 @@ export default function Taskdetail() {
 
         e.preventDefault();
         const d = {
-            id: `${location.state.taskId}`,
+            id: `${taskId}`,
             complaintStatus: "Closed",
             ticketStatus: "Closed"
         };
@@ -128,7 +129,7 @@ export default function Taskdetail() {
         //     .toISOString().substring(0, 10);
         const d = {
 
-            id: `${location.state.taskId}`,
+            id: `${taskId}`,
             engineerId: `${engineerId}`,
             estimatedDateTime: `${`${estimatedDate} ${estimatedTime}:00`}`,
             complaintType: `${complaintType}`,
@@ -208,8 +209,8 @@ export default function Taskdetail() {
 
 
 
-    useEffect(() => {
-        const taskId=location.state.taskId
+    useEffect(() => {       
+        console.log("state is :",state)
 
         try {
             setIsTaskLoading(true);
@@ -306,7 +307,7 @@ export default function Taskdetail() {
             console.error("Error:", error);
         }
 
-    }, [location.state.taskId]);
+    }, [taskId]);
 
 
 

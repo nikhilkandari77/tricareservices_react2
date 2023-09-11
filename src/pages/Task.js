@@ -171,6 +171,19 @@ export default function Task() {
 
     const columns = [
         { id: "sr", field: "sr", headerName: 'S.No', maxWidth: 10 },
+        {
+            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
+
+            renderCell: (params) => (
+                <Label
+
+                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
+                >
+                    {params.row.priority}
+                </Label>
+            )
+
+        },
         { id: 'id', field: 'id', headerName: 'ComplaintId', minWidth: 50 },
         {
             id: 'productCustomer',
@@ -209,19 +222,7 @@ export default function Task() {
             type: "date"
         },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
-        {
-            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
-
-            renderCell: (params) => (
-                <Label
-
-                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
-                >
-                    {params.row.priority}
-                </Label>
-            )
-
-        },
+      
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
         {
             field: 'actions',
