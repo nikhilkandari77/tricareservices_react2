@@ -155,9 +155,9 @@ export default function Customerdetail() {
 
 
 
-    const [rowscurrent, setRowscurrent] = useState([])
-    const [rowsCompt, setRowsCompt] = useState([])
-    const [rows, setRows] = useState([])
+    const [rowscurrent, setRowscurrent] = useState([]);
+    const [rowsCompt, setRowsCompt] = useState([]);
+    const [rows, setRows] = useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const { id } = useParams();
@@ -176,7 +176,7 @@ export default function Customerdetail() {
     const [state, setState] = useState('');
     const [contactno, setContactno] = useState('');
     const [contact, setContact] = useState('');
-    const [message, setMessage] = useState('')
+    const [message, setMessage] = useState('');
 
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmpassword] = useState('');
@@ -212,7 +212,7 @@ export default function Customerdetail() {
 
     const [category, setCategory] = useState('');
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
     const [user, setUser] = useState([]);
 
     const [selectedImage, setSelectedImage] = useState(null);
@@ -267,14 +267,14 @@ export default function Customerdetail() {
         setState(user.state);
 
         setUserOpen(true);
-    }
+    };
 
     const handleClickClose1 = () => {
         setUserOpen(false);
-    }
+    };
     const handleClickOpen1 = () => {
         setUserOpen(false);
-    }
+    };
 
 
 
@@ -287,14 +287,14 @@ export default function Customerdetail() {
     };
     const handleClickOpenUserPopup2 = () => {
         setUserOpenProduct(true);
-    }
+    };
 
     const handleClickClose2 = () => {
         setUserOpenProduct(false);
-    }
+    };
     const handleClickOpen3 = () => {
         setUserOpenProduct(false);
-    }
+    };
 
 
 
@@ -339,8 +339,8 @@ export default function Customerdetail() {
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
                 // setUsers(json);
-                setRowscurrent(json.data)
-                console.log("rowdata", rowscurrent)
+                setRowscurrent(json.data);
+                console.log("rowdata", rowscurrent);
 
 
             })
@@ -531,10 +531,10 @@ export default function Customerdetail() {
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
                 // setUsers(json);
-                setRows(json.data)
-                console.log("rowdata", rows)
+                setRows(json.data);
+                console.log("rowdata", rows);
 
-           
+
 
             })
             .finally(() => {
@@ -685,20 +685,20 @@ export default function Customerdetail() {
     const routeChange1 = (id) => {
 
 
-        console.log(id)
+        console.log(id);
 
         navigate("/dashboard/task-history-details", { state: { taskId: id } });
 
 
-    }
+    };
 
     const routeChange2 = (id) => {
 
-        console.log(id)
+        console.log(id);
 
-         navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
-    
-    }
+        navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
+
+    };
 
 
 
@@ -745,7 +745,7 @@ export default function Customerdetail() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         setLoading(true);
-    
+
         try {
             fetch(`${baseUrl}/api/user/${userId}`, {
                 method: 'GET',
@@ -754,32 +754,32 @@ export default function Customerdetail() {
                     Authorization: `Bearer ${token}`
                 },
             })
-            .then(response => {
-                if (!response.ok) {
-                    toast.error('No data available');
-                }
-                return response.json();
-            })
-            .then(json => {
-                console.log("Fetched data:", json.data); // This line will print the data to the console
-                setUser(json.data);
-                handleChange6();
-                handleChange7();
-            })
-            .catch(error => {
-                console.error("An error occurred during fetch:", error);
-                // Handle the error as needed (e.g., set an error state)
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        toast.error('No data available');
+                    }
+                    return response.json();
+                })
+                .then(json => {
+                    console.log("Fetched data:", json.data); // This line will print the data to the console
+                    setUser(json.data);
+                    handleChange6();
+                    handleChange7();
+                })
+                .catch(error => {
+                    console.error("An error occurred during fetch:", error);
+                    // Handle the error as needed (e.g., set an error state)
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
         } catch (error) {
             console.error("An error occurred:", error);
             // Handle the error as needed (e.g., set an error state)
             setLoading(false);
         }
     }, []);
-    
+
 
 
 
@@ -1039,19 +1039,10 @@ export default function Customerdetail() {
 
                                                                 </div>
 
-
-
-
-
-
-
-
                                                             </form>
                                                         </Container>
                                                     </DialogContent>
                                                 </Dialog>
-
-
 
 
                                             </div>
@@ -1134,7 +1125,7 @@ export default function Customerdetail() {
                                                         </TableRow>
                                                     </TableHead>
                                                     <TableBody>
-                                                        {rows===null||rows===undefined ? (<TableCell colSpan={columns.length}>
+                                                        {rows === null || rows === undefined ? (<TableCell colSpan={columns.length}>
                                                             <Typography
                                                                 variant="p"
                                                                 component="div"
@@ -1160,15 +1151,7 @@ export default function Customerdetail() {
                                                                                 );
                                                                             }
 
-
-
-
-
-
-
-
-
-                                                                            console.log(column)
+                                                                            console.log(column);
                                                                             if (column.id === 'button') {
                                                                                 return (
                                                                                     <TableCell key={column.id} align={column.align}>
@@ -1233,12 +1216,8 @@ export default function Customerdetail() {
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} /> */}
 
-                                                                                                                <div>
-                                                                                                                    <form>
-
-
-
-
+<div>
+<form>
 
                                                                                                                         <Grid container spacing={5}>
                                                                                                                             <Grid item xs={6}>
@@ -1465,7 +1444,7 @@ export default function Customerdetail() {
                                             <TablePagination
                                                 rowsPerPageOptions={[10, 25, 100]}
                                                 component="div"
-                                         rowsPerPage={rowsPerPage}
+                                                rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={handleChangePage}
                                                 onRowsPerPageChange={handleChangeRowsPerPage}
@@ -1537,7 +1516,7 @@ export default function Customerdetail() {
 
 
 
-                                                                                console.log(column)
+                                                                                console.log(column);
                                                                                 if (column.id === 'button') {
                                                                                     return (
                                                                                         <TableCell key={column.id} align={column.align}>

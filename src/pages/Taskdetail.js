@@ -209,7 +209,7 @@ export default function Taskdetail() {
 
 
     useEffect(() => {
-        const taskId=location.state.taskId
+        const {taskId} = location.state
 
         try {
             setIsTaskLoading(true);
@@ -306,7 +306,7 @@ export default function Taskdetail() {
             console.error("Error:", error);
         }
 
-    }, [location.state.taskId]);
+    }, [location.state, location.state.taskId, navigate]);
 
 
 

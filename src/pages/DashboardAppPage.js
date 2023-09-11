@@ -9,7 +9,7 @@ import colors from 'src/theme/colors';
 
 
 // @mui
-import { useTheme} from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 import { Card, Grid, Typography } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
@@ -56,11 +56,50 @@ export default function DashboardAppPage() {
   const hashMap = {};
   const pieParams = { height: 200, margin: { right: 5 } };
   const palette = ['red', 'blue', 'green'];
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
+  const [totalComplaints, setTotalComplaints] = useState('0');
+
+  const [isTotalServicesExpanded, setTotalServicesExpanded] = useState(false);
+  const [isVisitsTodayExpanded, setVisitsTodayExpanded] = useState(false);
+  const [isBackLogsExpanded, setBackLogsExpanded] = useState(false);
+
+  const handleCardClick = (cardTitle) => {
+    // Call the custom onClickHandler when the component is clicked
+    if(cardTitle === "total complaints"){
+
+      setTotalServicesExpanded(!isTotalServicesExpanded);
+      if(isVisitsTodayExpanded){
+        setVisitsTodayExpanded(!setVisitsTodayExpanded);
+      }
+      if (isBackLogsExpanded) {
+        setBackLogsExpanded(!isBackLogsExpanded);
+      }
+
+    } else if(cardTitle === "visits today"){
+
+      setVisitsTodayExpanded(!isVisitsTodayExpanded);
+      if (isTotalServicesExpanded) {
+        setTotalServicesExpanded(!isTotalServicesExpanded);
+      }
+      if (isBackLogsExpanded) {
+        setBackLogsExpanded(!isBackLogsExpanded);
+      }
+
+    } else if(cardTitle === "backlog"){
+
+      setBackLogsExpanded(!isBackLogsExpanded);
+      if(isVisitsTodayExpanded){
+        setVisitsTodayExpanded(!setVisitsTodayExpanded);
+      }
+      if (isTotalServicesExpanded) {
+         setTotalServicesExpanded(!isTotalServicesExpanded);
+      }
+
+    }
 
 
-
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -80,13 +119,13 @@ export default function DashboardAppPage() {
 
         setEngineerWorkloadList(json.data.complaintGroupByEngineer);
         setRows(json.data);
-       
+
         console.log("data", json.data.todayCompletedService);
 
-      }).finally(()=>{
+      }).finally(() => {
         setLoading(false);
       });
-     
+
   }, []);
 
 
@@ -193,7 +232,7 @@ export default function DashboardAppPage() {
   if (rows.engineers !== undefined) {
     rows.engineers.forEach((engineer) => {
       if (hashMap[engineer] === undefined)
-        hashMap[engineer] = 0
+        hashMap[engineer] = 0;
     });
   }
   const sizing = {
@@ -210,36 +249,234 @@ export default function DashboardAppPage() {
         <title>Tricare Services</title>
       </Helmet>
 
-      <div className="container-fluid mb-5">
+      <div className="container-fluid mb-4">
         <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
           Dashboard
         </Typography>
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
-            
-            <CardTodayServices title="" color="info" totalCompleted={rows.todayCompletedService} total={rows.todayService} completed={0} />
+
+            {/* <CardTodayServices title="" color="info" totalCompleted={rows.todayCompletedService} total={rows.todayService} completed={0} /> */}
+
+            <Card
+
+              sx={{
+                py: 2,
+                backgroundColor: 'rgba(0, 91, 167, 1)',
+                color: 'rgba(255, 255, 255, 1)',
+                textAlign: 'center',
+                margin: 'auto',
+                cursor: 'pointer',
+              }}
+              onClick={() => handleCardClick("total complaints")}
+
+            >
+
+              <Typography variant="h3">Total Complaints</Typography>
+              <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+
+
+            </Card>
+
+
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <CardNextDayServices title="" total={rows.nextDayScheduled} color="warning" icon={'ant-design:windows-filled'} />
+            {/* <CardNextDayServices title="" total={rows.nextDayScheduled} color="warning" icon={'ant-design:windows-filled'} /> */}
+            <Card
+
+              sx={{
+                py: 2,
+                backgroundColor: 'rgba(68, 147, 85, 1)',
+                color: 'rgba(255, 255, 255, 1)',
+                textAlign: 'center',
+                margin: 'auto',
+                cursor: 'pointer',
+              }}
+              onClick={() => handleCardClick("visits today")}
+            >
+
+              <Typography variant="h3">Visits Today</Typography>
+              <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+
+
+            </Card>
+
+
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <CardBackLogServices title="" total={rows.backLog} color="error" icon={'ant-design:bug-filled'} />
+            {/* <CardBackLogServices title="" total={rows.backLog} color="error" icon={'ant-design:bug-filled'} /> */}
+
+            <Card
+
+              sx={{
+                py: 2,
+                backgroundColor: 'rgba(0, 130, 148, 1)',
+                color: 'rgba(255, 255, 255, 1)',
+                textAlign: 'center',
+                margin: 'auto',
+                cursor: 'pointer',
+              }}
+              onClick={() => handleCardClick("backlog")}
+            >
+
+              <Typography variant="h3">BackLogs</Typography>
+              <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+
+
+            </Card>
+
           </Grid>
         </Grid>
+
+
+
       </div>
 
 
-      <div className="container-fluid">
 
-        <Grid container spacing={3}>
+      {isTotalServicesExpanded && (
+        <div className="container-fluid">
 
-          <Grid item xs={12}>
-            
-            <DashboardTable token={token} />
+          <Grid container spacing={1} justifyContent="center">
+            <Grid item xs={12} md={12}>
+              <Card
+                sx={
+                  {
+                    py: 2,
+                    backgroundColor: 'rgba(0, 91, 167, 1)',
+                    color: 'rgba(255, 255, 255, 1)',
+                    textAlign: "center",
+                    margin: "auto"
+                  }
+                }
+
+              >
+
+                <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">High</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">Medium</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">Low</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                </div>
+
+
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div>
+      )}
+
+      {/* Today Visits Details  */}
+      {isVisitsTodayExpanded && (
+        <div className="container-fluid">
+
+          <Grid container spacing={1} justifyContent="center">
+            <Grid item xs={12} md={12}>
+              <Card
+                sx={
+                  {
+                    py: 2,
+                    backgroundColor: 'rgba(68, 147, 85, 1)',
+                    color: 'rgba(255, 255, 255, 1)',
+                    textAlign: "center",
+                    margin: "auto"
+                  }
+                }
+
+              >
+
+                <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">High</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">Medium</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">Low</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                </div>
+
+
+              </Card>
+            </Grid>
+          </Grid>
+        </div>
+      )}
+
+
+      {/* Backlogs Details  */}
+      {isBackLogsExpanded && (
+        <div className="container-fluid">
+
+          <Grid container spacing={1} justifyContent="center">
+            <Grid item xs={12} md={12}>
+              <Card
+                sx={
+                  {
+                    py: 2,
+                    backgroundColor: 'rgba(0, 130, 148, 1)',
+                    color: 'rgba(255, 255, 255, 1)',
+                    textAlign: "center",
+                    margin: "auto"
+                  }
+                }
+
+              >
+
+                <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">High</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">Medium</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
+                    <Grid>
+                      <Typography variant="h3">Low</Typography>
+                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                    </Grid>
+                  </Grid>
+                </div>
+
+
+              </Card>
+            </Grid>
+          </Grid>
+        </div>
+      )}
+
+
       <br />
       <div className="container-fluid">
 
@@ -294,6 +531,20 @@ export default function DashboardAppPage() {
           </Grid>
         </Grid>
       </div>
+
+      <br />
+
+      <div className="container-fluid">
+
+        <Grid container spacing={3}>
+
+          <Grid item xs={12}>
+
+            <DashboardTable token={token} />
+          </Grid>
+        </Grid>
+      </div>
+
     </>
   );
 }

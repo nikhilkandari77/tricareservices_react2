@@ -166,12 +166,10 @@ export default function StickyHeadTable() {
   //     row : null;
 
   // })
-  const searchItem = rows.filter(row => {
-    return (search === '') || columns.map((column) => row[column.id] !== undefined
+  const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined
       && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
       || (row.category.name.toLowerCase().includes(search.toLowerCase()))
-      ? row : null;
-  })
+      ? row : null)
 
   const deleteImagesHandler = (e) => {
     if (deleteImages.includes(e.target.value))
@@ -393,28 +391,9 @@ export default function StickyHeadTable() {
   }
 
 
-
-
-
-
-
-
-
-
-
-
   if (loading) {
     return <div>Loading...</div>;
   }
-
-
-
-
-
-
-
-
-
 
 
   let sr = 0;
@@ -440,11 +419,6 @@ export default function StickyHeadTable() {
                 Products
               </Typography>
 
-
-
-
-
-
               <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
@@ -464,8 +438,6 @@ export default function StickyHeadTable() {
 
               </Search>
               &nbsp;&nbsp;
-
-
 
 
               <div >
@@ -612,8 +584,7 @@ export default function StickyHeadTable() {
                       {
                         searchItem
                           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((row) => {
-                            return (
+                          .map((row) => (
                               <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                                 {columns.map((column) => {
                                   let value = row[column.id];
@@ -925,8 +896,7 @@ export default function StickyHeadTable() {
                                 })}
                               </TableRow>
 
-                            );
-                          })}
+                            ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
