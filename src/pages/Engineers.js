@@ -592,12 +592,12 @@ export default function Engineers() {
 
                                                     <Grid item xs={12}>
                                                         <div style={{ textAlign: 'center', marginBottom: '15px', position: 'relative' }}>
-                                                            <input
+                                                            {/* <input
                                                                 type="file"
                                                                 id="imageUpload"
                                                                 style={{ display: 'none' }}
                                                                 onChange={handleImageChange} // Define your image change handler
-                                                            />
+                                                            /> */}
                                                             <InputLabel htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'block' }}>
                                                                 <Button
                                                                     component="span"

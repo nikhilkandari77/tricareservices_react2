@@ -3,6 +3,8 @@ import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
+import Usermanagement from './pages/Usermanagement';
+import Admin from './pages/Admin';
 import BlogPage from './pages/BlogPage';
 import UserPage from './pages/UserPage';
 import Customerdetail from './pages/Customerdetail';
@@ -40,6 +42,8 @@ export default function Router() {
         {path:'login', element: <Login/>},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        {path: 'admin', element: <Admin/> },
+        {path: 'usermanagement', element: <Usermanagement/>},
       ],
     },
     {

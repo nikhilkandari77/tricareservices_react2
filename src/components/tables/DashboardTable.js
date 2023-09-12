@@ -23,7 +23,8 @@ import baseUrl from '../../utils/baseUrl';
 
 const columns = [
   { id: "sr", label: 'S.No', minWidth: 10 },
-  { id: 'id', label: 'ComplaintId', align: 'center', minWidth: 50 },
+  { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
+  { id: 'id', label: 'Complaint Id', align: 'center', minWidth: 50 },
   {
     id: 'productCustomer',
     subId: 'productName',
@@ -50,7 +51,7 @@ const columns = [
   { id: 'engineerName', label: 'Engineer', align: 'center', minWidth: 70 },
   { id: 'estimatedDateTime', label: 'Estimated End Time', align: 'center', minWidth: 110 },
   { id: 'complaintStatus', label: 'Status', align: 'center', minWidth: 70 },
-  { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
+  
   { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
 ];
 const Search = styled('div')(({ theme }) => ({
@@ -188,11 +189,9 @@ export default function DashboardTable({ token }) {
   //     requestSearch(searched);
   //   };
 
-  const searchItems = rows.filter(row => {
-    return (search === '') || columns.map((column) => row[column.id] !== undefined&&row[column.id]!==null
+  const searchItems = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined&&row[column.id]!==null
       && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
-      ? row : null;
-  })
+      ? row : null)
 
 
   return (
@@ -206,12 +205,12 @@ export default function DashboardTable({ token }) {
               component="div"
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
             >
-              Activities
+              Complaints
             </Typography>
 
 
 
-            <Search>
+            <Search> 
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>

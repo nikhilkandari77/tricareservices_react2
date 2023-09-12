@@ -35,11 +35,11 @@ const navConfig = [
     path: '/dashboard/engineers',
     icon: <Icon src='/assets/icons/navbar/NavIconEngineer.png' alt="Engineer" />,
   },
-  // {
-  //   title: 'User Management',
-  //   path: '/dashboard/usermanagement',
-  //   icon: <Icon src='/assets/icons/navbar/NavIconEngineer.png' alt="Engineer" />,
-  // },
+  {
+    title: 'User Management',
+    path: '/dashboard/usermanagement',
+    icon: <Icon src='/assets/icons/navbar/NavIconCustomers.png' alt="Engineer" />,
+  },
   // {
   //   title: 'Reports',
   //   path: '/dashboard/reports',
