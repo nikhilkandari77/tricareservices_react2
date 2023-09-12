@@ -171,7 +171,20 @@ export default function TaskHistory() {
 
     const columns = [
         { id: "sr", field: "sr", headerName: 'S.No', maxWidth: 10 },
-        { id: 'id', field: 'id', headerName: 'ComplaintId', minWidth: 50 },
+        {
+            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
+
+            renderCell: (params) => (
+                <Label
+
+                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
+                >
+                    {params.row.priority}
+                </Label>
+            )
+
+        },
+        { id: 'id', field: 'id', headerName: 'Complaint Id', minWidth: 50 },
         {
             id: 'productCustomer',
             field: 'productCustomer',
@@ -204,24 +217,12 @@ export default function TaskHistory() {
         },
         { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70 },
         {
-            id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Time', minWidth: 170,
+            id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Date', minWidth: 170,
             valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
             type: "date"
         },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
-        {
-            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
-
-            renderCell: (params) => (
-                <Label
-
-                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
-                >
-                    {params.row.priority}
-                </Label>
-            )
-
-        },
+        
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
         {
             field: 'actions',
@@ -257,12 +258,10 @@ export default function TaskHistory() {
     //       row : null;
 
     //   })
-    const searchItem = rows.filter(row => {
-        return (search === '') || columns.map((column) => row[column.id] !== undefined
+    const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined
             && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
             || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
-            ? row : null;
-    })
+            ? row : null)
 
 
 
@@ -334,7 +333,7 @@ export default function TaskHistory() {
                                 component="div"
                                 sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                             >
-                                Tasks
+                                Previous Complaints
                             </Typography>
 
 
@@ -355,7 +354,7 @@ export default function TaskHistory() {
                             &nbsp;&nbsp;
                             <div>
                                 <Button className='responsive-button' onClick={() => navigate("/dashboard/task")} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
-                                    Current Tasks
+                                    Current Complaints
                                 </Button>
                             </div>
 

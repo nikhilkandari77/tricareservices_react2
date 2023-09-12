@@ -184,7 +184,7 @@ export default function Task() {
             )
 
         },
-        { id: 'id', field: 'id', headerName: 'ComplaintId', minWidth: 50 },
+        { id: 'id', field: 'id', headerName: 'Complaint Id', minWidth: 50 },
         {
             id: 'productCustomer',
             field: 'productCustomer',
@@ -215,14 +215,32 @@ export default function Task() {
             valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
             type: "date"
         },
-        { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70 },
+        { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70, 
+    
+            valueFormatter: (params) => {
+                if (params.value === null) {
+                    return "Pending Assign"; // Set an empty string if value is null
+                }
+                return params.value;
+            },
+
+        },
         {
-            id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Time', minWidth: 170,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+            id: 'estimatedDateTime',
+            field: 'estimatedDateTime',
+            headerName: 'Estimated End Date',
+            minWidth: 170,
+            valueFormatter: (params) => {
+                if (params.value === null) {
+                  return "Pending"; // Set an empty string if value is null
+                }
+                return new Date(params.value).toLocaleDateString();
+            },
             type: "date"
         },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
       
+        
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
         {
             field: 'actions',
@@ -249,12 +267,10 @@ export default function Task() {
 
 
 
-    const searchItem = rows.filter(row => {
-        return (search === '') || columns.map((column) => row[column.id] !== undefined
+    const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined
             && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
             || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
-            ? row : null;
-    })
+            ? row : null)
 
 
 
@@ -331,7 +347,7 @@ export default function Task() {
                                 component="div"
                                 sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                             >
-                                Tasks
+                                Complaints
                             </Typography>
 
 
@@ -351,7 +367,7 @@ export default function Task() {
                             </Search>&nbsp;&nbsp;
                             <div>
                                 <Button className='responsive-button' onClick={()=>navigate("/dashboard/task-history")} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
-                                Previous Tasks
+                                Previous Complaints
                                 </Button>
                             </div>
 
@@ -380,16 +396,6 @@ export default function Task() {
 
                     </Item>
                 </Grid>
-
-
-
-
-
-
-
-
-
-
 
 
             </Grid>
