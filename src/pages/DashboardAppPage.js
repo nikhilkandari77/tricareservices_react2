@@ -131,7 +131,7 @@ export default function DashboardAppPage() {
 
     })
     .then((response) => {
-      if (!response.ok) {
+      if (response.code === 403) {
         // Handle the case where the response is not OK (e.g., an error response)
         toast.error('Session Timed Out');
         // Clear the user's authentication token or session-related data
@@ -140,6 +140,10 @@ export default function DashboardAppPage() {
         localStorage.clear();
         // history.push('/login'); // Replace '/login' with the route for your login page
         navigate("/login");
+      }
+      if(!response.ok){
+        toast.error('Something Went Wrong');
+        
       }
       return response.json(); // Continue parsing the response
     })
