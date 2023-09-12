@@ -155,9 +155,9 @@ export default function Customerdetail() {
 
 
 
-    const [rowscurrent, setRowscurrent] = useState([]);
-    const [rowsCompt, setRowsCompt] = useState([]);
-    const [rows, setRows] = useState([]);
+    const [rowscurrent, setRowscurrent] = useState([])
+    const [rowsCompt, setRowsCompt] = useState([])
+    const [rows, setRows] = useState([])
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const { id } = useParams();
@@ -176,7 +176,7 @@ export default function Customerdetail() {
     const [state, setState] = useState('');
     const [contactno, setContactno] = useState('');
     const [contact, setContact] = useState('');
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState('')
 
     const [password, setPassword] = useState('');
     const [confirmpassword, setConfirmpassword] = useState('');
@@ -212,7 +212,7 @@ export default function Customerdetail() {
 
     const [category, setCategory] = useState('');
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
     const [user, setUser] = useState([]);
 
     const [selectedImage, setSelectedImage] = useState(null);
@@ -267,14 +267,14 @@ export default function Customerdetail() {
         setState(user.state);
 
         setUserOpen(true);
-    };
+    }
 
     const handleClickClose1 = () => {
         setUserOpen(false);
-    };
+    }
     const handleClickOpen1 = () => {
         setUserOpen(false);
-    };
+    }
 
 
 
@@ -287,14 +287,14 @@ export default function Customerdetail() {
     };
     const handleClickOpenUserPopup2 = () => {
         setUserOpenProduct(true);
-    };
+    }
 
     const handleClickClose2 = () => {
         setUserOpenProduct(false);
-    };
+    }
     const handleClickOpen3 = () => {
         setUserOpenProduct(false);
-    };
+    }
 
 
 
@@ -339,8 +339,8 @@ export default function Customerdetail() {
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
                 // setUsers(json);
-                setRowscurrent(json.data);
-                console.log("rowdata", rowscurrent);
+                setRowscurrent(json.data)
+                console.log("rowdata", rowscurrent)
 
 
             })
@@ -531,8 +531,8 @@ export default function Customerdetail() {
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
                 // setUsers(json);
-                setRows(json.data);
-                console.log("rowdata", rows);
+                setRows(json.data)
+                console.log("rowdata", rows)
 
 
 
@@ -685,20 +685,20 @@ export default function Customerdetail() {
     const routeChange1 = (id) => {
 
 
-        console.log(id);
+        console.log(id)
 
         navigate("/dashboard/task-history-details", { state: { taskId: id } });
 
 
-    };
+    }
 
     const routeChange2 = (id) => {
 
-        console.log(id);
+        console.log(id)
 
         navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
 
-    };
+    }
 
 
 
@@ -781,6 +781,97 @@ export default function Customerdetail() {
     }, []);
 
 
+    // 11/9/2023 change start
+
+    const handlePasswordChange10 = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+
+        if (newPassword === '' || validatePassword(newPassword)) {
+            setPasswordError('');
+        } else {
+            setPasswordError('Password must be at least 6 characters long');
+        }
+
+    };
+
+    const handleConfirmPasswordChange12 = (e) => {
+        const newConfirmPassword = e.target.value;
+        setConfirmpassword(newConfirmPassword);
+    };
+
+    const handleSubmit4 = () => {
+        debugger; // eslint-disable-line no-debugger
+        if (password !== confirmpassword) {
+            // Set an error message and return
+            toast.error('Passwords do not match');
+            return;
+        }
+
+        if (password === '' || password.length < 6) {
+            // Set an error message for password validation
+            toast.error('Password must be at least 6 characters long');
+            return;
+        }
+
+
+
+        updateUser();
+        setIsFormOpen(false);
+
+
+    };
+
+    const updateUser = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const formData = {
+                id: userId, // Assuming userId is defined elsewhere
+                password,
+            };
+
+            const requestBody = JSON.stringify(formData);
+
+            const response = await fetch(`${baseUrl}/api/user/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: requestBody,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+
+                // Password updated successfully
+                setUserOpen(false);
+                toast.success('Form submitted successfully');
+                window.location.reload();
+                // Clear the password fields
+                setPassword('');
+                setConfirmpassword('');
+
+            } else {
+                // Display the error message using toast.error
+                toast.error(data.message || 'An error occurred', {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+            }
+
+            // Reset the form
+            // setIsFormOpen(false); // You can handle this as needed
+        } catch (error) {
+            console.error('An error occurred:', error);
+            // Display an error message to the user using toast.error
+            toast.error('An error occurred while updating. Please try again later.', {
+                position: toast.POSITION.TOP_CENTER,
+            });
+        }
+    };
+
+    // 11/9/2023 change end 
 
 
 
@@ -825,8 +916,68 @@ export default function Customerdetail() {
                                             <div className='col-md-3'><br />
                                                 <div><Button onClick={() => handleClickOpenUserPopup(user)} variant="contained" style={{ color: 'black', backgroundColor: 'white', width: '100%' }}>edit profile</Button></div><br />
 
+     {/*
+       11/9/2023 change start
+      */}
+
+                                                <Button onClick={handleClickOpenUserPopup2} variant="contained" style={{ backgroundColor: 'white', color: 'black', width: '100%' }} >
+                                                    Reset Password
+                                                </Button>
 
 
+                                                <Dialog
+                                                    open={openProductUser}
+                                                    onClose={handleClickClose2} // Close the dialog when the close button is clicked
+                                                    aria-labelledby="alert-dialog-title"
+                                                    aria-describedby="alert-dialog-description"
+                                                    style={{ height: 'auto', maxWidth: '100%' }}
+                                                >
+                                                    <DialogTitle id="alert-dialog-title">{"Reset Password"}</DialogTitle>
+                                                    <DialogContent>
+                                                        <Container maxWidth="md">
+                                                            <form>
+                                                                <Grid container spacing={3}>
+                                                                    <Grid item xs={12} md={12}>
+                                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                                                            <TextField
+                                                                                label="New Password"
+                                                                                value={password}
+                                                                                onChange={handlePasswordChange10}
+                                                                                fullWidth
+                                                                                required
+                                                                                sx={{ m: 1, width: '250px' }}
+                                                                                error={passwordError !== ''}
+                                                                                helperText={passwordError}
+                                                                            />
+                                                                            <TextField
+                                                                                label="Confirm New Password"
+                                                                                value={confirmpassword}
+                                                                                onChange={handleConfirmPasswordChange12}
+                                                                                fullWidth
+                                                                                required
+                                                                                type="password"
+                                                                                sx={{ m: 1, width: '250px' }}
+
+                                                                            />
+                                                                        </div>
+                                                                    </Grid>
+                                                                </Grid>
+                                                                <div style={{ marginTop: '20px' }}>
+                                                                    <Button onClick={handleSubmit4} type="button" variant="contained" color="primary" style={{ float: 'right' }}>
+                                                                        Submit
+                                                                    </Button>
+                                                                    <Button onClick={handleClickClose2} style={{ float: 'right', color: 'red', marginRight: '3%' }}>
+                                                                        Close
+                                                                    </Button>
+                                                                </div>
+                                                            </form>
+                                                        </Container>
+                                                    </DialogContent>
+                                                </Dialog>
+
+ {/*
+       11/9/2023 change end
+      */} 
 
 
 
@@ -849,12 +1000,12 @@ export default function Customerdetail() {
 
                                                                     <Grid item xs={12}>
                                                                         <div style={{ textAlign: 'center', marginBottom: '15px', position: 'relative' }}>
-                                                                            <input
+                                                                            {/* <input
                                                                                 type="file"
                                                                                 id="imageUpload"
                                                                                 style={{ display: 'none' }}
                                                                                 onChange={handleImageChange} // Define your image change handler
-                                                                            />
+                                                                            /> */}
                                                                             <InputLabel htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'block' }}>
                                                                                 <Button
                                                                                     component="span"
@@ -1039,10 +1190,19 @@ export default function Customerdetail() {
 
                                                                 </div>
 
+
+
+
+
+
+
+
                                                             </form>
                                                         </Container>
                                                     </DialogContent>
                                                 </Dialog>
+
+
 
 
                                             </div>
@@ -1151,7 +1311,15 @@ export default function Customerdetail() {
                                                                                 );
                                                                             }
 
-                                                                            console.log(column);
+
+
+
+
+
+
+
+
+                                                                            console.log(column)
                                                                             if (column.id === 'button') {
                                                                                 return (
                                                                                     <TableCell key={column.id} align={column.align}>
@@ -1216,8 +1384,12 @@ export default function Customerdetail() {
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} /> */}
 
-<div>
-<form>
+                                                                                                                <div>
+                                                                                                                    <form>
+
+
+
+
 
                                                                                                                         <Grid container spacing={5}>
                                                                                                                             <Grid item xs={6}>
@@ -1444,6 +1616,7 @@ export default function Customerdetail() {
                                             <TablePagination
                                                 rowsPerPageOptions={[10, 25, 100]}
                                                 component="div"
+                                                count={rows.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={handleChangePage}
@@ -1516,7 +1689,7 @@ export default function Customerdetail() {
 
 
 
-                                                                                console.log(column);
+                                                                                console.log(column)
                                                                                 if (column.id === 'button') {
                                                                                     return (
                                                                                         <TableCell key={column.id} align={column.align}>
@@ -1835,6 +2008,7 @@ export default function Customerdetail() {
                                             <TablePagination
                                                 rowsPerPageOptions={[10, 25, 100]}
                                                 component="div"
+                                                count={rowscurrent.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
                                                 onPageChange={handleChangePage}

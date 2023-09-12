@@ -184,20 +184,6 @@ export default function Task() {
             )
 
         },
-        { id: 'id', field: 'id', headerName: 'ComplaintId', minWidth: 50 },
-        {
-            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
-
-            renderCell: (params) => (
-                <Label
-
-                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
-                >
-                    {params.row.priority}
-                </Label>
-            )
-
-        },
         { id: 'id', field: 'id', headerName: 'Complaint Id', minWidth: 50 },
         {
             id: 'productCustomer',

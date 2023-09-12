@@ -784,7 +784,7 @@ export default function Taskdetail() {
                                         </FormControl>
                                         <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
                                             <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                Select Visit Datetime
+                                                Select Visit DateTime
                                             </Typography>
                                         </InputLabel>
                                         <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">

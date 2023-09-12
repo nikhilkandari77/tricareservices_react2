@@ -17,6 +17,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
@@ -122,7 +123,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function StickyHeadTable() {
-  const [rows, setRows] = useState([])
+  const [rows, setRows] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [name, setName] = useState('');
@@ -144,8 +145,9 @@ export default function StickyHeadTable() {
   const [formData, setFormData] = useState({});
   const [isFormOpen, setIsFormOpen] = useState(true);
 
-  const [loading, setLoading] = useState(false)
-  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
 
@@ -163,7 +165,7 @@ export default function StickyHeadTable() {
       setSelectedImage(URL.createObjectURL(file));
     }
 
-  
+
 
   };
 
@@ -179,7 +181,7 @@ export default function StickyHeadTable() {
     return (search === '') || columns.map((column) => row[column.id] !== undefined
       && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
       ? row : null;
-  })
+  });
 
 
 
@@ -207,13 +209,13 @@ export default function StickyHeadTable() {
   };
   const handleClickOpenUserPopup = () => {
     setUserOpen(true);
-  }
+  };
   const handleClickClose1 = () => {
     setUserOpen(false);
-  }
+  };
   const handleClickOpen1 = () => {
     setUserOpen(false);
-  }
+  };
 
 
   useEffect(() => {
@@ -333,16 +335,16 @@ export default function StickyHeadTable() {
 
     console.log(formData);
     console.log(token);
-    try{
-
-    const response = await fetch(`${baseUrl}/api/user/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: requestBody,
-    });
+    try {
+      setBtnLoading(true);
+      const response = await fetch(`${baseUrl}/api/user/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: requestBody,
+      });
 
       const data = await response.json();
       console.log(data);
@@ -356,13 +358,15 @@ export default function StickyHeadTable() {
         setMessage(data.message);
 
       }
-      
-    } catch(error) {
+
+    } catch (error) {
       console.error('An error occurred:', error);
 
       window.alert('An error occurred while submitting the form.');
       // Handle the error here, such as displaying an alert or setting an error state
       setMessage('An error occurred while submitting the form.');
+    } finally {
+      setBtnLoading(false);
     }
 
     console.log('Form data submitted:', formData);
@@ -391,7 +395,7 @@ export default function StickyHeadTable() {
     navigate("/dashboard/customerdetail/", { state: { userId: id } });
 
 
-  }
+  };
 
 
 
@@ -419,7 +423,7 @@ export default function StickyHeadTable() {
       .then(json => {
         console.log("Fetched data:", json); // This line will print the data to the console
         // setUsers(json);
-        setRows(json.data)
+        setRows(json.data);
 
       })
       .finally(() => {
@@ -508,13 +512,13 @@ export default function StickyHeadTable() {
 
                         <Grid item xs={12}>
                           <div style={{ textAlign: 'center', marginBottom: '15px', position: 'relative' }}>
-                            <input
+                            {/* <input
                               type="file"
                               id="imageUpload"
                               style={{ display: 'none' }}
                               accept="image/*" // Restrict to image files,
                               onChange={handleImageChange} // Define your image change handler
-                            />
+                            /> */}
                             <InputLabel htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'block' }}>
                               <Button
                                 component="span"
@@ -525,14 +529,14 @@ export default function StickyHeadTable() {
                                   backgroundSize: 'cover',
                                   backgroundPosition: 'center',
                                   backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
-                                  
+
                                 }}
                               >
                                 {/* Content of the button */}
                               </Button>
                               <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
                             </InputLabel>
-                          
+
                           </div>
                         </Grid>
 
@@ -598,29 +602,12 @@ export default function StickyHeadTable() {
                           </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
                         </Grid>
                         <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
                           {/* Right side fields */}
                           {/* Your Address, City, Password, and Confirm Password fields */}
 
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
-
-
-
-
-
 
                             <TextField
                               label="Address"
@@ -696,33 +683,30 @@ export default function StickyHeadTable() {
                           Close
                         </Button> */}
 
-                        {isFormSubmitted ? (
-                          <>
-                            <p>Form submitted successfully!</p>
-                            <Button onClick={handleCloseForm} style={{ float: 'right' }}>
-                              Close
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                              Submit
-                            </Button>
-                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
-                              Close
-                            </Button>
-                          </>
-                        )}
+                        <div>
+                          {/* Conditionally render the button or loading circle */}
+                          {btnLoading ? (
+                            <CircularProgress size={24} /> // Adjust the size as needed
+                          ) : (
+                            <>
+                              <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
+                                Submit
+                              </Button>
+                              <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
+                                Close
+                              </Button>
+                            </>
+                          )}
+                        </div>
 
-
-
-
-
-
-
-
-
-
+                        {/* <>
+                          <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
+                            Submit
+                          </Button>
+                          <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
+                            Close
+                          </Button>
+                        </> */}
 
                       </div>
                     </form>

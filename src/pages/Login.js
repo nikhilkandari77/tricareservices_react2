@@ -21,11 +21,6 @@ const Login = () => {
 }
 
 
-
-
-
-
-
   const validateEmail = (email) => {
     // Regex pattern to validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

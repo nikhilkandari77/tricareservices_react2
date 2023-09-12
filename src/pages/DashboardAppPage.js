@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 // eslint-disable-next-line import/no-unresolved
 import DashboardTable from 'src/components/tables/DashboardTable';
@@ -10,7 +10,7 @@ import colors from 'src/theme/colors';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
-
+import { toast } from 'react-toastify';
 import { Card, Grid, Typography } from '@mui/material';
 import { PieChart } from '@mui/x-charts/PieChart';
 import * as echarts from 'echarts/core';
@@ -49,6 +49,8 @@ echarts.use([GaugeChart, CanvasRenderer]);
 
 export default function DashboardAppPage() {
 
+  const navigate = useNavigate();
+
   const [rows, setRows] = useState({});
   const [todayServiceCount, setServiceCount] = useState(0);
   const theme = useTheme();
@@ -58,7 +60,21 @@ export default function DashboardAppPage() {
   const palette = ['red', 'blue', 'green'];
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
+
   const [totalComplaints, setTotalComplaints] = useState('0');
+  const [totalComplaintsHigh, setTotalComplaintsHigh] = useState('0');
+  const [totalComplaintsMedium, setTotalComplaintsMedium] = useState('0');
+  const [totalComplaintsLow, setTotalComplaintsLow] = useState('0');
+
+  const [todayVisits, setTodayVisits] = useState('0');
+  const [todayVisitsHigh, setTodayVisitsHigh] = useState('0');
+  const [todayVisitsMedium, setTodayVisitsMedium] = useState('0');
+  const [todayVisitsLow, setTodayVisitsLow] = useState('0');
+
+  const [backlogs, setBacklogs] = useState('0');
+  const [backlogsHigh, setBacklogsHigh] = useState('0');
+  const [backlogsMedium, setBacklogsMedium] = useState('0');
+  const [backlogsLow, setBacklogsLow] = useState('0');
 
   const [isTotalServicesExpanded, setTotalServicesExpanded] = useState(false);
   const [isVisitsTodayExpanded, setVisitsTodayExpanded] = useState(false);
@@ -114,13 +130,40 @@ export default function DashboardAppPage() {
       },
 
     })
-      .then(response => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        // Handle the case where the response is not OK (e.g., an error response)
+        toast.error('Session Timed Out');
+        // Clear the user's authentication token or session-related data
+        localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
+        localStorage.removeItem("isLoggedIn");
+        localStorage.clear();
+        // history.push('/login'); // Replace '/login' with the route for your login page
+        navigate("/login");
+      }
+      return response.json(); // Continue parsing the response
+    })
       .then(json => {
 
         setEngineerWorkloadList(json.data.complaintGroupByEngineer);
         setRows(json.data);
 
-        console.log("data", json.data.todayCompletedService);
+        setTotalComplaints(json.data.activeService);
+        setTotalComplaintsHigh(json.data.activeServiceGroupByPriority.high);
+        setTotalComplaintsMedium(json.data.activeServiceGroupByPriority.medium);
+        setTotalComplaintsLow(json.data.activeServiceGroupByPriority.low);
+
+        setTodayVisits(json.data.todayService);
+        setTodayVisitsHigh(json.data.todayServiceGroupByPriority.high);
+        setTodayVisitsMedium(json.data.todayServiceGroupByPriority.medium);
+        setTodayVisitsLow(json.data.todayServiceGroupByPriority.low);
+
+        setBacklogs(json.data.backLog);
+        setBacklogsHigh(json.data.backLogGroupByPriority.high);
+        setBacklogsMedium(json.data.backLogGroupByPriority.medium);
+        setBacklogsLow(json.data.backLogGroupByPriority.low);
+
+        console.log("data", json);
 
       }).finally(() => {
         setLoading(false);
@@ -297,7 +340,7 @@ export default function DashboardAppPage() {
             >
 
               <Typography variant="h3">Visits Today</Typography>
-              <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+              <Typography variant="h3">{todayVisits !== 0 ? todayVisits : "0"}</Typography>
 
 
             </Card>
@@ -321,7 +364,7 @@ export default function DashboardAppPage() {
             >
 
               <Typography variant="h3">BackLogs</Typography>
-              <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+              <Typography variant="h3">{backlogs !== 0 ? backlogs : "0"}</Typography>
 
 
             </Card>
@@ -356,20 +399,20 @@ export default function DashboardAppPage() {
                 <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">High</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{ color: '#ff0800' }}>High</Typography>
+                      <Typography variant="h3">{totalComplaintsHigh !== 0 ? totalComplaintsHigh : "0"}</Typography>
                     </Grid>
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">Medium</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{ color: '#fada5e' }}>Medium</Typography>
+                      <Typography variant="h3">{totalComplaintsMedium !== 0 ? totalComplaintsMedium : "0"}</Typography>
                     </Grid>
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">Low</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
+                      <Typography variant="h3">{totalComplaintsLow !== 0 ? totalComplaintsLow : "0"}</Typography>
                     </Grid>
                   </Grid>
                 </div>
@@ -403,20 +446,20 @@ export default function DashboardAppPage() {
                 <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">High</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{ color: '#ff0800' }}>High</Typography>
+                      <Typography variant="h3">{todayVisitsHigh !== 0 ? todayVisitsHigh : "0"}</Typography>
                     </Grid>
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">Medium</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{ color: '#fada5e' }}>Medium</Typography>
+                      <Typography variant="h3">{todayVisitsMedium !== 0 ? todayVisitsMedium : "0"}</Typography>
                     </Grid>
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">Low</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
+                      <Typography variant="h3">{todayVisitsLow !== 0 ? todayVisitsLow : "0"}</Typography>
                     </Grid>
                   </Grid>
                 </div>
@@ -451,20 +494,20 @@ export default function DashboardAppPage() {
                 <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">High</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{ color: '#ff0800' }}>High</Typography>
+                      <Typography variant="h3">{backlogsHigh !== 0 ? backlogsHigh : "0"}</Typography>
                     </Grid>
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">Medium</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{ color: '#fada5e' }}>Medium</Typography>
+                      <Typography variant="h3">{backlogsMedium !== 0 ? backlogsMedium : "0"}</Typography>
                     </Grid>
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3">Low</Typography>
-                      <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
+                      <Typography variant="h3">{backlogsLow !== 0 ? backlogsLow : "0"}</Typography>
                     </Grid>
                   </Grid>
                 </div>
