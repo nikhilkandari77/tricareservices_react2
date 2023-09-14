@@ -33,7 +33,6 @@ import baseUrl from '../utils/baseUrl';
 
 
 
-const token = localStorage.getItem('token');
 
 const override = css`
   display: block;
@@ -67,6 +66,7 @@ export default function TaskHistoryDetail() {
     const [customer, setCustomer] = useState({}); /* gets customer's details */
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
 
+    const token = localStorage.getItem('token');
     function formatDateTime(dateTimeString) {
         const dateTime = new Date(dateTimeString);
 
