@@ -3,7 +3,6 @@ import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
 import { faker } from '@faker-js/faker';
 import { useState,useEffect } from 'react';
-import Stomp from 'stompjs';
 // @mui
 import {
   Box,
@@ -21,6 +20,8 @@ import {
   ListItemAvatar,
   ListItemButton,
 } from '@mui/material';
+import { onMessage } from 'firebase/messaging';
+import {  messaging } from '../../../firebase';
 // utils
 import { fToNow } from '../../../utils/formatTime';
 // components
@@ -80,7 +81,7 @@ const NOTIFICATIONS = [
 export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
 
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
+  const [totalUnRead,setTotalUnRead]=useState(0);
 
   const [open, setOpen] = useState(null);
 
@@ -100,6 +101,30 @@ export default function NotificationsPopover() {
       }))
     );
   };
+  useEffect(() => {
+    const unsubscribe = onMessage(messaging, (message) => {
+      // Handle the incoming message here
+      console.log("Received a message:", message);
+     const notification=JSON.parse(localStorage.getItem("notificationArray"))||[];
+      notification.push(message.notification);
+      console.log(notification);
+      localStorage.setItem("notificationArray",JSON.stringify(notification));
+      setTotalUnRead(notification.length||0);
+      
+
+      // You can use a library like "react-toastify" to display notifications
+      // Example: toast.info(message.notification.body);
+    });
+    const notification=JSON.parse(localStorage.getItem("notificationArray"))||[];
+    setTotalUnRead(notification.length||0);
+    return () => {
+      // Clean up the listener when the component unmounts
+      unsubscribe();
+    };
+  }, []);
+
+
+
   //  const socket = new WebSocket('ws://localhost:8082/ws');
 
 const token=localStorage.getItem('token')

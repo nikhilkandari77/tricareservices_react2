@@ -121,7 +121,7 @@ export default function DashboardAppPage() {
     setLoading(true);
 
 
-    console.log(`Token${token}`);
+    console.log(`Token ${token}`);
     fetch(`${baseUrl}/api/user/dashboard/admin/`, {
       method: 'GET',
       mode: 'cors',
