@@ -780,7 +780,7 @@ export default function Customerdetail() {
                     <Box>
                         <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' }} position="static">
                             <Toolbar>
-                                <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { xs: '3', sm: 'block' } }}>
+                                <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: { xs: '3', sm: 'block' } }}>
                                     <div className="container emp-profile">
                                         <br />
                                         <div className="row">
@@ -796,19 +796,17 @@ export default function Customerdetail() {
 
                                             <div className="col-md-6">
                                                 <div className="profile-head">
-                                                    <br />
-                                                    <h4>{user.name}</h4>
-                                                    <br />
-                                                    <h6 style={{ marginTop: '-5%' }}>{user.city}</h6>
-                                                    <h6>{user.address}</h6>
+                                                    <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
+
+                                                        <h4>{user.name}</h4>
+                                                        <h6 style={{ marginTop: '-5%' }}>{user.city}</h6>
+                                                        <h6>{user.address}</h6>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="col-md-3">
                                                 <br />
 
-                                                {/*
-       11/9/2023 change start
-      */}
 
                                                 <Button
                                                     onClick={handleClickOpenUserPopup3}
@@ -841,6 +839,7 @@ export default function Customerdetail() {
                                                                                 sx={{ m: 1, width: '250px' }}
                                                                                 error={passwordError !== ''}
                                                                                 helperText={passwordError}
+
                                                                             />
                                                                             <TextField
                                                                                 label="Confirm New Password"
@@ -879,9 +878,6 @@ export default function Customerdetail() {
                                                 <br />
                                                 <br />
 
-                                                {/*
-       11/9/2023 change end
-      */}
 
                                                 <div>
                                                     <Button
@@ -933,6 +929,7 @@ export default function Customerdetail() {
                                                                                     value={category}
                                                                                     label="Category"
                                                                                     onChange={handleChange3}
+                                                                                    required
                                                                                 >
                                                                                     <MenuItem value="" key="">
                                                                                         Select Catagory
@@ -1000,6 +997,7 @@ export default function Customerdetail() {
                                                                                         // Set placeholder value here
                                                                                         // min: new Date().toISOString().split('T')[0],
                                                                                     }}
+                                                                                    required
                                                                                 />
                                                                             </FormControl>
                                                                         </div>
@@ -1018,6 +1016,7 @@ export default function Customerdetail() {
                                                                                     value={selectedProduct}
                                                                                     label="Select Product"
                                                                                     onChange={(e) => { setSelectedProduct(e.target.value); }}
+                                                                                    required
                                                                                 >
                                                                                     {products.map((product) => (
                                                                                         <MenuItem key={product.id} value={product}>
@@ -1039,6 +1038,7 @@ export default function Customerdetail() {
                                                                                     value={purchaseDate}
                                                                                     onChange={handleDateChange1}
                                                                                     type="date" // Use type "date" for date picker
+                                                                                    required
                                                                                     InputLabelProps={{
                                                                                         shrink: true,
                                                                                     }}
@@ -1061,6 +1061,7 @@ export default function Customerdetail() {
                                                                                     value={manufacturingDate}
                                                                                     onChange={handleDateChange2}
                                                                                     type="date" // Use type "date" for date picker
+                                                                                    required
                                                                                     InputLabelProps={{
                                                                                         shrink: true,
                                                                                     }}
@@ -1084,6 +1085,7 @@ export default function Customerdetail() {
                                                                                     value={installationDate}
                                                                                     onChange={handleDateChange3}
                                                                                     type="date" // Use type "date" for date picker
+                                                                                    required
                                                                                     InputLabelProps={{
                                                                                         shrink: true,
                                                                                     }}
@@ -1167,12 +1169,6 @@ export default function Customerdetail() {
                                                                 <Grid container spacing={3}>
                                                                     <Grid item xs={12}>
                                                                         <div style={{ textAlign: 'center', marginBottom: '15px', position: 'relative' }}>
-                                                                            {/* <input
-                                        type="file"
-                                        id="imageUpload"
-                                        style={{ display: 'none' }}
-                                        onChange={handleImageChange} // Define your image change handler
-                                      /> */}
                                                                             <InputLabel htmlFor="imageUpload" style={{ cursor: 'pointer', display: 'block' }}>
                                                                                 <Button
                                                                                     component="span"
@@ -1370,12 +1366,23 @@ export default function Customerdetail() {
                                         <br />
                                         <div className="row">
                                             <div className="col-md-3">
-                                                <h6>Mail-Id:</h6>
-                                                <h6>{user.email}</h6>
+
+                                                <div className="profile-head">
+                                                    <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
+                                                        <h6>Mail-Id:</h6>
+                                                        <h6>{user.email}</h6>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div className="col-md-3">
-                                                <h6>Contact:</h6>
-                                                <h6>{user.contact}</h6>
+                                                <div className="profile-head">
+                                                    <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
+                                                        <h6>Contact:</h6>
+                                                        <h6>{user.contact}</h6>
+                                                    </div>
+                                                </div>
+
+
                                             </div>
                                         </div>
                                     </div>

@@ -212,15 +212,15 @@ export default function TaskHistory() {
         },
         {
             id: 'createdDateTime', field: 'createdDateTime', headerName: 'Complaint Time', minWidth: 170,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+            valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
             type: "date"
         },
         { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70 },
-        // {
-        //     id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Date', minWidth: 170,
-        //     valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
-        //     type: "date"
-        // },
+        {
+            id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Date', minWidth: 170,
+            valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
+            type: "date"
+        },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
         
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
@@ -325,7 +325,7 @@ export default function TaskHistory() {
         <div >
             <Grid >
                 <Box sx={{ flexGrow: 6 }}>
-                    <AppBar style={{ backgroundColor: '#449355' }} position="static">
+                    <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
                         <Toolbar variant="dense">
                             <Typography
                                 variant="h6"
@@ -351,12 +351,12 @@ export default function TaskHistory() {
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
                             </Search>
-                            &nbsp;&nbsp;
-                            <div>
+                            {/* &nbsp;&nbsp; */}
+                            {/* <div>
                                 <Button className='responsive-button' onClick={() => navigate("/dashboard/task")} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
                                     Current Complaints
                                 </Button>
-                            </div>
+                            </div> */}
 
                         </Toolbar>
                     </AppBar>
@@ -370,8 +370,12 @@ export default function TaskHistory() {
 
                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                                 <div style={{ height: "70vh", width: '100%' }}>
-                                    <DataGrid rows={rows} columns={columns} pageSize={10}
-                                        rowsPerPageOptions={[10, 20]}
+                                <DataGrid rows={rows} columns={columns} initialState={{
+                                        ...rows.initialState,
+                                        pagination: { paginationModel: { pageSize: 10 } },
+                                    }}
+                                        pageSizeOptions={[10, 25,50]}
+                                        rowsPerPageOptions={[10, 20, 30, 40]}
                                     />
                                 </div>
 

@@ -119,6 +119,7 @@ export default function DashboardTable({ token }) {
   };
 
   const routeChange1 = (id) => {
+    if(id!==undefined&&id!==null)
     navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
   };
 
@@ -219,7 +220,6 @@ export default function DashboardTable({ token }) {
                 inputProps={{ 'aria-label': 'search' }}
                 key="password"
                 value={search}
-                autoFocus
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Search>

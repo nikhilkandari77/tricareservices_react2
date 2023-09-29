@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Paper from '@mui/material/Paper';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,6 +8,9 @@ import { toast } from 'react-toastify';
 import 'react-datepicker/dist/react-datepicker.css';
 import AppBar from '@mui/material/AppBar';
 import { Carousel } from 'react-material-ui-carousel';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+
 
 import Toolbar from '@mui/material/Toolbar';
 
@@ -33,7 +36,6 @@ import baseUrl from '../utils/baseUrl';
 
 
 
-const token = localStorage.getItem('token');
 
 const override = css`
   display: block;
@@ -43,6 +45,8 @@ const override = css`
 
 
 export default function TaskHistoryDetail() {
+    const [openImage, setOpenImage] = useState(false);
+    const [image, setImage] = useState(null);
     const location = useLocation();
     const taskId = location.state?.taskId;
     const navigate = useNavigate();
@@ -62,6 +66,7 @@ export default function TaskHistoryDetail() {
     const [customer, setCustomer] = useState({}); /* gets customer's details */
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
 
+    const token = localStorage.getItem('token');
     function formatDateTime(dateTimeString) {
         const dateTime = new Date(dateTimeString);
 
@@ -77,7 +82,7 @@ export default function TaskHistoryDetail() {
     const [visitDate, setVisitDate] = useState(null);
     const [product, Images] = useState('');
 
-  
+
 
     const handleTimeChange = (event) => {
         setSelectedTime(event.target.value);
@@ -128,7 +133,7 @@ export default function TaskHistoryDetail() {
 
         try {
             setIsTaskLoading(true);
-            
+
             fetch(`${baseUrl}/api/user/complaint-history/${taskId}`, {
 
                 method: 'GET',
@@ -270,8 +275,14 @@ export default function TaskHistoryDetail() {
         'Engineer Assigned': 'warning',  // Yellow color
         // Add more status-color pairs as needed
     };
-
-
+    const handleOpenImage = (e) => {
+        setImage(e.target.src);
+        setOpenImage(true);
+    }
+    const toggleZoom = () => {
+        setZoomedIn(!zoomedIn);
+    };
+    const [zoomedIn, setZoomedIn] = useState(false);
     return (
 
         <div>
@@ -405,11 +416,13 @@ export default function TaskHistoryDetail() {
                                                 <Typography variant="subtitle1" style={{ marginTop: '10%' }}>
                                                     Address.
                                                 </Typography>
+                                                <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
                                                 <Typography variant="body1">Building No: {task.buildingNo}</Typography>
                                                 <Typography variant="body1">Area: {task.area}</Typography>
                                                 <Typography variant="body1">City: {customer.city}</Typography>
                                                 <Typography variant="body1">AreaPin: {customer.areaPin}</Typography>
                                                 <Typography variant="body1">State: {customer.state}</Typography>
+                                                </div>
                                             </CardContent>
                                         </Card>
                                     </Paper>
@@ -508,31 +521,56 @@ export default function TaskHistoryDetail() {
                                                                 <div style={{ width: '100%' }}>
 
                                                                     {
-                                                                        task.images !== "" && task.images !== null && task.images !== undefined ?
-                                                                            task.images.toString().split(",").map(image =>
+
+                                                                        task.imageList === null || task.imageList === undefined || task.imageList.length === 0 ? " " :
+                                                                            task.imageList.map(image =>
                                                                                 <Button
-                                                                                    value={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
-                                                                                 //   onClick={() => handleOpenImage(e.target.value)}
+                                                                                    value={`${baseUrl}${image}`}
+                                                                                    onClick={handleOpenImage}
+                                                                                    style={{ padding: 0 }}
                                                                                 >
-                                                                                    <img style={{ width: 200 }}
+                                                                                    <img style={{ width: 200, padding: "20px" }}
                                                                                         align="left"
                                                                                         alt="Complaint images"
-                                                                                        src={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
+                                                                                        src={`${baseUrl}${image}`}
                                                                                     />
                                                                                 </Button>
-                                                                            ) : ""
+                                                                            )
 
                                                                     }
-                                                                    {/* <Dialog
-                                                                        open={openImage}
-                                                                       // onClose={closeImage}
-                                                                        aria-labelledby="alert-dialog-title"
-                                                                        aria-describedby="alert-dialog-description"
-                                                                        style={{ height: 'auto', maxWidth: '100%' }} // Adjusted height and maxWidth for responsiveness
-                                                                    ></Dialog> */}
+                                                                    <Dialog open={openImage} maxWidth="xl" position='relative'>
+                                                                        <DialogContent style={{ position: 'relative', padding: 0, width: "100%" }}>
+                                                                            <div style={{ position: 'relative', padding: 0, width: "100%" }}>
+                                                                                <Button
+                                                                                    edge="end"
+                                                                                    color="inherit"
+                                                                                    onClick={() => setOpenImage(false)}
+                                                                                    aria-label="close"
+                                                                                    style={{ background: "white", position: 'absolute', zIndex: "3245353", right: "20px", top: "20px" }}
+                                                                                >
+                                                                                    <CloseIcon />
+                                                                                </Button>
+                                                                                <Button
+                                                                                    onClick={toggleZoom}
+                                                                                >
+                                                                                    <img
+                                                                                        alt="Complaint"
+                                                                                        src={image}
+
+                                                                                        style={{
+                                                                                            width: zoomedIn ? '100%' : '50%',
+                                                                                            height: zoomedIn ? '50%' : '100%',
+                                                                                            cursor: 'pointer',
+                                                                                        }}
+
+                                                                                    />
+                                                                                </Button>
+                                                                            </div>
+                                                                        </DialogContent>
+                                                                    </Dialog>
                                                                 </div>
                                                                 {
-                                                                    console.log(task.images)
+                                                                    console.log(task)
                                                                 }
 
                                                             </Paper>
@@ -627,8 +665,8 @@ export default function TaskHistoryDetail() {
                                                 disabled
                                             >
 
-                                                <MenuItem value="Remote Support">Remote Support</MenuItem>
-                                                <MenuItem value="On Site Visit">On Site Visit</MenuItem>
+                                                <MenuItem value="Remote">Remote Support</MenuItem>
+                                                <MenuItem value="Onsite">On Site Visit</MenuItem>
                                             </Select>
                                         </FormControl>
 

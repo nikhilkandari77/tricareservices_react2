@@ -7,17 +7,24 @@ import Select from '@mui/material/Select';
 import { toast } from 'react-toastify';
 import 'react-datepicker/dist/react-datepicker.css';
 import AppBar from '@mui/material/AppBar';
-import { Carousel } from 'react-material-ui-carousel';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
+import { Carousel } from 'react-material-ui-carousel';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+
+import Dialog from '@mui/material/Dialog';
 import Toolbar from '@mui/material/Toolbar';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { format } from 'date-fns'; // make sure to have date-fns installed
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
-
+import CloseIcon from '@material-ui/icons/Close';
 
 import Chip from '@mui/material/Chip';
-import { Button, Card, TextField, Typography, Grid } from '@mui/material';
+import { Button, Card, TextField, Typography, Grid, DialogContent } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
@@ -31,7 +38,7 @@ import baseUrl from '../utils/baseUrl';
 
 
 
-const token = localStorage.getItem('token');
+
 
 const override = css`
   display: block;
@@ -55,16 +62,19 @@ export default function Taskdetail() {
     const [isCustomerLoading, setIsCustomerLoading] = useState(false);
     const [isTaskLoading, setIsTaskLoading] = useState(false);
 
-    const [serviceType, setServiceType] = React.useState('');
-    const [complaintType, setComplaintType] = React.useState('');
+    const [serviceType, setServiceType] = React.useState("Free");
+    const [complaintType, setComplaintType] = React.useState("Remote");
     const [engineer, setEngineer] = React.useState('');
     const [engineerId, setEngineerId] = React.useState('');
     const [priority, setPriority] = React.useState('');
 
-    const [productImages, setProductImages] = useState('');
+
+    const [productImages, setProductImages] = useState('')
     const [task, setTask] = useState({}); /* sets complaint details */
     const [customer, setCustomer] = useState({}); /* gets customer's details */
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
+
+    const token = localStorage.getItem('token');
 
     const postComplaintDetails = async (data) => {
 
@@ -84,6 +94,7 @@ export default function Taskdetail() {
 
             if (response.ok) {
                 toast.success("Complaint has been updated");
+                setIsLoading(true)
                 setTimeout(() => {
                     navigate("/dashboard/task");
                 }, 2000);
@@ -91,9 +102,10 @@ export default function Taskdetail() {
         } catch (error) {
             console.error("Error:", error);
             toast.error("Something went wrong");
+            setIsLoading(false); // Stop loading
             // Handle error if needed
         } finally {
-            setIsLoading(false); // Stop loading
+            // setIsLoading(false); // Stop loading
         }
 
 
@@ -123,7 +135,7 @@ export default function Taskdetail() {
 
 
         console.log(e);
-        e.preventDefault();
+        //  e.preventDefault();
 
         // const formattedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
         //     .toISOString().substring(0, 10);
@@ -141,11 +153,11 @@ export default function Taskdetail() {
         };
 
         console.log(JSON.stringify(d));
-        postComplaintDetails(d);
+       postComplaintDetails(d);
         // toast.success("Engineer has been assigned");
         // setTimeout(() => {
         //     navigate("/");
-        // }, 2000);
+        // }, 4000);
 
     };
 
@@ -159,10 +171,11 @@ export default function Taskdetail() {
 
         return { formattedDate, formattedTime };
     }
-
+    const [openImage, setOpenImage] = useState(false);
+    const [image, setImage] = useState(null);
     const [estimatedTime, setSelectedTime] = useState(null);
     const [estimatedDate, setSelectedDate] = useState(null);
-    const [visitTime, setVisitTime] = useState(null);
+    const [visitTime, setVisitTime] = useState(new Date());
     const [visitDate, setVisitDate] = useState(null);
     const [product, Images] = useState('');
     const handleTimeChange = (event) => {
@@ -210,7 +223,7 @@ export default function Taskdetail() {
 
 
     useEffect(() => {
-        console.log("state is :", state);
+        console.log("state is :", state)
 
         try {
             setIsTaskLoading(true);
@@ -351,7 +364,14 @@ export default function Taskdetail() {
         'Engineer Assigned': 'warning',  // Yellow color
         // Add more status-color pairs as needed
     };
-
+    const handleOpenImage = (e) => {
+        setImage(e.target.src);
+        setOpenImage(true);
+    }
+    const toggleZoom = () => {
+        setZoomedIn(!zoomedIn);
+    };
+    const [zoomedIn, setZoomedIn] = useState(false);
 
     return (
 
@@ -463,6 +483,7 @@ export default function Taskdetail() {
                                 ) : (
                                     // If customer data is available
                                     <Paper style={{ height: '100%', alignItems: 'center', padding: 20, margin: "auto" }}>
+
                                         <Typography variant="h6" gutterBottom>
                                             Customer Profile
                                         </Typography>
@@ -476,23 +497,28 @@ export default function Taskdetail() {
                                             <CardContent style={{ width: "100%", margin: "auto" }}>
                                                 <Typography variant="h5" style={{ marginTop: '1%' }}>
                                                     {customer.name}
-                                                </Typography>
-                                                <Typography variant="subtitle1" style={{ marginTop: '10%' }}>
-                                                    Phone No.:
+                                                </Typography><br />
+                                                <Typography variant="subtitle1" >
+                                                    <b> Phone No.:</b>
                                                 </Typography>
                                                 <Typography variant="body1">{customer.contact}</Typography>
-                                                <Typography variant="subtitle1">Email Id:</Typography>
+                                                <Typography variant="subtitle1"><b>Email Id:</b></Typography>
                                                 <Typography variant="body1">{customer.email}</Typography>
-                                                <Typography variant="subtitle1" style={{ marginTop: '10%' }}>
+
+                                                <Typography variant="h5" >
                                                     Address:
                                                 </Typography>
-                                                <Typography variant="body1">Building No: {task.buildingNo}</Typography>
-                                                <Typography variant="body1">Area: {task.area}</Typography>
-                                                <Typography variant="body1">City: {customer.city}</Typography>
-                                                <Typography variant="body1">AreaPin: {customer.areaPin}</Typography>
-                                                <Typography variant="body1">State: {customer.state}</Typography>
+
+                                                <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
+                                                    <Typography variant="body1"><b>Building No:</b> {task.buildingNo}</Typography>
+                                                    <Typography variant="body1"><b>Area: </b>{task.area}</Typography>
+                                                    <Typography variant="body1"><b>City: </b>{customer.city}</Typography>
+                                                    <Typography variant="body1"><b>AreaPin: </b>{customer.areaPin}</Typography>
+                                                    <Typography variant="body1"><b>State: </b>{customer.state}</Typography>
+                                                </div>
                                             </CardContent>
                                         </Card>
+
                                     </Paper>
                                 )
                             }
@@ -609,22 +635,59 @@ export default function Taskdetail() {
 
 
                                                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                                                                <div style={{ height: "20vh", width: '100%' }}>
+                                                                <div style={{ width: '100%' }}>
 
                                                                     {
-                                                                        task.images !== "" && task.images !== null && task.images !== undefined ?
-                                                                            task.images.toString().split(",").map(image =>
-                                                                                <img style={{ width: 200 }}
-                                                                                    align="left"
-                                                                                    alt="Complaint images"
-                                                                                    src={`${baseUrl}/resources/complaintImages/${task.id}/${image}`}
-                                                                                />
-                                                                            ) : ""
+
+                                                                        task.imageList === null || task.imageList === undefined || task.imageList.length === 0 ? " " :
+                                                                            task.imageList.map(image =>
+                                                                                <Button
+                                                                                    value={`${baseUrl}${image}`}
+                                                                                    onClick={handleOpenImage}
+                                                                                    style={{ padding: 0 }}
+                                                                                >
+                                                                                    <img style={{ width: 200, padding: "20px" }}
+                                                                                        align="left"
+                                                                                        alt="Complaint images"
+                                                                                        src={`${baseUrl}${image}`}
+                                                                                    />
+                                                                                </Button>
+                                                                            )
 
                                                                     }
+                                                                    <Dialog open={openImage} maxWidth="xl" position='relative'>
+                                                                        <DialogContent style={{ position: 'relative', padding: 0, width: "100%" }}>
+                                                                            <div style={{ position: 'relative', padding: 0, width: "100%" }}>
+                                                                                <Button
+                                                                                    edge="end"
+                                                                                    color="inherit"
+                                                                                    onClick={() => setOpenImage(false)}
+                                                                                    aria-label="close"
+                                                                                    style={{ background: "white", position: 'absolute', zIndex: "3245353", right: "20px", top: "20px" }}
+                                                                                >
+                                                                                    <CloseIcon />
+                                                                                </Button>
+                                                                                <Button
+                                                                                    onClick={toggleZoom}
+                                                                                >
+                                                                                    <img
+                                                                                        alt="Complaint"
+                                                                                        src={image}
+
+                                                                                        style={{
+                                                                                            width: zoomedIn ? '100%' : '50%',
+                                                                                            height: zoomedIn ? '50%' : '100%',
+                                                                                            cursor: 'pointer',
+                                                                                        }}
+
+                                                                                    />
+                                                                                </Button>
+                                                                            </div>
+                                                                        </DialogContent>
+                                                                    </Dialog>
                                                                 </div>
                                                                 {
-                                                                    console.log(task.images)
+                                                                    console.log(task)
                                                                 }
 
                                                             </Paper>
@@ -650,12 +713,12 @@ export default function Taskdetail() {
                                     
                                 )
                             } */}
-
+                           
                             <Paper style={{ height: '100%', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
                                 <Card style={{ width: '100%', height: '100%' }}>
                                     <CardContent>
-
+                                    <form onSubmit={btnAssignTask}>
                                         <Card style={{ width: '100%', height: '100%', border: '2px solid red', borderRadius: '8px', marginBottom: '10%' }}>
                                             <CardContent>
                                                 <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
@@ -701,6 +764,7 @@ export default function Taskdetail() {
                                                 value={serviceType}
                                                 label="Service Type"
                                                 onChange={handleChangeServiceType}
+                                                required
                                             >
 
                                                 <MenuItem value="Free">Free</MenuItem>
@@ -716,10 +780,11 @@ export default function Taskdetail() {
                                                 value={complaintType}
                                                 label="Task Type"
                                                 onChange={handleChangeComplaintType}
+                                                required
                                             >
 
-                                                <MenuItem value="Remote Support">Remote Support</MenuItem>
-                                                <MenuItem value="On Site Visit">On Site Visit</MenuItem>
+                                                <MenuItem value="Remote">Remote Support</MenuItem>
+                                                <MenuItem value="Onsite">On Site Visit</MenuItem>
                                             </Select>
                                         </FormControl>
 
@@ -733,6 +798,7 @@ export default function Taskdetail() {
                                                 value={engineerId}
                                                 label="Select Engineer"
                                                 onChange={handleChangeEngineer}
+                                                required
                                             >
 
 
@@ -745,11 +811,9 @@ export default function Taskdetail() {
                                                 )}
                                             </Select>
                                         </FormControl>
-
-
                                         <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
                                             <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                Select Visit DateTime
+                                                Select Visit Date And Time
                                             </Typography>
                                         </InputLabel>
                                         <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
@@ -766,9 +830,11 @@ export default function Taskdetail() {
                                                     // Set placeholder value here
                                                     min: new Date().toISOString().split('T')[0],
                                                 }}
+                                                required
                                             />
                                         </FormControl>
                                         <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+
                                             <TextField
                                                 id="timepicker"
                                                 variant="outlined"
@@ -778,12 +844,14 @@ export default function Taskdetail() {
                                                 InputLabelProps={{
                                                     shrink: true,
                                                 }}
+                                                required
                                             />
+
                                         </FormControl>
 
                                         <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
                                             <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                Select Estimated End DateTime
+                                                Select Estimated Date And Time
                                             </Typography>
                                         </InputLabel>
 
@@ -802,7 +870,10 @@ export default function Taskdetail() {
                                                     // Set placeholder value here
                                                     min: new Date().toISOString().split('T')[0],
                                                 }}
+                                                required
                                             />
+
+
                                         </FormControl>
 
                                         <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
@@ -815,10 +886,13 @@ export default function Taskdetail() {
                                                 InputLabelProps={{
                                                     shrink: true,
                                                 }}
+                                                renderInput={(params) => <TextField {...params} variant="standard" />}
+
+                                                required
                                             />
+
                                         </FormControl>
-
-
+                                       
 
                                         <FormControl sx={{ width: '100%', marginBottom: '2%' }} size="small">
                                             <InputLabel id="demo-select-small-label">
@@ -830,6 +904,7 @@ export default function Taskdetail() {
                                                 value={priority}
                                                 label="Select Priority"
                                                 onChange={handleChangePriority}
+                                                required
                                             >
 
                                                 <MenuItem value="High">High</MenuItem>
@@ -838,29 +913,25 @@ export default function Taskdetail() {
                                             </Select>
                                         </FormControl>
 
-                                        {(task.complaintStatus === 'Submitted' || task.complaintStatus === 'Engineer Assigned') && (
-                                            <Button
-                                                variant="contained"
-                                                sx={{
-                                                    backgroundColor: '#00764D',
-                                                    width: '100%',
-                                                    height: '10%',
-                                                    margin: '5% auto', // Horizontally centers the button
-                                                    borderRadius: '10px',
-                                                    color: 'white',
-                                                }}
-                                                onClick={btnAssignTask}
-                                            >
-                                                {task.engineerId !== null ? (
-                                                    task.ticketStatus === 'Closed' ? 'Re-Assign' : 'Update'
-                                                ) : (
-                                                    'Assign'
-                                                )}
-                                            </Button>
-                                        )}
-
-
-
+                                        <Button
+                                            variant="contained"
+                                            type='submit'
+                                            sx={{
+                                                backgroundColor: '#00764D',
+                                                width: '100%',
+                                                height: '10%',
+                                                margin: '5% auto', // Horizontally centers the button
+                                                borderRadius: '10px',
+                                                color: 'white',
+                                            }}
+                                            
+                                        >
+                                            {task.engineerId !== null ? (
+                                                task.ticketStatus === 'Closed' ? 'Re-Assign' : 'Update'
+                                            ) : (
+                                                'Assign'
+                                            )}
+                                        </Button>
 
                                         <Button
                                             variant="contained"
@@ -880,11 +951,12 @@ export default function Taskdetail() {
                                                 'Reject'
                                             )}
                                         </Button>
-
+                                        </form>
                                     </CardContent>
 
                                 </Card>
                             </Paper>
+                          
 
 
                         </Grid>
@@ -895,6 +967,8 @@ export default function Taskdetail() {
                 </div>
 
             )}
+
+
         </div>
     );
 

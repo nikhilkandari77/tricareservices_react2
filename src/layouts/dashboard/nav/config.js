@@ -7,7 +7,14 @@
 
 // Custom component for rendering PNG icons
 // eslint-disable-next-line react/prop-types
+import { NavLink } from "react-router-dom";
+
+
 const Icon = ({ src, alt }) => <img src={src} alt={alt} />;
+
+
+
+
 
 const navConfig = [
   {
@@ -20,11 +27,19 @@ const navConfig = [
     path: '/dashboard/products',
     icon: <Icon src='/assets/icons/navbar/NavIconProducts.png' alt="Products" />,
   },
-  {
-    title: 'Tasks',
+ {
+    title: 'Active Complaints',
     path: '/dashboard/task',
-    icon: <Icon src='/assets/icons/navbar/NavIconTasks.png' alt="Tasks" />,
+    icon: <Icon src='/assets/icons/navbar/NavIconTasks.png' alt="Complaints" />,
   },
+  {
+    title: 'Closed Complaints',
+    path: '/dashboard/task-history',
+    icon: <Icon src='/assets/icons/navbar/closedComplaints.png' alt="Complaints" />,
+  }, 
+
+
+
   {
     title: 'Customers',
     path: '/dashboard/customers',

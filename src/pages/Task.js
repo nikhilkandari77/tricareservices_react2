@@ -212,11 +212,12 @@ export default function Task() {
         },
         {
             id: 'createdDateTime', field: 'createdDateTime', headerName: 'Complaint Time', minWidth: 170,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+            valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
             type: "date"
         },
-        { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 170, 
-    
+        {
+            id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70,
+
             valueFormatter: (params) => {
                 if (params.value === null) {
                     return "Pending Assign"; // Set an empty string if value is null
@@ -232,15 +233,15 @@ export default function Task() {
             minWidth: 170,
             valueFormatter: (params) => {
                 if (params.value === null) {
-                  return "Pending"; // Set an empty string if value is null
+                    return "Pending"; // Set an empty string if value is null
                 }
-                return new Date(params.value).toLocaleDateString();
+                return new Date(params.value).toLocaleDateString('en-GB');
             },
             type: "date"
         },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
-      
-        
+
+
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
         {
             field: 'actions',
@@ -268,9 +269,9 @@ export default function Task() {
 
 
     const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined
-            && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
-            || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
-            ? row : null)
+        && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
+        || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
+        ? row : null)
 
 
 
@@ -330,16 +331,16 @@ export default function Task() {
 
     if (loading) {
         return <div>Loading...</div>;
-      }
-    
-    
+    }
+
+
 
 
     return (
         <div >
             <Grid >
                 <Box sx={{ flexGrow: 6 }}>
-                    <AppBar style={{ backgroundColor: '#449355' }} position="static">
+                    <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
                         <Toolbar variant="dense">
                             <Typography
                                 variant="h6"
@@ -364,12 +365,13 @@ export default function Task() {
                                     autoFocus
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
-                            </Search>&nbsp;&nbsp;
-                            <div>
+                            </Search>
+                            {/* &nbsp;&nbsp; */}
+                            {/* <div>
                                 <Button className='responsive-button' onClick={()=>navigate("/dashboard/task-history")} variant="contained" style={{ backgroundColor: 'white', color: 'black', }} >
                                 Previous Complaints
                                 </Button>
-                            </div>
+                            </div> */}
 
 
                         </Toolbar>
@@ -384,8 +386,12 @@ export default function Task() {
 
                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                                 <div style={{ height: "70vh", width: '100%' }}>
-                                    <DataGrid rows={rows} columns={columns} pageSize={10}
-                                        rowsPerPageOptions={[10, 20]}
+                                    <DataGrid rows={rows} columns={columns} initialState={{
+                                        ...rows.initialState,
+                                        pagination: { paginationModel: { pageSize: 10 } },
+                                    }}
+                                        pageSizeOptions={[10, 25,50]}
+                                        rowsPerPageOptions={[10, 20, 30, 40]}
                                     />
                                 </div>
 
