@@ -998,7 +998,7 @@ export default function Customerdetail() {
                                                                                     }}
                                                                                     inputProps={{
                                                                                         // Set placeholder value here
-                                                                                        min: new Date().toISOString().split('T')[0],
+                                                                                        // min: new Date().toISOString().split('T')[0],
                                                                                     }}
                                                                                 />
                                                                             </FormControl>
@@ -1044,7 +1044,7 @@ export default function Customerdetail() {
                                                                                     }}
                                                                                     inputProps={{
                                                                                         // Set placeholder value here
-                                                                                        min: new Date().toISOString().split('T')[0],
+                                                                                        // min: new Date().toISOString().split('T')[0],
                                                                                     }}
                                                                                 />
                                                                             </FormControl>
@@ -1067,7 +1067,7 @@ export default function Customerdetail() {
                                                                                     inputProps={{
                                                                                         // Set placeholder value here
 
-                                                                                        min: new Date().toISOString().split('T')[0],
+                                                                                        // min: new Date().toISOString().split('T')[0],
                                                                                     }}
                                                                                 />
                                                                             </FormControl>
@@ -1090,19 +1090,24 @@ export default function Customerdetail() {
                                                                                     inputProps={{
                                                                                         // Set placeholder value here
 
-                                                                                        min: new Date().toISOString().split('T')[0],
+                                                                                        // min: new Date().toISOString().split('T')[0],
                                                                                     }}
                                                                                 />
                                                                             </FormControl>
 
                                                                             <TextField
-                                                                                label="Warranty Period"
+                                                                                label="Warranty Period (In Months)"
                                                                                 value={warrantyPeriod}
                                                                                 sx={{ marginTop: '7%' }}
                                                                                 onChange={(e) => setWarrantyPeriod(e.target.value)}
                                                                                 fullWidth
                                                                                 required
-                                                                            // style={{ padding: '7px', width: '250px' }}
+                                                                                // style={{ padding: '7px', width: '250px' }}
+                                                                                inputProps={{
+                                                                                    onInput: (e) => {
+                                                                                      e.target.value = e.target.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+                                                                                    },
+                                                                                  }}
                                                                             />
                                                                         </div>
                                                                     </Grid>
@@ -1970,6 +1975,7 @@ export default function Customerdetail() {
                                                                                             </Button>
                                                                                             {isEditable ? (
                                                                                                 <button
+                                                                                                    type='submit'
                                                                                                     onClick={handleSaveClick}
                                                                                                     style={{
                                                                                                         width: '15%',
@@ -1984,6 +1990,7 @@ export default function Customerdetail() {
                                                                                                 </button>
                                                                                             ) : (
                                                                                                 <button
+                                                                                                    type='submit'
                                                                                                     onClick={handleEditClick}
                                                                                                     style={{
                                                                                                         width: '15%',

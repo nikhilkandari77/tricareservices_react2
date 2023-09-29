@@ -184,13 +184,13 @@ export default function Task() {
             )
 
         },
-        { id: 'id', field: 'id', headerName: 'Complaint Id', minWidth: 50 },
+        { id: 'id', field: 'id', headerName: 'Complaint Id',align: 'center', minWidth: 50 },
         {
             id: 'productCustomer',
             field: 'productCustomer',
             subId: 'productName',
             headerName: 'Product',
-            minWidth: 120,
+            minWidth: 200,
             renderCell: (params) => (
                 <a>{params.row.productCustomer.productName}</a>
             ),
@@ -201,7 +201,7 @@ export default function Task() {
             field: 'problem',
             headerName: 'Problem',
             // format: (value) => value.toLocaleString('en-US'),
-            minWidth: 120,
+            minWidth: 200,
         },
         {
             id: 'customerName',
@@ -215,7 +215,7 @@ export default function Task() {
             valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
             type: "date"
         },
-        { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70, 
+        { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 170, 
     
             valueFormatter: (params) => {
                 if (params.value === null) {

@@ -61,7 +61,7 @@ export default function Taskdetail() {
     const [engineerId, setEngineerId] = React.useState('');
     const [priority, setPriority] = React.useState('');
 
-    const [productImages, setProductImages] = useState('')
+    const [productImages, setProductImages] = useState('');
     const [task, setTask] = useState({}); /* sets complaint details */
     const [customer, setCustomer] = useState({}); /* gets customer's details */
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
@@ -192,7 +192,7 @@ export default function Taskdetail() {
     };
 
     const getProduct = (productId) => {
-        console.log(productId)
+        console.log(productId);
         fetch(`${baseUrl}/api/user/product-master/${productId}`, {
 
             method: 'GET',
@@ -203,14 +203,14 @@ export default function Taskdetail() {
 
         }).then(response => response.json()).then(data => {
             setProductImages(data.data.imageName.toString().split(","));
-            console.log("product", data.data.imageName)
+            console.log("product", data.data.imageName);
         }).catch(error => console.log(error));
-    }
+    };
 
 
 
-    useEffect(() => {       
-        console.log("state is :",state)
+    useEffect(() => {
+        console.log("state is :", state);
 
         try {
             setIsTaskLoading(true);
@@ -227,7 +227,7 @@ export default function Taskdetail() {
                 .then(response => {
                     if (!response.ok) {
                         toast.error("Something Went Wrong");
-                        
+
                     }
                     return response.json();
                 })
@@ -276,13 +276,13 @@ export default function Taskdetail() {
                         setVisitTime(formattedTime2);
                     }
 
-                    console.log(formattedDate2)
+                    console.log(formattedDate2);
                     showCustomer(json.data.customerId, token);
 
                 });
         } catch (error) {
             console.error("Error:", error);
-            navigate("dashboard/task")
+            navigate("dashboard/task");
         } finally {
             setIsTaskLoading(false);
         }
@@ -462,7 +462,7 @@ export default function Taskdetail() {
                                     </div>
                                 ) : (
                                     // If customer data is available
-                                    <Paper style={{ height: '100%', alignItems: 'center',padding:20,margin:"auto"}}>
+                                    <Paper style={{ height: '100%', alignItems: 'center', padding: 20, margin: "auto" }}>
                                         <Typography variant="h6" gutterBottom>
                                             Customer Profile
                                         </Typography>
@@ -473,7 +473,7 @@ export default function Taskdetail() {
                                                 image="/assets/images/avatars/avatar_15.jpg"
                                                 style={{ maxWidth: '50%', maxHeight: '50%', margin: 'auto' }}
                                             />
-                                            <CardContent style={{ width:"100%",margin:"auto"}}>
+                                            <CardContent style={{ width: "100%", margin: "auto" }}>
                                                 <Typography variant="h5" style={{ marginTop: '1%' }}>
                                                     {customer.name}
                                                 </Typography>
@@ -659,7 +659,7 @@ export default function Taskdetail() {
                                         <Card style={{ width: '100%', height: '100%', border: '2px solid red', borderRadius: '8px', marginBottom: '10%' }}>
                                             <CardContent>
                                                 <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
-                                                    {task.problem}<br/>
+                                                    {task.problem}<br />
                                                 </Typography>
                                                 {/* <Typography variant="body1" style={{ textAlign: 'center' }}>
                                                     {task.problemDescription}
@@ -746,42 +746,7 @@ export default function Taskdetail() {
                                             </Select>
                                         </FormControl>
 
-                                        <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
-                                            <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                Select Estimated DateTime
-                                            </Typography>
-                                        </InputLabel>
 
-
-                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                            <TextField
-                                                id="datepicker"
-                                                variant="outlined"
-                                                value={estimatedDate}
-                                                onChange={handleDateChange}
-                                                type="date" // Use type "date" for date picker
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                inputProps={{
-                                                    // Set placeholder value here
-                                                    min: new Date().toISOString().split('T')[0],
-                                                }}
-                                            />
-                                        </FormControl>
-
-                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                            <TextField
-                                                id="timepicker"
-                                                variant="outlined"
-                                                value={estimatedTime}
-                                                onChange={handleTimeChange}
-                                                type="time" // Use type "time" for date picker
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                            />
-                                        </FormControl>
                                         <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
                                             <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
                                                 Select Visit DateTime
@@ -816,7 +781,42 @@ export default function Taskdetail() {
                                             />
                                         </FormControl>
 
+                                        <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
+                                            <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
+                                                Select Estimated End DateTime
+                                            </Typography>
+                                        </InputLabel>
 
+
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <TextField
+                                                id="datepicker"
+                                                variant="outlined"
+                                                value={estimatedDate}
+                                                onChange={handleDateChange}
+                                                type="date" // Use type "date" for date picker
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                inputProps={{
+                                                    // Set placeholder value here
+                                                    min: new Date().toISOString().split('T')[0],
+                                                }}
+                                            />
+                                        </FormControl>
+
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <TextField
+                                                id="timepicker"
+                                                variant="outlined"
+                                                value={estimatedTime}
+                                                onChange={handleTimeChange}
+                                                type="time" // Use type "time" for date picker
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                            />
+                                        </FormControl>
 
 
 
@@ -838,24 +838,29 @@ export default function Taskdetail() {
                                             </Select>
                                         </FormControl>
 
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                backgroundColor: '#00764D',
-                                                width: '100%',
-                                                height: '10%',
-                                                margin: '5% auto', // Horizontally centers the button
-                                                borderRadius: '10px',
-                                                color: 'white',
-                                            }}
-                                            onClick={btnAssignTask}
-                                        >
-                                            {task.engineerId !== null ? (
-                                                task.ticketStatus === 'Closed' ? 'Re-Assign' : 'Update'
-                                            ) : (
-                                                'Assign'
-                                            )}
-                                        </Button>
+                                        {(task.complaintStatus === 'Submitted' || task.complaintStatus === 'Engineer Assigned') && (
+                                            <Button
+                                                variant="contained"
+                                                sx={{
+                                                    backgroundColor: '#00764D',
+                                                    width: '100%',
+                                                    height: '10%',
+                                                    margin: '5% auto', // Horizontally centers the button
+                                                    borderRadius: '10px',
+                                                    color: 'white',
+                                                }}
+                                                onClick={btnAssignTask}
+                                            >
+                                                {task.engineerId !== null ? (
+                                                    task.ticketStatus === 'Closed' ? 'Re-Assign' : 'Update'
+                                                ) : (
+                                                    'Assign'
+                                                )}
+                                            </Button>
+                                        )}
+
+
+
 
                                         <Button
                                             variant="contained"

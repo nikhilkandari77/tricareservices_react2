@@ -201,7 +201,7 @@ export default function TaskHistory() {
             field: 'problem',
             headerName: 'Problem',
             // format: (value) => value.toLocaleString('en-US'),
-            minWidth: 120,
+            minWidth: 200,
         },
         {
             id: 'customerName',
@@ -216,11 +216,11 @@ export default function TaskHistory() {
             type: "date"
         },
         { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70 },
-        {
-            id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Date', minWidth: 170,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
-            type: "date"
-        },
+        // {
+        //     id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Date', minWidth: 170,
+        //     valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
+        //     type: "date"
+        // },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
         
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
@@ -333,7 +333,7 @@ export default function TaskHistory() {
                                 component="div"
                                 sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                             >
-                                Previous Complaints
+                                Closed Complaints
                             </Typography>
 
 

@@ -42,11 +42,6 @@ const override = css`
 
 
 
-
-
-
-
-
 export default function TaskHistoryDetail() {
     const location = useLocation();
     const taskId = location.state?.taskId;
