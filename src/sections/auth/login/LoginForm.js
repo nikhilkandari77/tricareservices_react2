@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getToken } from 'firebase/messaging';
+// import { getToken } from 'firebase/messaging';
 // @mui
 import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 // components
 import Iconify from '../../../components/iconify';
 import baseUrl from '../../../utils/baseUrl';
-import {  messaging } from '../../../firebase';
+// import {  messaging } from '../../../firebase';
 
 // ----------------------------------------------------------------------
 
@@ -65,19 +65,19 @@ export default function LoginForm() {
     toast.warn("Something went wrong",{position:"top-center"});
 }
   }
-async function requestPermission(){
-  const permission = await Notification.requestPermission()
-  let token=null;
-  if(permission==='granted'){
-    // generate token
-    token=await getToken(messaging,{vapidKey:"BDTNn8Fk3APhMt119AoD3zqK3KWMEvLsBYcYtfx3c0yqesxpt-IZsdU1xv0Sl5h54K3SKn3KFMzJrGJOLlI_nzM"})
-    console.log("token is :",token)
-  }
-  else if(permission==="denied"){
-    alert("messaging denied");
-  }
-  return token;
-}
+// async function requestPermission(){
+//   const permission = await Notification.requestPermission()
+//   let token=null;
+//   if(permission==='granted'){
+//     // generate token
+//     token=await getToken(messaging,{vapidKey:"BDTNn8Fk3APhMt119AoD3zqK3KWMEvLsBYcYtfx3c0yqesxpt-IZsdU1xv0Sl5h54K3SKn3KFMzJrGJOLlI_nzM"})
+//     console.log("token is :",token)
+//   }
+//   else if(permission==="denied"){
+//     alert("messaging denied");
+//   }
+//   return token;
+// }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,11 +121,11 @@ async function requestPermission(){
         localStorage.setItem('adminId',data.user.id);
         localStorage.setItem('token', data.token);
         localStorage.setItem("isLoggedIn", true);
-        const messageToken= await requestPermission();
-        if(messageToken!==null){
-          console.log("sending token",messageToken)
-          sendToken(messageToken,data);
-        }
+        // const messageToken= await requestPermission();
+        // if(messageToken!==null){
+        //   console.log("sending token",messageToken)
+        //   sendToken(messageToken,data);
+        // }
         navigate("/dashboard");
       } else {
         // Handle error responses

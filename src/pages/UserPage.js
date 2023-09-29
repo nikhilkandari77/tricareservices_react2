@@ -846,7 +846,11 @@ export default function StickyHeadTable() {
 
                                 return (
                                   <TableCell key={column.id} align={column.align}>
-                                    {value}
+                                    <div style={{overflowWrap: 'break-word', maxWidth:"10rem"}}>
+
+
+                                                      <p >{value}</p>
+                                                    </div>
                                   </TableCell>
 
                                 );

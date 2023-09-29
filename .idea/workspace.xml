@@ -4,27 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
-      <change afterPath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.87457522.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.87457522.js.LICENSE.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.87457522.js.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Tricare Services Minimal/webpack.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/asset-manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/build/asset-manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/image_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/build/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.bf12b38a.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.bf12b38a.js.LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.bf12b38a.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.dd8b4ad8.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.dd8b4ad8.js.LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/build/static/js/main.dd8b4ad8.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/public/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/src/utils/baseUrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/src/utils/baseUrl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Tricare Services Minimal/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../Tricare Services Minimal/yarn.lock" afterDir="false" />
-    </list>
+    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -223,7 +203,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694671151586</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695285723047</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1695285723047</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -220,7 +220,6 @@ export default function DashboardTable({ token }) {
                 inputProps={{ 'aria-label': 'search' }}
                 key="password"
                 value={search}
-                autoFocus
                 onChange={(e) => setSearch(e.target.value)}
               />
             </Search>

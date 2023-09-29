@@ -4,7 +4,16 @@
     padding:9px;
     font-size: 12px; /* Default font size */
      /* Default padding */
-
+     .react-responsive-carousel .carousel .control-prev.control-arrow {
+      background-color: red; /* Change to your desired background color */
+      color: white; /* Change to your desired text color */
+    }
+    
+    /* Customize the next button */
+    .react-responsive-carousel .carousel .control-next.control-arrow {
+      background-color: blue; /* Change to your desired background color */
+      color: white; /* Change to your desired text color */
+    }
   
     @media (max-width: 768px) {
       font-size:0; /* Adjust font size for smaller screens */

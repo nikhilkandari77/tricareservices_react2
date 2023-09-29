@@ -20,8 +20,8 @@ import {
   ListItemAvatar,
   ListItemButton,
 } from '@mui/material';
-import { onMessage } from 'firebase/messaging';
-import {  messaging } from '../../../firebase';
+// import { onMessage } from 'firebase/messaging';
+// import {  messaging } from '../../../firebase';
 // utils
 import { fToNow } from '../../../utils/formatTime';
 // components
@@ -93,35 +93,32 @@ export default function NotificationsPopover() {
     setOpen(null);
   };
 
-  const handleMarkAllAsRead = () => {
-    setNotifications(
-      notifications.map((notification) => ({
-        ...notification,
-        isUnRead: false,
-      }))
-    );
-  };
-  useEffect(() => {
-    const unsubscribe = onMessage(messaging, (message) => {
-      // Handle the incoming message here
-      console.log("Received a message:", message);
-     const notification=JSON.parse(localStorage.getItem("notificationArray"))||[];
-      notification.push(message.notification);
-      console.log(notification);
-      localStorage.setItem("notificationArray",JSON.stringify(notification));
-      setTotalUnRead(notification.length||0);
+  // const handleMarkAllAsRead = () => {
+  //   setNotifications(
+  //     notifications.map((notification) => ({
+  //       ...notification,
+  //       isUnRead: false,
+  //     }))
+  //   );
+  // };
+  // useEffect(() => {
+  //   const unsubscribe = onMessage(messaging, (message) => {
+  //     console.log("Received a message:", message);
+  //    const notification=JSON.parse(localStorage.getItem("notificationArray"))||[];
+  //     notification.push(message.notification);
+  //     console.log(notification);
+  //     localStorage.setItem("notificationArray",JSON.stringify(notification));
+  //     setTotalUnRead(notification.length||0);
       
 
-      // You can use a library like "react-toastify" to display notifications
-      // Example: toast.info(message.notification.body);
-    });
-    const notification=JSON.parse(localStorage.getItem("notificationArray"))||[];
-    setTotalUnRead(notification.length||0);
-    return () => {
-      // Clean up the listener when the component unmounts
-      unsubscribe();
-    };
-  }, []);
+ 
+  //   });
+  //   const notification=JSON.parse(localStorage.getItem("notificationArray"))||[];
+  //   setTotalUnRead(notification.length||0);
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, []);
 
 
 
