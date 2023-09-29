@@ -11,7 +11,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../Tricare Services Minimal" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -40,14 +40,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -211,7 +212,31 @@
       <option name="project" value="LOCAL" />
       <updated>1695285723047</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695979279627</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1695979279627</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695979309772</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1695979309772</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695979339268</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1695979339268</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
