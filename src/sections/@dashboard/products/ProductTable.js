@@ -43,7 +43,7 @@ import ImageSlide from './ImageSlide'
 
 
 const columns = [
-  { id: 'Sr.No', label: 'Sr.No', minWidth: 10 },
+  { id: 'sr', label: 'Sr.No', minWidth: 10 },
   { id: 'imageList', label: ' Image', minWidth: 50 },
   { id: 'id', label: 'Product Id', minWidth: 100 },
   { id: 'name', label: 'Name', minWidth: 100 },
@@ -371,13 +371,15 @@ export default function StickyHeadTable() {
         console.log("Fetched data:", json); // This line will print the data to the console
         // setUsers(json);
         setRows(json.data);
+        setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
         getCategories(token);
+
       })
       .finally(() => {
         setLoading(false);
       });
 
-  }, [updateForm,openUser]);
+  }, [updateForm, openUser]);
   //  [updateForm, openUser]
   const getCategories = (token) => {
     fetch(`${baseUrl}/api/user/category/`, {
@@ -419,7 +421,7 @@ export default function StickyHeadTable() {
         top: '50%',
         right: 2,
         transform: 'translateY(-50%)',
-         backgroundColor: 'transparent', // Set the background color for the next arrow
+        backgroundColor: 'transparent', // Set the background color for the next arrow
         color: 'black', // Set the text color
         border: 'none',
         borderRadius: '50%',
@@ -443,7 +445,7 @@ export default function StickyHeadTable() {
         left: 2,
         zIndex: 9994542,
         transform: 'translateY(-50%)',
-         backgroundColor: 'transparent', // Set the background color for the previous arrow
+        backgroundColor: 'transparent', // Set the background color for the previous arrow
         color: 'black', // Set the text color
         border: 'none',
         borderRadius: '50%',
@@ -461,8 +463,6 @@ export default function StickyHeadTable() {
     return <div>Loading...</div>;
   }
 
-
-  let sr = 0;
 
   return (
 
@@ -660,10 +660,7 @@ export default function StickyHeadTable() {
                                 if (column.id === "category")
                                   value = value.name;
 
-                                else if (column.id === "Sr.No") {
-                                  sr += 1
-                                  value = sr;
-                                }
+
                                 else if (column.id === "imageList") {
 
 
@@ -672,12 +669,12 @@ export default function StickyHeadTable() {
                                     <TableCell margin={0}>
 
                                       {
-                                        value === undefined || value === null || value.length === 0 ?
+                                        (value === undefined|| value === null || value.length === 0) ? (
                                           <img style={{ height: "10vh" }} src="/products/logo.png" alt='product' />
-                                          :
+                                        ) : (
                                           // <LazyLoad height={100} offset={100}>
                                           <img style={{ height: "10vh" }} loading="lazy" src={`${baseUrl}${value[0]}`} alt='product' />
-
+                                        )
                                       }
 
                                     </TableCell>
@@ -879,7 +876,7 @@ export default function StickyHeadTable() {
                                                 } */}
                                               <div className='row'>
                                                 <div className='col-md-6'>
-                                                  <br/>
+                                                  <br />
                                                   <Carousel
 
                                                     renderArrowPrev={(onClickHandler, hasPrev, label) =>
@@ -909,16 +906,16 @@ export default function StickyHeadTable() {
 
 
                                                 <div className='col-md-6'>
-                                                  <div><br/>
-                                                    <table width={"80%"} style={{ margin: "auto", textAlign: "left",color:"black" }}>
+                                                  <div><br />
+                                                    <table width={"80%"} style={{ margin: "auto", textAlign: "left", color: "black" }}>
                                                       <tr>
                                                         <th><b>Product Id :</b></th><td>{id}</td>
                                                       </tr>
                                                       <tr>
-                                                      <th><b>Product Name :</b></th><td>{name}</td>
+                                                        <th><b>Product Name :</b></th><td>{name}</td>
                                                       </tr>
                                                       <tr>
-                                                      <th><b>Category Name : </b></th><td>{categories.filter(c => c.id === category).map(c => c.name)}</td>
+                                                        <th><b>Category Name : </b></th><td>{categories.filter(c => c.id === category).map(c => c.name)}</td>
 
                                                       </tr>
 
@@ -938,12 +935,12 @@ export default function StickyHeadTable() {
 
 
                                                     <div style={{ overflowWrap: 'break-word', width: "100%" }}>
-                                                      <h4 style={{ textAlign: "center",color:"black" }}>Description</h4>
+                                                      <h4 style={{ textAlign: "center", color: "black" }}>Description</h4>
 
-                                                      <br/>
-                                                     <div style={{border:"2px solid black",padding:"1vw",borderRadius:"10px"}}>
-                                                     <p >{description}</p>
-                                                     </div>
+                                                      <br />
+                                                      <div style={{ border: "2px solid black", padding: "1vw", borderRadius: "10px" }}>
+                                                        <p >{description}</p>
+                                                      </div>
                                                     </div>
 
 
