@@ -163,14 +163,8 @@ export default function StickyHeadTable() {
   }
   const token = localStorage.getItem('token');
 
-  // const searchItem = rows.filter(row => {
-  //   return (search === '')
-  //     || (row.category.name.toLowerCase().includes(search.toLowerCase()))
-  //     || (row.name.toLowerCase().includes(search.toLowerCase())) ?
-  //     row : null;
 
-  // })
-  const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined
+  const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined&&row[column.id] !== null
     && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
     || (row.category.name.toLowerCase().includes(search.toLowerCase()))
     ? row : null)
@@ -268,9 +262,25 @@ export default function StickyHeadTable() {
 
 
   // Form submission handler
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    if (images.length > 0) {
+      if (images.length > 4) {
+        toast.error("images must be upto 4");
+        return "";
+      }
+      let size = 0;
+      images.forEach(image => {
+        size += image.size
+        return "";
+      });
+      if (size > 10e6) {
+        toast.error("images must be upto 10mb");
+        return "";
+      }
+    }
     setLoading(true);
-
 
     const formData = new FormData();
     formData.append("name", name);
@@ -306,8 +316,9 @@ export default function StickyHeadTable() {
       console.error('Error while adding product:', error);
       toast.error('Error while adding product'); // Display error toast
     }
+    return "";
+  
   };
-
 
 
   const handleSubmit2 = async () => {
@@ -315,6 +326,23 @@ export default function StickyHeadTable() {
 
     if (deleteImages.length > 0)
       submitDeleteImages(token)
+
+    if (images.length > 0) {
+      if (images.length > 4) {
+        toast.error("images must be upto 4");
+        return;
+      }
+      let size = 0;
+      images.forEach(image => {
+        size += image.size
+        return "";
+      });
+      if (size > 10e6) {
+        toast.error("images must be upto 10mb");
+        return;
+      }
+    }
+
 
 
 
@@ -474,7 +502,7 @@ export default function StickyHeadTable() {
 
 
         <Box sx={{ flexGrow: 6 }} item xs={12}>
-          <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+          <AppBar style={{ backgroundColor: '#007F6D',borderRadius:"3px" }} position="static">
             <Toolbar variant="dense">
               <Typography
                 variant="h6"
@@ -542,6 +570,8 @@ export default function StickyHeadTable() {
                                 label="Product Name"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                inputProps={{ maxLength: 50 }}
+
                                 fullWidth
                                 required
                               />
@@ -588,7 +618,7 @@ export default function StickyHeadTable() {
                                     type="file"
                                     onChange={(e) => imageHandler(e)}
                                     id="products-images"
-                                    inputProps={{ multiple: true, accept: '.png' }}
+                                    inputProps={{ multiple: true, accept: ['.png'] }}
                                   />
                                 </Grid>
                               </Grid>
@@ -669,7 +699,7 @@ export default function StickyHeadTable() {
                                     <TableCell margin={0}>
 
                                       {
-                                        (value === undefined|| value === null || value.length === 0) ? (
+                                        (value === undefined || value === null || value.length === 0) ? (
                                           <img style={{ height: "10vh" }} src="/products/logo.png" alt='product' />
                                         ) : (
                                           // <LazyLoad height={100} offset={100}>
@@ -732,6 +762,7 @@ export default function StickyHeadTable() {
                                                       fullWidth
                                                       margin="normal"
                                                       multiline
+                                                      inputProps={{ maxLength: 50 }}
                                                       required
                                                     />
 
@@ -750,6 +781,7 @@ export default function StickyHeadTable() {
                                                         label="Select Category"
                                                         onChange={(e) => setCategory(e.target.value)}
                                                         fullWidth
+                                                        
 
                                                       >
 
@@ -770,7 +802,7 @@ export default function StickyHeadTable() {
                                                           type="file"
                                                           onChange={(e) => setImages(Array.from(e.target.files))}
                                                           id="products-images"
-                                                          inputProps={{ multiple: true, accept: '.png' }}
+                                                          inputProps={{ multiple: true, accept:['.png'] }}
                                                         />
                                                       </Grid>
                                                     </Grid>
@@ -783,6 +815,7 @@ export default function StickyHeadTable() {
                                                       fullWidth
                                                       required
                                                       multiline
+                                                      inputProps={{ maxLength: 150 }}
                                                       margin="normal" // Added margin for spacing between fields
                                                     /><br /><br />
                                                     <div style={{ textAlign: "center" }}><h5>Select images for delete</h5></div>
@@ -988,7 +1021,7 @@ export default function StickyHeadTable() {
                 </TableContainer>
 
                 <TablePagination
-                  rowsPerPageOptions={[5, 10, 15, 25, 100]}
+                  rowsPerPageOptions={[ 10, 25, 100]}
                   component="div"
                   count={searchItem.length}
                   rowsPerPage={rowsPerPage}

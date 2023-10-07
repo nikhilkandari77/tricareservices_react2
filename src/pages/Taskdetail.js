@@ -398,7 +398,7 @@ export default function Taskdetail() {
 
                 <div>
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' }} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' ,borderRadius:"3px"}} position="static">
 
 
                             {Object.keys(task).length === 0 ? (

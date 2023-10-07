@@ -53,7 +53,7 @@ const navConfig = [
   {
     title: 'User Management',
     path: '/dashboard/usermanagement',
-    icon: <Icon src='/assets/icons/navbar/NavIconCustomers.png' alt="Engineer" />,
+    icon: <Icon src='/assets/icons/navbar/UserMngmnt.png' alt="Engineer" />,
   },
   // {
   //   title: 'Reports',

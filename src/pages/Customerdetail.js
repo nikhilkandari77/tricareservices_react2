@@ -778,7 +778,7 @@ export default function Customerdetail() {
             <div className="row">
                 <div className="col-md-12">
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' }} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh', }} position="static">
                             <Toolbar>
                                 <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: { xs: '3', sm: 'block' } }}>
                                     <div className="container emp-profile">

@@ -24,7 +24,7 @@ const NAV_WIDTH = 280;
 
 const HEADER_MOBILE = 64;
 
-const HEADER_DESKTOP = 92;
+const HEADER_DESKTOP = 70;
 
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: theme.palette.background.default }),
@@ -63,8 +63,8 @@ export default function Header({ onOpenNav }) {
           sx={{
             mr: 1,
             color: 'text.primary',
-            marginTop:'-5%',
-            marginLeft:'-4.5%'
+          
+            display: { xs: 'inline-block', md: 'none' }
           }}
         >
           <Iconify icon="eva:menu-2-fill" />
