@@ -17,12 +17,13 @@ import * as echarts from 'echarts/core';
 import { GaugeChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
-// components
+// 
+import baseUrl from '../utils/baseUrl';
 import Iconify from '../components/iconify';
 
 
 
-import baseUrl from '../utils/baseUrl';
+
 
 // sections
 import {

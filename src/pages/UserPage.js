@@ -6,6 +6,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
+// import XLSX from 'xlsx';
 
 import { toast } from 'react-toastify';
 import Paper from '@mui/material/Paper';
@@ -18,17 +19,22 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
+import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, Tooltip, } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
+import Switch from '@mui/material/Switch';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import * as Filesaver from 'file-saver';
+import XLSX from 'sheetjs-style';
 import InputBase from '@mui/material/InputBase';
+import { array } from 'prop-types';
+import Label from '../components/label/Label';
 import baseUrl from '../utils/baseUrl';
 
 
@@ -36,8 +42,9 @@ import Iconify from '../components/iconify';
 
 
 
+
 const columns = [
-  { id: 'srno', label: 'Sr.No', minWidth: 55, align: 'center' },
+  { id: 'sr', label: 'Sr.No', minWidth: 55, align: 'center' },
   { id: 'name', label: 'Customer Name', minWidth: 85, align: 'center' },
   { id: 'city', label: 'City', minWidth: 140, align: 'center' },
   { id: 'areaPin', label: 'Area Pin', minWidth: 100, align: 'center' },
@@ -56,6 +63,23 @@ const columns = [
 
     // format: (value) => value.toLocaleString('en-US'),
   },
+
+  {
+    id: 'status',
+    label: 'Status',
+    minWidth: 140,
+    align: 'center',
+
+
+  },
+
+  // {
+  //   id: 'button1',
+  //   label: 'Action',
+  //   minWidth: 140,
+  //   align: 'center',
+  //   // format: (value) => value.toFixed(2),
+  // },
   {
     id: 'button',
     label: 'Action',
@@ -72,7 +96,6 @@ const Item = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
   color: theme.palette.text.secondary,
 }));
-
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -149,19 +172,21 @@ export default function StickyHeadTable() {
   const [btnLoading, setBtnLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSwitchOn, setIsSwitchOn] = useState(true);
+  const [fileSaver, setFileSaver] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const [contactError, setContactError] = useState('');
-
+  const [fileName, setFileName] = useState('');
   const handleImageChange = (event) => {
     const file = event.target.files[0];
 
     if (file) {
+      setFileName('');
       setSelectedImage(URL.createObjectURL(file));
     }
 
@@ -183,7 +208,7 @@ export default function StickyHeadTable() {
       ? row : null;
   });
 
-
+  const label = { inputProps: { 'aria-label': 'Size switch demo' } };
 
 
 
@@ -212,10 +237,46 @@ export default function StickyHeadTable() {
   };
   const handleClickClose1 = () => {
     setUserOpen(false);
+    resetpassword();
   };
   const handleClickOpen1 = () => {
     setUserOpen(false);
   };
+
+
+  const handleSwitchChange = async (rowId) => {
+    // Update the row's data based on rowId
+    const updatedRows = rows.map((row) =>
+      row.id === rowId ? { ...row, status: !row.status } : row
+    );
+
+    // Update the state and set loading to true
+    setRows(updatedRows);
+    setIsLoading({ ...isLoading, [rowId]: true });
+
+    try {
+      const { status } = updatedRows.find((row) => row.id === rowId);
+      await handleChangeupdatetable(status, rowId);
+    } catch (error) {
+      // Handle errors here
+    } finally {
+      // Reset loading state when the API request is complete (success or failure)
+      setIsLoading({ ...isLoading, [rowId]: false });
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   useEffect(() => {
@@ -302,32 +363,18 @@ export default function StickyHeadTable() {
 
 
 
-
-
-
-
-
-  // Form submission handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChangeupdatetable = async (status, userid) => {
+    // e.preventDefault();
 
     const token = localStorage.getItem('token');
-    const adminId1 = localStorage.getItem('adminId');
 
+    // Set userId and status based on your logic
+    const isActive = status; // For example, determine the status based on some condition
+    const userId = userid; // Replace with the actual user ID
 
     const formData = {
-      name,
-      adminId: adminId1,
-      contact,
-      password,
-      areaPin,
-      city,
-      state,
-      email,
-      address,
-      role: {
-        id: 2,
-      },
+      id: userId,
+      status: isActive ? 1 : 0,
     };
 
     // Convert form data object to JSON
@@ -335,51 +382,101 @@ export default function StickyHeadTable() {
 
     console.log(formData);
     console.log(token);
-    try {
-      setBtnLoading(true);
-      const response = await fetch(`${baseUrl}/api/user/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: requestBody,
+    const response = await fetch(`${baseUrl}/api/user/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: requestBody,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      toast.success('Updated successfully', {
+        position: toast.POSITION.TOP_RIGHT,
       });
 
-      const data = await response.json();
-      console.log(data);
-
-      if (response.ok) {
-        setUserOpen(false);
-        toast.success('Form submitted successfully');
-        window.location.reload();
-      } else {
-        toast.error('sorry! already exist user id & email id');
-        setMessage(data.message);
-
-      }
-
-    } catch (error) {
-      console.error('An error occurred:', error);
-
-      window.alert('An error occurred while submitting the form.');
-      // Handle the error here, such as displaying an alert or setting an error state
-      setMessage('An error occurred while submitting the form.');
-    } finally {
-      setBtnLoading(false);
+    } else {
+      toast.error(data.message || 'An error occurred', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
 
     console.log('Form data submitted:', formData);
     // Now you can close the form.
     setIsFormOpen(false);
-
-
-
-
-
-
-
   };
+
+
+
+
+
+
+
+
+
+
+ // Form submission handler
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const token = localStorage.getItem('token');
+  const adminId1 = localStorage.getItem('adminId');
+
+  const formData = {
+    name,
+    adminId: adminId1,
+    contact,
+    password,
+    areaPin,
+    city,
+    state,
+    email,
+    address,
+    role: {
+      id: 2,
+    },
+  };
+
+  // Convert form data object to JSON
+  const requestBody = JSON.stringify(formData);
+
+  try {
+    setBtnLoading(true); // Set loading to true when the submission starts
+
+    const response = await fetch(`${baseUrl}/api/user/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: requestBody,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      setUserOpen(false);
+      toast.success('Form submitted successfully');
+      window.location.reload();
+    } else {
+      toast.error('Sorry! User ID and email ID already exist');
+      setMessage(data.message);
+    }
+    
+  } catch (error) {
+    console.error('An error occurred:', error);
+    window.alert('An error occurred while submitting the form.');
+    setMessage('An error occurred while submitting the form.');
+  } finally {
+    setBtnLoading(false); // Set loading back to false after submission is complete
+  }
+
+  // Now you can close the form.
+  setIsFormOpen(false);
+};
 
 
 
@@ -423,7 +520,7 @@ export default function StickyHeadTable() {
       .then(json => {
         console.log("Fetched data:", json); // This line will print the data to the console
         // setUsers(json);
-        setRows(json.data);
+        setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
 
       })
       .finally(() => {
@@ -442,8 +539,114 @@ export default function StickyHeadTable() {
 
   let sr = 0;
 
+  const handleChangestate = (event) => {
+    setState(event.target.value);
+  };
 
 
+
+
+  // const exportToExcel = () => {
+  //   const fileName = `daily_report ${Date.now()}`;
+  //   const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+  //   const fileExtension = '.xlsx';
+  //   console.log("test", searchItem);
+  //   const ws = XLSX.utils.json_to_sheet(searchItem);
+  //   const wb = XLSX.utils.book_new(); // Create a new workbook
+  //   XLSX.utils.book_append_sheet(wb, ws, 'data'); // Append the worksheet to the workbook
+  //   const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  //   const data = new Blob([excelBuffer], { type: fileType });
+
+  //   // Use 'file-saver' to save the file
+  //   fileSaver.saveAs(data, fileName + fileExtension);
+  // };
+
+
+  // const exportToExcel = () => {
+  //   const fileName = `daily_report ${Date.now()}`;
+  //   const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+  //   const fileExtension = '.xlsx';
+  //   console.log(searchItem);
+  //   const ws = XLSX.utils.json_to_sheet(searchItem);
+  //   const wb = XLSX.utils.book_new(); // Create a new workbook
+  //   XLSX.utils.book_append_sheet(wb, ws, 'data'); // Append the worksheet to the workbook
+  //   const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); // Use 'blob' type
+  //   const data = new Blob([excelBuffer], { type: fileType });
+
+  //   // Create a download link
+  //   const url = window.URL.createObjectURL(data);
+  //   const link = document.createElement('a');
+  //   link.href = url;
+  //   link.setAttribute('download', fileName + fileExtension);
+
+  //   // Simulate a click on the link to trigger the download
+  //   document.body.appendChild(link);
+  //   link.click();
+
+  //   // Clean up
+  //   window.URL.revokeObjectURL(url);
+  //   document.body.removeChild(link);
+  // };
+
+
+  const exportToExcel = () => {
+    const fileName = `all_customer_${Date.now()}`; // Updated filename format
+    const fileType =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtension = '.xlsx';
+
+    // Assuming you have an array of objects called 'searchItem'
+    // Define an array of column IDs you want to keep
+    const columnsToKeep = [
+      'name',
+      'city',
+      'areaPin',
+      'contact',
+      'email',
+      'status',
+    ]; // Removed 'srno' column as we will add it manually
+
+    // Add a serial number column to the 'filteredData' array
+    const filteredData = searchItem.map((item, index) => {
+      const filteredItem = { srno: index + 1 }; // Add serial number
+      columnsToKeep.forEach(column => {
+        filteredItem[column] = item[column];
+      });
+      return filteredItem;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'data');
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: fileType });
+
+    const url = window.URL.createObjectURL(data);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName + fileExtension);
+
+    document.body.appendChild(link);
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+  };
+
+
+  const resetpassword = (e) => {
+
+    
+    setPassword('');
+    setName('');
+    setContact('');
+    setEmail('');
+    setAddress('');
+    setAreaPin('');
+    setCity('');
+    setState('');
+
+}
 
 
 
@@ -454,7 +657,7 @@ export default function StickyHeadTable() {
     <div>
       <Grid container spacing={0} >
         <Box sx={{ flexGrow: 6 }}>
-          <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+          <AppBar style={{ backgroundColor: '#007F6D',borderRadius:'5px' }} position="static">
             <Toolbar variant="dense">
               <Typography
                 variant="h6"
@@ -495,6 +698,18 @@ export default function StickyHeadTable() {
               </div>
 
 
+              <Tooltip title="Excel Export">
+                <Button
+                  variant="contained"
+                  onClick={exportToExcel}
+                  color="primary"
+                  style={{ cursor: 'pointer', fontSize: 14, marginLeft: '3%' }}
+                >
+                  Export
+                </Button>
+              </Tooltip>
+
+
               <Dialog
                 open={openUser}
                 onClose={handleClose}
@@ -523,18 +738,20 @@ export default function StickyHeadTable() {
                               <Button
                                 component="span"
                                 style={{
-                                  width: 75,
-                                  height: 100,
+                                  width: 90,
+                                  height: 85,
                                   cursor: 'pointer',
                                   backgroundSize: 'cover',
                                   backgroundPosition: 'center',
-                                  backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
-
+                                  backgroundImage: selectedImage
+                                    ? `url(${selectedImage})`
+                                    : `url("/image1/png-clipart-user-profile-computer-icons-girl-customer-avatar-angle-heroes-thumbnail 1.png" )`, // Use selected image or default image
+                                  borderRadius: '50%'
                                 }}
                               >
                                 {/* Content of the button */}
                               </Button>
-                              <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
+                              {/* <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p> */}
                             </InputLabel>
 
                           </div>
@@ -553,8 +770,9 @@ export default function StickyHeadTable() {
                               onChange={(e) => setName(e.target.value)}
                               fullWidth
                               required
-                            // style={{ padding: '7px', width: '250px' }}
+                              inputProps={{ maxLength: 50 }}
                             />
+
 
 
 
@@ -569,6 +787,7 @@ export default function StickyHeadTable() {
                               sx={{ m: 1, width: '250px' }}
                               error={contactError !== ''}
                               helperText={contactError}
+                              inputProps={{ maxLength: 10 }}
 
                             />
 
@@ -584,6 +803,7 @@ export default function StickyHeadTable() {
                               sx={{ m: 1, width: '250px' }}
                               error={emailError !== ''}
                               helperText={emailError}
+                              inputProps={{ maxLength: 50 }}
                             />
 
 
@@ -595,6 +815,7 @@ export default function StickyHeadTable() {
                               required
                               // style={{ padding: '7px', width: '250px' }}
                               sx={{ m: 1, width: '250px' }}
+                              inputProps={{ maxLength: 6 }}
 
                             />
 
@@ -619,6 +840,7 @@ export default function StickyHeadTable() {
                               required
                               // style={{ padding: '7px', width: '250px', height: '120px' }}
                               sx={{ m: 1, width: '250px' }}
+                              inputProps={{ maxLength: 50 }}
                             />
 
                             <TextField
@@ -629,20 +851,65 @@ export default function StickyHeadTable() {
                               multilin
                               rows={4}
                               required
+                              inputProps={{ maxLength: 40 }}
                               // style={{ padding: '7px', width: '250px', height: '120px' }}
                               sx={{ m: 1, width: '250px' }}
                             />
-                            <TextField
-                              label="State"
-                              value={state}
-                              onChange={(e) => setState(e.target.value)}
-                              fullWidth
-                              multilin
-                              rows={4}
-                              required
-                              // style={{ padding: '7px', width: '250px', height: '120px' }}
-                              sx={{ m: 1, width: '250px' }}
-                            />
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                              <FormControl sx={{ m: 2, width: '250px' }} size="small" fullWidth>
+                                <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>
+                                  State
+                                </InputLabel>
+                                <Select
+                                  labelId="demo-select-small-label"
+                                  id="demo-select-small"
+                                  value={state}
+                                  label="State"
+                                  required
+                                  onChange={handleChangestate}
+                                  sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                >
+                                   <MenuItem value="AndhraPradesh">Andhra Pradesh</MenuItem>
+                                                                                        <MenuItem value="Arunachal Pradesh">Arunachal Pradesh</MenuItem>
+                                                                                        <MenuItem value="Assam">Assam</MenuItem>
+                                                                                       <MenuItem value=" Bihar"> Bihar</MenuItem>
+                                                                                        <MenuItem value="AndhraPradesh">Chhattisgarh</MenuItem>
+                                                                                       <MenuItem value="Goa"> Goa</MenuItem>
+                                                                                       <MenuItem value="Gujarat"> Gujarat</MenuItem>
+                                                                                       <MenuItem value="Haryana"> Haryana</MenuItem>
+                                                                                       <MenuItem value="Himachal Pradesh"> Himachal Pradesh</MenuItem>
+                                                                                       <MenuItem value="Jharkhand"> Jharkhand</MenuItem>
+                                                                                       <MenuItem value="Karnataka"> Karnataka</MenuItem>
+                                                                                       <MenuItem value="Kerala"> Kerala</MenuItem>
+                                                                                       <MenuItem value="Madhya Pradesh"> Madhya Pradesh</MenuItem>
+                                                                                       <MenuItem value="Maharashtra"> Maharashtra</MenuItem>
+                                                                                       <MenuItem value="Manipur"> Manipur</MenuItem>
+                                                                                       <MenuItem value="Meghalaya"> Meghalaya</MenuItem>
+                                                                                       <MenuItem value="Mizoram"> Mizoram</MenuItem>
+                                                                                       <MenuItem value="Nagaland"> Nagaland</MenuItem>
+                                                                                       <MenuItem value="Odish"> Odisha</MenuItem>
+                                                                                       <MenuItem value="Punjab"> Punjab</MenuItem>
+                                                                                       <MenuItem value="Rajasthan"> Rajasthan</MenuItem>
+                                                                                       <MenuItem value="Sikkim"> Sikkim</MenuItem>
+                                                                                       <MenuItem value="TamilNadu"> Tamil Nadu</MenuItem>
+                                                                                       <MenuItem value="Telangana">Telangana</MenuItem>
+
+                                                                                       <MenuItem value="Tripura"> Tripura</MenuItem>
+                                                                                       <MenuItem value="Uttar Pradesh"> Uttar Pradesh</MenuItem>
+                                                                                       <MenuItem value="Uttarakhand"> Uttarakhand</MenuItem>
+                                                                                       <MenuItem value=" West Bengal"> West Bengal</MenuItem>
+                                                                                       <MenuItem value=" JammuandKashmir(Union Territory)"> Jammu and Kashmir (Union Territory)</MenuItem>
+                                                                                       <MenuItem value=" Chandigarh(Union Territory)"> Chandigarh (Union Territory)</MenuItem>
+                                                                                       <MenuItem value=" Andaman and Nicobar Islands(Union Territory)"> Andaman and Nicobar Islands (Union Territory)</MenuItem>
+                                                                                       <MenuItem value=" Delhi(Union Territory)"> Delhi (Union Territory)</MenuItem>
+                                                                                       <MenuItem value=" Lakshadweep(Union Territory)"> Lakshadweep (Union Territory)</MenuItem>
+                                                                                       <MenuItem value=" Puducherry(Union Territory)"> Puducherry (Union Territory)</MenuItem>
+                                                                                       <MenuItem value=" Dadra and Nagar Haveli and Daman and Diu(Union Territory)"> Dadra and Nagar Haveli and Daman and Diu (Union Territory)</MenuItem>
+                                                                                       <MenuItem value="Ladakh(Union Territory)"> Ladakh (Union Territory)</MenuItem>
+
+                                </Select>
+                              </FormControl>
+                            </div>
 
 
                             <TextField
@@ -675,38 +942,25 @@ export default function StickyHeadTable() {
 
                         </Grid>
                       </Grid>
-                      <div style={{ marginTop: '20px' }}>
-                        {/* <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                          Submit
-                        </Button>
-                        <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
-                          Close
-                        </Button> */}
-
+                      <div >
                         <div>
                           {/* Conditionally render the button or loading circle */}
-                          {btnLoading ? (
-                            <CircularProgress size={24} /> // Adjust the size as needed
-                          ) : (
-                            <>
-                              <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                                Submit
-                              </Button>
-                              <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
-                                Close
-                              </Button>
-                            </>
-                          )}
-                        </div>
-
-                        {/* <>
-                          <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                            Submit
+                          <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            style={{ float: 'right',  }}
+                            disabled={btnLoading} // Disable the button when loading is true
+                          >
+                            {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
                           </Button>
                           <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
                             Close
                           </Button>
-                        </> */}
+                        </div>
+
+
+
 
                       </div>
                     </form>
@@ -746,8 +1000,15 @@ export default function StickyHeadTable() {
 
 
 
+
+
+
+
+
+
         <Grid item xs={12} style={{ marginTop: '2%' }}>
-          <Item>
+
+          
             <Card >
 
 
@@ -770,95 +1031,137 @@ export default function StickyHeadTable() {
                     </TableHead>
                     <TableBody>
                       {searchItem
+
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row) => {
-                          return (
-                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                              {columns.map((column) => {
-                                const value = row[column.id];
+                        .map((row) => (
+                          <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                            {columns.map((column) => {
+                              const value = row[column.id];
 
-                                if (column.id === 'srno') {
-                                  sr += 1;
-                                  return (
-                                    <TableCell key={column.id} align={column.align}>
-                                      {value === null ? '' : String(sr)}
-                                    </TableCell>
-                                  );
+                              if (column.id === 'srno') {
+                                sr += 1;
+                                return (
+                                  <TableCell key={column.id} align={column.align}>
+                                    {value === null ? '' : String(sr)}
+                                  </TableCell>
+                                );
+                              }
+
+                              if (column.id === 'status') {
+                                let labelColor;
+                                let displayValue;
+
+                                if (value === true) {
+                                  labelColor = 'success';
+                                  displayValue = 'Active';
+                                } else {
+                                  labelColor = 'error';
+                                  displayValue = 'Disabled';
                                 }
-
-
-                                if (column.id === 'button') {
-                                  return (
-                                    <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button>
-                                      <Dialog
-                                        open={open}
-                                        onClose={handleClose}
-                                        aria-labelledby="alert-dialog-title"
-                                        aria-describedby="alert-dialog-description"
-
-                                      >
-                                        <DialogTitle id="alert-dialog-title">
-                                          {"View Details"}
-                                        </DialogTitle>
-                                        <DialogContent>
-                                          <DialogContentText>
-
-                                            <div>
-                                              <Container>
-                                                <Grid container spacing={2}>
-                                                  <Grid item xs={10}>
-                                                    <Item>xs=8</Item>
-                                                  </Grid>
-                                                  <Grid item xs={10}>
-                                                    <Item>xs=4</Item>
-                                                  </Grid>
-                                                  <Grid item xs={4}>
-                                                    <Item>xs=4</Item>
-                                                  </Grid>
-                                                  <Grid item xs={8}>
-                                                    <Item>xs=8</Item>
-                                                  </Grid>
-                                                </Grid>
-
-                                              </Container>
-                                            </div>
-
-
-
-
-                                          </DialogContentText>
-                                        </DialogContent>
-                                        <DialogActions>
-                                          <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
-                                          <Button onClick={handleClose} autoFocus>
-                                            Accept
-                                          </Button>
-                                        </DialogActions>
-                                      </Dialog>
-                                    </TableCell>
-
-                                  );
-
-
-                                }
-
 
                                 return (
                                   <TableCell key={column.id} align={column.align}>
-                                    <div style={{overflowWrap: 'break-word', maxWidth:"10rem"}}>
+                                    <Label color={labelColor}>{displayValue}</Label>
+                                  </TableCell>
+                                );
+                              }
+
+                              if (column.id === 'button1') {
+                                return (
+                                  <TableCell key={column.id} align={column.align}>
 
 
-                                                      <p >{value}</p>
-                                                    </div>
+                                    <div key={row.id}>
+                                      {!isLoading[row.id] && (
+                                        <Switch
+                                          checked={row.status}
+                                          onChange={() => handleSwitchChange(row.id)}
+                                        />
+                                      )}
+                                      {isLoading[row.id] && (
+                                        <CircularProgress size={24} color="secondary" />
+                                      )}
+                                    </div>
+
+                                  </TableCell>
+                                );
+                              }
+
+
+
+
+
+
+
+
+                              if (column.id === 'button') {
+                                return (
+                                  <TableCell key={column.id} align={column.align}>
+                                    <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button>
+                                    <Dialog
+                                      open={open}
+                                      onClose={handleClose}
+                                      aria-labelledby="alert-dialog-title"
+                                      aria-describedby="alert-dialog-description"
+
+                                    >
+                                      <DialogTitle id="alert-dialog-title">
+                                        {"View Details"}
+                                      </DialogTitle>
+                                      <DialogContent>
+                                        <DialogContentText>
+
+                                          <div>
+                                            <Container>
+                                              <Grid container spacing={2}>
+                                                <Grid item xs={10}>
+                                                  <Item>xs=8</Item>
+                                                </Grid>
+                                                <Grid item xs={10}>
+                                                  <Item>xs=4</Item>
+                                                </Grid>
+                                                <Grid item xs={4}>
+                                                  <Item>xs=4</Item>
+                                                </Grid>
+                                                <Grid item xs={8}>
+                                                  <Item>xs=8</Item>
+                                                </Grid>
+                                              </Grid>
+
+                                            </Container>
+                                          </div>
+
+
+
+
+                                        </DialogContentText>
+                                      </DialogContent>
+                                      <DialogActions>
+                                        <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
+                                        <Button onClick={handleClose} autoFocus>
+                                          Accept
+                                        </Button>
+                                      </DialogActions>
+                                    </Dialog>
                                   </TableCell>
 
                                 );
-                              })}
-                            </TableRow>
 
-                          );
-                        })}
+
+                              }
+
+
+                              return (
+                                <TableCell key={column.id} align={column.align} style={{ overflowWrap: 'break-word', maxWidth: '10rem' }}>
+                                  {value}
+                                </TableCell>
+
+
+                              );
+                            })}
+                          </TableRow>
+
+                        ))}
                     </TableBody>
 
 
@@ -880,7 +1183,7 @@ export default function StickyHeadTable() {
             </Card>
 
 
-          </Item>
+          
         </Grid>
 
 
@@ -896,7 +1199,7 @@ export default function StickyHeadTable() {
 
       </Grid>
 
-    </div>
+    </div >
   );
 
 }
