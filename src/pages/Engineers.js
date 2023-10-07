@@ -17,10 +17,19 @@ import TableRow from '@mui/material/TableRow';
 import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
-
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import CircularProgress from '@mui/material/CircularProgress';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
+
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import InputBase from '@mui/material/InputBase';
@@ -63,6 +72,7 @@ export default function Engineers() {
     const [address, setAddress] = useState('');
     const [state, setState] = useState('');
     const [areaPin, setAreaPin] = useState('');
+    const [designation, setDesignation] = useState('');
 
     const [password, setPassword] = useState('');
     const [city, setCity] = useState('');
@@ -76,7 +86,7 @@ export default function Engineers() {
     const [confirmpassword, setConfirmpassword] = useState('');
     const navigate = useNavigate();
 
-
+    const [btnLoading, setBtnLoading] = useState(false);
 
     const [selectedImage, setSelectedImage] = useState(null);
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -87,6 +97,7 @@ export default function Engineers() {
     const [passwordError, setPasswordError] = useState('');
     const [contactError, setContactError] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -97,7 +108,9 @@ export default function Engineers() {
     };
 
 
-
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
 
 
@@ -126,6 +139,7 @@ export default function Engineers() {
     }
     const handleClickClose1 = () => {
         setUserOpen(false);
+        resetpassword();
     }
     const handleClickOpen1 = () => {
         setUserOpen(false);
@@ -310,6 +324,11 @@ export default function Engineers() {
         }
     };
 
+    const handleconfirmPasswordChange = (e) => {
+        const newConfirmPassword = e.target.value;
+        setConfirmpassword(newConfirmPassword);
+    };
+
 
 
 
@@ -331,87 +350,20 @@ export default function Engineers() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     const token = localStorage.getItem('token');
-    //     const adminId1 = localStorage.getItem('adminId');
-
-
-    //     const formData = {
-    //         name,
-    //         adminId: adminId1,
-    //         contact,
-    //         password,
-    //         areaPin,
-    //         city,
-    //         state,
-    //         email,
-    //         address,
-    //         role: {
-    //             id: 3,
-    //         },
-    //     };
-
-    //     // Convert form data object to JSON
-    //     const requestBody = JSON.stringify(formData);
-
-    //     console.log(formData);
-    //     console.log(token);
-
-    //     const response = await fetch(`${baseUrl}/api/user/`, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${token}`
-    //         },
-    //         body: requestBody,
-    //     });
-
-    //     const data = await response.json();
-    //     console.log(data);
-
-    //     if (response.ok) {
-    //         setUserOpen(false);
-    //         alert('Form submitted successfuly');
-    //         window.location.reload();
-
-    //     } else {
-    //         setMessage(data.message);
-    //     }
-
-
-    //     console.log('Form data submitted:', formData);
-    //     // Now you can close the form.
-    //     setIsFormOpen(false);
-
-
-
-
-
-
-
-    // };
-
-
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (password !== confirmpassword) {
+            // Set an error message and return
+            toast.error('Passwords do not match');
+            return;
+        }
+
+        if (password === '' || password.length < 6) {
+            // Set an error message for password validation
+            toast.error('Password must be at least 6 characters long');
+            return;
+        }
 
         const token = localStorage.getItem('token');
         const adminId1 = localStorage.getItem('adminId');
@@ -425,6 +377,7 @@ export default function Engineers() {
             city,
             state,
             email,
+            designation,
             address,
             role: {
                 id: 3,
@@ -432,7 +385,9 @@ export default function Engineers() {
         };
 
         try {
+            setBtnLoading(true);
             // Convert form data object to JSON
+
             const requestBody = JSON.stringify(formData);
 
             console.log(formData);
@@ -456,8 +411,10 @@ export default function Engineers() {
                 window.location.reload();
             } else {
                 setMessage(data.message);
-                toast.error('sorry! already exist user id & email id'); // Display the error message in an alert
+                console.log(data)
+                toast.error(data.message); // Display the error message in an alert
             }
+            setBtnLoading(false);
         } catch (error) {
             console.error('An error occurred:', error);
             // Display a generic error alert
@@ -468,10 +425,6 @@ export default function Engineers() {
         // Now you can close the form.
         setIsFormOpen(false);
     };
-
-
-
-
 
 
 
@@ -508,11 +461,25 @@ export default function Engineers() {
     }
 
 
+    const handleChangestate = (event) => {
+        setState(event.target.value);
+    };
+
+    const resetpassword = (e) => {
 
 
-    
+        setPassword('');
+        setName('');
+        setContact('');
+        setEmail('');
+        setAddress('');
+        setAreaPin('');
+        setCity('');
+        setState('');
+        setConfirmpassword('');
+        setDesignation();
 
-
+    }
 
 
 
@@ -534,7 +501,7 @@ export default function Engineers() {
 
                 <Grid item xs={12}>
                     <Box sx={{ flexGrow: 6 }}>
-                        <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', borderRadius: '5px' }} position="static">
                             <Toolbar variant="dense">
 
 
@@ -602,17 +569,20 @@ export default function Engineers() {
                                                                 <Button
                                                                     component="span"
                                                                     style={{
-                                                                        width: 75,
-                                                                        height: 100,
+                                                                        width: 92,
+                                                                        height: 85,
                                                                         cursor: 'pointer',
                                                                         backgroundSize: 'cover',
                                                                         backgroundPosition: 'center',
-                                                                        backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
+                                                                        backgroundImage: selectedImage
+                                                                            ? `url(${selectedImage})`
+                                                                            : `url("/image1/Vector.png")`, // Use selected image or default image
+                                                                        borderRadius: '50%'
                                                                     }}
                                                                 >
                                                                     {/* Content of the button */}
                                                                 </Button>
-                                                                <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
+                                                                {/* <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p> */}
                                                             </InputLabel>
                                                         </div>
                                                     </Grid>
@@ -630,6 +600,7 @@ export default function Engineers() {
                                                                 onChange={(e) => setName(e.target.value)}
                                                                 fullWidth
                                                                 required
+                                                                inputProps={{ maxLength: 20 }}
                                                             // style={{ padding: '7px', width: '250px' }}
                                                             />
 
@@ -646,7 +617,7 @@ export default function Engineers() {
                                                                 sx={{ m: 1, width: '250px' }}
                                                                 error={contactError !== ''}
                                                                 helperText={contactError}
-
+                                                                inputProps={{ maxLength: 10 }}
                                                             />
 
                                                             <TextField
@@ -660,6 +631,7 @@ export default function Engineers() {
                                                                 sx={{ m: 1, width: '250px' }}
                                                                 error={emailError !== ''}
                                                                 helperText={emailError}
+                                                                inputProps={{ maxLength: 50 }}
                                                             />
 
 
@@ -671,7 +643,29 @@ export default function Engineers() {
                                                                 required
                                                                 // style={{ padding: '7px', width: '250px' }}
                                                                 sx={{ m: 1, width: '250px' }}
+                                                                inputProps={{ maxLength: 6 }}
 
+                                                            />
+
+                                                            <TextField
+                                                                label="New Password"
+                                                                type={showPassword ? 'text' : 'password'} // Toggle between text and password type
+                                                                value={password}
+                                                                onChange={handlePasswordChange}
+                                                                fullWidth
+                                                                required
+                                                                sx={{ m: 1, width: '250px' }}
+                                                                error={passwordError !== ''}
+                                                                helperText={passwordError}
+                                                                InputProps={{
+                                                                    endAdornment: (
+                                                                        <InputAdornment position="end">
+                                                                            <IconButton onClick={togglePasswordVisibility} edge="end">
+                                                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                                            </IconButton>
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}
                                                             />
 
 
@@ -692,8 +686,7 @@ export default function Engineers() {
 
                                                     </Grid>
                                                     <Grid item xs={12} md={6}> {/* Adjusted the Grid layout for responsiveness */}
-                                                        {/* Right side fields */}
-                                                        {/* Your Address, City, Password, and Confirm Password fields */}
+
 
                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '-8px' }}>
 
@@ -712,6 +705,7 @@ export default function Engineers() {
                                                                 required
                                                                 // style={{ padding: '7px', width: '250px', height: '120px' }}
                                                                 sx={{ m: 1, width: '250px' }}
+                                                                inputProps={{ maxLength: 50 }}
                                                             />
 
                                                             <TextField
@@ -724,32 +718,89 @@ export default function Engineers() {
                                                                 required
                                                                 // style={{ padding: '7px', width: '250px', height: '120px' }}
                                                                 sx={{ m: 1, width: '250px' }}
+                                                                inputProps={{ maxLength: 50 }}
                                                             />
+                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                                                <FormControl sx={{ m: 2, width: '250px' }} size="small" fullWidth>
+                                                                    <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>
+                                                                        State
+                                                                    </InputLabel>
+                                                                    <Select
+                                                                        labelId="demo-select-small-label"
+                                                                        id="demo-select-small"
+                                                                        value={state}
+                                                                        label="State"
+                                                                        required
+                                                                        onChange={handleChangestate}
+                                                                        sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                                                    >
+                                                                        <MenuItem value="AndhraPradesh">Andhra Pradesh</MenuItem>
+                                                                        <MenuItem value="Arunachal Pradesh">Arunachal Pradesh</MenuItem>
+                                                                        <MenuItem value="Assam">Assam</MenuItem>
+                                                                        <MenuItem value=" Bihar"> Bihar</MenuItem>
+                                                                        <MenuItem value="AndhraPradesh">Chhattisgarh</MenuItem>
+                                                                        <MenuItem value="Goa"> Goa</MenuItem>
+                                                                        <MenuItem value="Gujarat"> Gujarat</MenuItem>
+                                                                        <MenuItem value="Haryana"> Haryana</MenuItem>
+                                                                        <MenuItem value="Himachal Pradesh"> Himachal Pradesh</MenuItem>
+                                                                        <MenuItem value="Jharkhand"> Jharkhand</MenuItem>
+                                                                        <MenuItem value="Karnataka"> Karnataka</MenuItem>
+                                                                        <MenuItem value="Kerala"> Kerala</MenuItem>
+                                                                        <MenuItem value="Madhya Pradesh"> Madhya Pradesh</MenuItem>
+                                                                        <MenuItem value="Maharashtra"> Maharashtra</MenuItem>
+                                                                        <MenuItem value="Manipur"> Manipur</MenuItem>
+                                                                        <MenuItem value="Meghalaya"> Meghalaya</MenuItem>
+                                                                        <MenuItem value="Mizoram"> Mizoram</MenuItem>
+                                                                        <MenuItem value="Nagaland"> Nagaland</MenuItem>
+                                                                        <MenuItem value="Odish"> Odisha</MenuItem>
+                                                                        <MenuItem value="Punjab"> Punjab</MenuItem>
+                                                                        <MenuItem value="Rajasthan"> Rajasthan</MenuItem>
+                                                                        <MenuItem value="Sikkim"> Sikkim</MenuItem>
+                                                                        <MenuItem value="TamilNadu"> Tamil Nadu</MenuItem>
+                                                                        <MenuItem value="Telangana">Telangana</MenuItem>
+
+                                                                        <MenuItem value="Tripura"> Tripura</MenuItem>
+                                                                        <MenuItem value="Uttar Pradesh"> Uttar Pradesh</MenuItem>
+                                                                        <MenuItem value="Uttarakhand"> Uttarakhand</MenuItem>
+                                                                        <MenuItem value=" West Bengal"> West Bengal</MenuItem>
+                                                                        <MenuItem value=" JammuandKashmir(Union Territory)"> Jammu and Kashmir (Union Territory)</MenuItem>
+                                                                        <MenuItem value=" Chandigarh(Union Territory)"> Chandigarh (Union Territory)</MenuItem>
+                                                                        <MenuItem value=" Andaman and Nicobar Islands(Union Territory)"> Andaman and Nicobar Islands (Union Territory)</MenuItem>
+                                                                        <MenuItem value=" Delhi(Union Territory)"> Delhi (Union Territory)</MenuItem>
+                                                                        <MenuItem value=" Lakshadweep(Union Territory)"> Lakshadweep (Union Territory)</MenuItem>
+                                                                        <MenuItem value=" Puducherry(Union Territory)"> Puducherry (Union Territory)</MenuItem>
+                                                                        <MenuItem value=" Dadra and Nagar Haveli and Daman and Diu(Union Territory)"> Dadra and Nagar Haveli and Daman and Diu (Union Territory)</MenuItem>
+                                                                        <MenuItem value="Ladakh(Union Territory)"> Ladakh (Union Territory)</MenuItem>
+
+                                                                    </Select>
+                                                                </FormControl>
+                                                            </div>
                                                             <TextField
-                                                                label="State"
-                                                                value={state}
-                                                                onChange={(e) => setState(e.target.value)}
+                                                                label="Skill"
+                                                                value={designation}
+                                                                onChange={(e) => setDesignation(e.target.value)}
                                                                 fullWidth
-                                                                multilin
-                                                                rows={4}
                                                                 required
-                                                                // style={{ padding: '7px', width: '250px', height: '120px' }}
+                                                                // style={{ padding: '7px', width: '250px' }}
                                                                 sx={{ m: 1, width: '250px' }}
+                                                                inputProps={{ maxLength: 20 }}
+
                                                             />
 
 
                                                             <TextField
-                                                                label="Password"
-                                                                value={password}
-                                                                onChange={handlePasswordChange}
+                                                                label="Confirm Password"
+                                                                value={confirmpassword}
+                                                                onChange={handleconfirmPasswordChange}
                                                                 name="password"
                                                                 fullWidth
                                                                 required
                                                                 type="password"
                                                                 sx={{ m: 1, width: '250px' }}
-                                                                error={passwordError !== ''}
-                                                                helperText={passwordError}
+
                                                             />
+
+
 
 
 
@@ -759,40 +810,23 @@ export default function Engineers() {
 
                                                     </Grid>
                                                 </Grid>
-                                                <div style={{ marginTop: '20px' }}>
-                                                    {/* <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                          Submit
-                        </Button>
-                        <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
-                          Close
-                        </Button> */}
-
-                                                    {isFormSubmitted ? (
-                                                        <>
-                                                            <p>Form submitted successfully!</p>
-                                                            <Button onClick={handleCloseForm} style={{ float: 'right' }}>
-                                                                Close
-                                                            </Button>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                                                                Submit
-                                                            </Button>
-                                                            <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}  >
-                                                                Close
-                                                            </Button>
-                                                        </>
-                                                    )}
+                                                <div style={{ marginBottom: '5%' }}>
 
 
+                                                    <Button
 
+                                                        type="submit"
+                                                        variant="contained"
+                                                        color="primary"
+                                                        style={{ float: 'right' }}
+                                                        disabled={btnLoading} // Disable the button when loading is true
+                                                    >
+                                                        {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+                                                    </Button>
 
-
-
-
-
-
+                                                    <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}  >
+                                                        Close
+                                                    </Button>
 
 
                                                 </div>
@@ -825,33 +859,56 @@ export default function Engineers() {
                         ) :
 
                             data.map(item => (
+
                                 <div key={item.id} className='col-md-3 col-sm-6'>
 
                                     <Item>
                                         <Card style={{ backgroundColor: '#007F6D' }}>
-                                            <CardContent>
-                                                <Typography style={{ marginTop: '-5%', color: 'white' }}>
-                                                    Junior Engineer
-                                                </Typography>
 
-                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
-                                                    <img style={{ width: '50%', height: 'auto', color: '#131313' }} alt="Profile" src="/assets/images/avatars/avatar_5.jpg" />
+                                            <CardContent className="d-flex flex-column align-items-center">
+
+                                                <div style={{ overflowWrap: 'break-word', maxWidth: '10rem' }}>
+
+
+
+                                                    <Typography style={{ marginTop: '-5%', color: 'white', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                        {item.designation}
+                                                    </Typography>
+
+
+
+
+                                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                                        <img style={{ width: '50%', height: 'auto', color: '#131313', position: 'relative' }} alt="Profile" src="/image1/Vector.png" />
+                                                        <div
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: '15px', // Adjust the top position as needed
+                                                                right: '10px', // Adjust the right position as needed
+                                                                width: '10px',
+                                                                height: '10px',
+                                                                borderRadius: '50%',
+                                                                backgroundColor: item.status ? '#90EE90' : 'red',
+                                                            }}
+                                                        >
+                                                            {/* aa */}
+                                                        </div>
+                                                    </div>
+
+
+                                                    <Typography style={{ fontSize: '130%', color: 'white', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                        {item.name}
+                                                    </Typography>
+
+                                                    <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                        In Progress {item.activeTasks === null || item.activeTasks === undefined ? 0 : item.activeTasks}
+                                                    </Typography>
+
+                                                    <Typography style={{ color: 'white', fontSize: '100%' }}>
+                                                        Completed {item.closedTasks === null || item.closedTasks === undefined ? 0 : item.closedTasks}
+                                                    </Typography>
                                                 </div>
-                                                <Typography style={{ fontSize: '130%', color: 'white' }}>
-                                                    {item.name}
-                                                </Typography>
 
-                                                <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                    In Progress {item.activeTasks === null || item.activeTasks === undefined ? 0 : item.activeTasks}
-                                                </Typography>
-                                                <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                    Completed {item.closedTasks === null || item.closedTasks === undefined ? 0 : item.closedTasks}
-                                                </Typography>
-
-                            
-                                                <Typography style={{ color: 'white', fontSize: '100%' }}>
-                                                    Service Engineer
-                                                </Typography>
                                             </CardContent>
                                             <CardActions style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
                                                 <Button onClick={() => routeChange1(item.id)} style={{ color: '#131313', backgroundColor: 'white' }}>
@@ -861,6 +918,7 @@ export default function Engineers() {
                                         </Card>
                                     </Item>
                                 </div>
+
                             ))}
 
                     </div>
