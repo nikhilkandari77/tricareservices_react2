@@ -12,7 +12,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
+import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -21,15 +21,26 @@ import { toast } from 'react-toastify';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+
 import Select from '@mui/material/Select';
 import InputBase from '@mui/material/InputBase';
+import Switch from '@mui/material/Switch';
+import { id } from 'date-fns/locale';
+import CircularProgress from '@mui/material/CircularProgress';
+import XLSX from 'sheetjs-style';
+import Label from '../components/label/Label';
+
+
+
+
 import baseUrl from '../utils/baseUrl';
 import Iconify from '../components/iconify';
 
 
 
+
 const columns = [
-    { id: 'srno', label: 'Sr.No', minWidth: 55, align: 'center' },
+    { id: 'sr', label: 'Sr.No', minWidth: 55, align: 'center' },
     { id: 'name', label: 'Customer Name', minWidth: 85, align: 'center' },
     { id: 'city', label: 'City', minWidth: 140, align: 'center' },
     { id: 'areaPin', label: 'Area Pin', minWidth: 100, align: 'center' },
@@ -49,12 +60,35 @@ const columns = [
 
     },
     {
+        id: 'status',
+        label: 'Status',
+        minWidth: 140,
+        align: 'center',
+
+
+    },
+
+    {
+        id: 'button1',
+        label: 'Action',
+        minWidth: 70,
+        align: 'center',
+
+        // format: (value) => value.toFixed(2),
+    },
+
+
+
+
+    {
         id: 'button',
         label: 'Action',
         minWidth: 140,
         align: 'center',
 
     },
+
+
 ];
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -113,13 +147,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function Usermanagement() {
-   
+
 
     const [usermanagement, setUsermanagement] = useState('');
 
 
 
-    const [rows, setRows] = useState([])
+    const [rows, setRows] = useState([]);
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [name, setName] = useState('');
@@ -128,27 +162,40 @@ export default function Usermanagement() {
     const [address, setAddress] = useState('');
     const [contactno, setContactno] = useState('');
     const [search, setSearch] = useState('');
-
+    const [btnLoading, setBtnLoading] = useState(false);
     const [message, setMessage] = useState('');
 
     const [areaPin, setAreaPin] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
+    // const userId = location.state?.userId;
 
     const [password, setPassword] = useState('');
     // const [confirmpassword, setConfirmpassword] = useState('');
 
     const [formData, setFormData] = useState({});
     const [isFormOpen, setIsFormOpen] = useState(true);
-
+    const [id, setId] = useState('');
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useState([])
     const navigate = useNavigate();
     const [role, setRole] = React.useState([]);
     const [roles, setRoles] = useState([]);
-    const [selectedrole, setSelectedRole] = useState([]);
+    const [selectedrole, setSelectedRole] = useState([1]);
     const [addselectedrole, setAddselectedrole] = useState([]);
-    const [roleId, setRoleId] = useState([]);
+    const [roleId, setRoleId] = useState(null);
+    const [switchStates, setSwitchStates] = useState({});
+    // const [userId, setuserId] = useState('');
+    const [userId, setUserId] = useState(null); // Initialize with null or a default value
+    const [isActive, setIsActive] = useState(false); // Initialize with false or a default value
+    const [row, setRow] = useState('');
+
+    const [isSwitchOn, setIsSwitchOn] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [designation, setDesignation] = useState('');
+
+
+
 
 
     const [selectedImage, setSelectedImage] = useState(null);
@@ -168,6 +215,9 @@ export default function Usermanagement() {
 
 
     };
+
+
+
 
 
 
@@ -208,10 +258,58 @@ export default function Usermanagement() {
     }
     const handleClickClose1 = () => {
         setUserOpen(false);
+        resetpassword();
     }
     const handleClickOpen1 = () => {
         setUserOpen(false);
     }
+
+
+
+
+
+
+    // const handleSwitchChange = (rowId) => {
+    //     // Update the row's data based on rowId
+    //     const updatedRows = rows.map((row) =>
+    //         row.id === rowId ? { ...row, status: !row.status } : row // Fixed the typo here: row.staus -> row.status
+    //     );
+    //     // You can update the state or perform further actions here
+    //     console.log(updatedRows);
+    //     setRows(updatedRows);
+
+    //     // Extract the updated status
+    //     const updatedStatus = updatedRows.find((row) => row.id === rowId).status;
+
+    //     handleChangeupdatetable(updatedStatus, rowId); // Pass the updated status and rowId
+    // };
+
+    const handleSwitchChange = async (rowId) => {
+        // Update the row's data based on rowId
+        const updatedRows = rows.map((row) =>
+            row.id === rowId ? { ...row, status: !row.status } : row
+        );
+
+        // Update the state and set loading to true
+
+        setRows(updatedRows);
+        setIsLoading({ ...isLoading, [rowId]: true });
+
+        try {
+            const { status } = updatedRows.find((row) => row.id === rowId);
+            await handleChangeupdatetable(status, rowId);
+        } catch (error) {
+            // Handle errors here
+        } finally {
+            // Reset loading state when the API request is complete (success or failure)
+            setIsLoading({ ...isLoading, [rowId]: false });
+        }
+    };
+
+
+
+
+
 
 
     useEffect(() => {
@@ -232,7 +330,7 @@ export default function Usermanagement() {
     }, [name, contact, email, areaPin, address, city, state, emailError, passwordError, contactError]);
 
 
-    
+
 
 
 
@@ -290,17 +388,40 @@ export default function Usermanagement() {
         }
     };
 
+    const handleChangestate = (event) => {
+        setState(event.target.value);
+    };
+
+
+
+
+
+
+
+
+
     const handleChange = (event) => {
         setSelectedRole(event.target.value);
-        setAddselectedrole(event.target.value);
+        // setAddselectedrole(event.target.value);
         fetchUserData(event.target.value);
-        console.log(event.target.value)
+        console.log(event.target.value);
+        
+
+    };
+    const handleChangeaddrole = (event) => {
+        
+        setAddselectedrole(event.target.value);
+        // fetchUserData(event.target.value);
+        console.log(event.target.value);
+        setRoleId(event.target.value);
+
     };
 
 
 
     const getRole = () => {
         const token = localStorage.getItem('token');
+
         fetch(`${baseUrl}/api/user/role/`, {
             method: 'GET',
             mode: 'cors',
@@ -314,6 +435,7 @@ export default function Usermanagement() {
             .then(json => {
                 console.log("product data:", json.data); // This line will print the data to the console
                 setRole(json.data);
+
             })
     }
 
@@ -334,13 +456,16 @@ export default function Usermanagement() {
             city,
             state,
             email,
+            designation,
             address,
             role: {
                 id: addselectedrole,
-              },
+            },
         };
 
         try {
+
+            setBtnLoading(true);
             // Convert form data object to JSON
             const requestBody = JSON.stringify(formData);
 
@@ -368,6 +493,7 @@ export default function Usermanagement() {
                 setMessage(data.message);
 
             }
+            setBtnLoading(false);
         } catch (error) {
             console.error('An error occurred:', error);
 
@@ -384,6 +510,7 @@ export default function Usermanagement() {
 
     const routeChange = () => {
         window.location.href = "/dashboard/usermanagement";
+
     }
 
     // const routeChange4 = (id) => { 
@@ -397,7 +524,7 @@ export default function Usermanagement() {
 
     // }
 
-    const routeChange4 = (id,roleId) => {
+    const routeChange4 = (id, roleId) => {
         console.log("Received id:", id);
         if (roleId === 1) {
             // If id is equal to 1, navigate to customerdetail
@@ -420,64 +547,24 @@ export default function Usermanagement() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     useEffect(() => {
         getRole();
-        fetchUserData(2);
+        fetchUserData(1);
+
+
         // handleChangeupdatetable();
 
-    }, []);
+    }, [open]);
 
 
-    const handleChangeupdatetable = () => {
-
-        const token = localStorage.getItem('token');
-        setLoading(true);
-        fetch(`${baseUrl}/api/user/${role}`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-
-        })
-
-            .then(response => response.json())
-            .then(json => {
-                console.log("Fetched data:", json.data); // This line will print the data to the console
-                // setUsers(json);
-
-                setRows(json.data)
-
-
-
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
-
-    };
 
 
     const fetchUserData = (roleId) => {
         const token = localStorage.getItem('token');
-        setLoading(true);
+
+
         console.log("has role", roleId)
+        setLoading(true);
         fetch(`${baseUrl}/api/user/hasRole/${roleId}`, {
             method: 'GET',
             mode: 'cors',
@@ -488,12 +575,115 @@ export default function Usermanagement() {
             .then((response) => response.json())
             .then((json) => {
                 console.log("Fetched data:", json.data);
-                setRows(json.data);
+                setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
             })
             .finally(() => {
                 setLoading(false);
             });
     };
+
+    if (loading) {
+        return <div>loading...</div>;
+
+    }
+
+
+
+    const handleChangeupdatetable = async (status, userid) => {
+        // e.preventDefault();
+
+        const token = localStorage.getItem('token');
+
+        // Set userId and status based on your logic
+        const isActive = status; // For example, determine the status based on some condition
+        const userId = userid; // Replace with the actual user ID
+
+        const formData = {
+            id: userId,
+            status: isActive ? 1 : 0,
+        };
+
+        // Convert form data object to JSON
+        const requestBody = JSON.stringify(formData);
+
+        console.log(formData);
+        console.log(token);
+        const response = await fetch(`${baseUrl}/api/user/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+            body: requestBody,
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            toast.success('Updated successfully', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+
+        } else {
+            toast.error(data.message || 'An error occurred', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        }
+
+        console.log('Form data submitted:', formData);
+        // Now you can close the form.
+        setIsFormOpen(false);
+    };
+
+
+
+    const exportToExcel = () => {
+        const fileName = `usermanagement_data_${Date.now()}`; // Updated filename format
+        const fileType =
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+        const fileExtension = '.xlsx';
+
+        // Assuming you have an array of objects called 'searchItem'
+        // Define an array of column IDs you want to keep
+        const columnsToKeep = [
+            'name',
+            'city',
+            'areaPin',
+            'contact',
+            'email',
+            'status',
+        ]; // Removed 'srno' column as we will add it manually
+
+        // Add a serial number column to the 'filteredData' array
+        const filteredData = searchItem.map((item, index) => {
+            const filteredItem = { srno: index + 1 }; // Add serial number
+            columnsToKeep.forEach(column => {
+                filteredItem[column] = item[column];
+            });
+            return filteredItem;
+        });
+
+        const ws = XLSX.utils.json_to_sheet(filteredData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'data');
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const data = new Blob([excelBuffer], { type: fileType });
+
+        const url = window.URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName + fileExtension);
+
+        document.body.appendChild(link);
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+    };
+
+
+
+    const label = { inputProps: { 'aria-label': 'Size switch demo' } };
 
 
     let sr = 0;
@@ -503,12 +693,42 @@ export default function Usermanagement() {
         setRole(event.target.value);
     }
 
+
+    const resetpassword = (e) => {
+
+    
+        setPassword('');
+        setName('');
+        setContact('');
+        setEmail('');
+        setAddress('');
+        setAreaPin('');
+        setCity('');
+        setState('');
+        setAddselectedrole('');
+        // setConfirmpassword('');
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return (
 
         <div>
             <Grid container spacing={0} >
                 <Box sx={{ flexGrow: 6 }}>
-                    <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+                    <AppBar style={{ backgroundColor: '#007F6D',borderRadius:'5px' }} position="static">
                         <Toolbar variant="dense">
                             <Typography
                                 variant="h6"
@@ -537,25 +757,27 @@ export default function Usermanagement() {
                             <div>
 
                                 <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-                                    <InputLabel id="demo-select-small-label">Role</InputLabel>
+                                    {/* <InputLabel id="demo-select-small-label">Role</InputLabel> */}
                                     <Select
-                                        labelId="demo-select-small-label"
+
                                         id="demo-select-small"
                                         value={selectedrole}
-                                        label="Role"
                                         onChange={handleChange}
                                         style={{ backgroundColor: 'white' }}
                                     >
-                                        <MenuItem value="">
+                                        {/* <MenuItem value="">
                                             Select Role
-                                        </MenuItem>
+                                        </MenuItem> */}
                                         {role.map((getRole) => (
                                             <MenuItem value={getRole.id} key={getRole.id}>
-                                                {getRole.name}
+                                                {getRole.name.substring(5)}
                                             </MenuItem>
                                         ))}
                                     </Select>
+
                                 </FormControl>
+
+
                             </div>
 
                             &nbsp;
@@ -564,6 +786,17 @@ export default function Usermanagement() {
                                     <Iconify icon="eva:plus-fill" />
                                 </Button>
                             </div>
+
+                            <Tooltip title="Excel Export">
+                                <Button
+                                    variant="contained"
+                                    onClick={exportToExcel}
+                                    color="primary"
+                                    style={{ cursor: 'pointer', fontSize: 14, marginLeft: '3%' }}
+                                >
+                                    Export
+                                </Button>
+                            </Tooltip>
 
 
                             <Dialog
@@ -594,18 +827,20 @@ export default function Usermanagement() {
                                                             <Button
                                                                 component="span"
                                                                 style={{
-                                                                    width: 75,
-                                                                    height: 100,
+                                                                    width: 90,
+                                                                    height: 85,
                                                                     cursor: 'pointer',
                                                                     backgroundSize: 'cover',
                                                                     backgroundPosition: 'center',
-                                                                    backgroundImage: selectedImage ? `url(${selectedImage})` : `url("/image1/images.jpg")`, // Use selected image or default image
-
+                                                                    backgroundImage: selectedImage
+                                                                        ? `url(${selectedImage})`
+                                                                        : `url("/image1/png-clipart-user-profile-computer-icons-girl-customer-avatar-angle-heroes-thumbnail 1.png" )`, // Use selected image or default image
+                                                                    borderRadius: '50%'
                                                                 }}
                                                             >
                                                                 {/* Content of the button */}
                                                             </Button>
-                                                            <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
+                                                            {/* <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p> */}
                                                         </InputLabel>
 
                                                     </div>
@@ -640,7 +875,7 @@ export default function Usermanagement() {
                                                             sx={{ m: 1, width: '250px' }}
                                                             error={contactError !== ''}
                                                             helperText={contactError}
-
+                                                            inputProps={{ maxLength: 10 }}
                                                         />
 
 
@@ -667,6 +902,7 @@ export default function Usermanagement() {
 
                                                             // style={{ padding: '7px', width: '250px' }}
                                                             sx={{ m: 1, width: '250px' }}
+                                                            inputProps={{ maxLength: 6 }}
 
                                                         />
 
@@ -679,13 +915,13 @@ export default function Usermanagement() {
                                                                     id="demo-select-small"
                                                                     value={addselectedrole}
                                                                     label="Role"
-                                                                    onChange={handleChange}
+                                                                    onChange={handleChangeaddrole}
                                                                     required
                                                                     style={{ backgroundColor: 'white' }}
                                                                 >
-                                                                    <MenuItem value="">
+                                                                    {/* <MenuItem value="">
                                                                         Select Role
-                                                                    </MenuItem>
+                                                                    </MenuItem> */}
                                                                     {role.map((getRole) => (
                                                                         <MenuItem value={getRole.id} key={getRole.id}>
                                                                             {getRole.name}
@@ -693,18 +929,11 @@ export default function Usermanagement() {
                                                                     ))}
                                                                 </Select>
                                                             </FormControl>
+
+
+
+
                                                         </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -742,17 +971,84 @@ export default function Usermanagement() {
                                                             // style={{ padding: '7px', width: '250px', height: '120px' }}
                                                             sx={{ m: 1, width: '250px' }}
                                                         />
-                                                        <TextField
-                                                            label="State"
-                                                            value={state}
-                                                            onChange={(e) => setState(e.target.value)}
-                                                            fullWidth
-                                                            multilin
-                                                            rows={4}
-                                                            required
-                                                            // style={{ padding: '7px', width: '250px', height: '120px' }}
-                                                            sx={{ m: 1, width: '250px' }}
-                                                        />
+
+                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                                            <FormControl sx={{ m: 2, width: '250px' }} size="small" fullWidth>
+                                                                <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>
+                                                                    State
+                                                                </InputLabel>
+                                                                <Select
+                                                                    labelId="demo-select-small-label"
+                                                                    id="demo-select-small"
+                                                                    value={state}
+                                                                    label="State"
+                                                                    required
+                                                                    onChange={handleChangestate}
+                                                                    sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                                                >
+                                                                    <MenuItem value="AndhraPradesh">Andhra Pradesh</MenuItem>
+                                                                    <MenuItem value="Arunachal Pradesh">Arunachal Pradesh</MenuItem>
+                                                                    <MenuItem value="Assam">Assam</MenuItem>
+                                                                    <MenuItem value=" Bihar"> Bihar</MenuItem>
+                                                                    <MenuItem value="AndhraPradesh">Chhattisgarh</MenuItem>
+                                                                    <MenuItem value="Goa"> Goa</MenuItem>
+                                                                    <MenuItem value="Gujarat"> Gujarat</MenuItem>
+                                                                    <MenuItem value="Haryana"> Haryana</MenuItem>
+                                                                    <MenuItem value="Himachal Pradesh"> Himachal Pradesh</MenuItem>
+                                                                    <MenuItem value="Jharkhand"> Jharkhand</MenuItem>
+                                                                    <MenuItem value="Karnataka"> Karnataka</MenuItem>
+                                                                    <MenuItem value="Kerala"> Kerala</MenuItem>
+                                                                    <MenuItem value="Madhya Pradesh"> Madhya Pradesh</MenuItem>
+                                                                    <MenuItem value="Maharashtra"> Maharashtra</MenuItem>
+                                                                    <MenuItem value="Manipur"> Manipur</MenuItem>
+                                                                    <MenuItem value="Meghalaya"> Meghalaya</MenuItem>
+                                                                    <MenuItem value="Mizoram"> Mizoram</MenuItem>
+                                                                    <MenuItem value="Nagaland"> Nagaland</MenuItem>
+                                                                    <MenuItem value="Odish"> Odisha</MenuItem>
+                                                                    <MenuItem value="Punjab"> Punjab</MenuItem>
+                                                                    <MenuItem value="Rajasthan"> Rajasthan</MenuItem>
+                                                                    <MenuItem value="Sikkim"> Sikkim</MenuItem>
+                                                                    <MenuItem value="TamilNadu"> Tamil Nadu</MenuItem>
+                                                                    <MenuItem value="Telangana">Telangana</MenuItem>
+
+                                                                    <MenuItem value="Tripura"> Tripura</MenuItem>
+                                                                    <MenuItem value="Uttar Pradesh"> Uttar Pradesh</MenuItem>
+                                                                    <MenuItem value="Uttarakhand"> Uttarakhand</MenuItem>
+                                                                    <MenuItem value=" West Bengal"> West Bengal</MenuItem>
+                                                                    <MenuItem value=" JammuandKashmir(Union Territory)"> Jammu and Kashmir (Union Territory)</MenuItem>
+                                                                    <MenuItem value=" Chandigarh(Union Territory)"> Chandigarh (Union Territory)</MenuItem>
+                                                                    <MenuItem value=" Andaman and Nicobar Islands(Union Territory)"> Andaman and Nicobar Islands (Union Territory)</MenuItem>
+                                                                    <MenuItem value=" Delhi(Union Territory)"> Delhi (Union Territory)</MenuItem>
+                                                                    <MenuItem value=" Lakshadweep(Union Territory)"> Lakshadweep (Union Territory)</MenuItem>
+                                                                    <MenuItem value=" Puducherry(Union Territory)"> Puducherry (Union Territory)</MenuItem>
+                                                                    <MenuItem value=" Dadra and Nagar Haveli and Daman and Diu(Union Territory)"> Dadra and Nagar Haveli and Daman and Diu (Union Territory)</MenuItem>
+                                                                    <MenuItem value="Ladakh(Union Territory)"> Ladakh (Union Territory)</MenuItem>
+
+                                                                </Select>
+                                                            </FormControl>
+                                                        </div>
+
+
+                                                        <div>
+                                                        {roleId === 3 ? (
+                                                            <TextField
+                                                                label="Skill"
+                                                                value={designation}
+                                                                onChange={(e) => setDesignation(e.target.value)}
+                                                                fullWidth
+                                                                required
+                                                                sx={{ m: 1, width: '250px' }}
+                                                                inputProps={{ maxLength: 20 }}
+                                                            />
+                                                        ) : null}
+                                                        </div>
+
+
+
+
+
+
+
 
 
                                                         <TextField
@@ -776,7 +1072,7 @@ export default function Usermanagement() {
 
                                                 </Grid>
                                             </Grid>
-                                            <div style={{ marginTop: '20px' }}>
+                                            <div style={{ marginBottom: '5%' }}>
                                                 {/* <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
                           Submit
                         </Button>
@@ -784,23 +1080,22 @@ export default function Usermanagement() {
                           Close
                         </Button> */}
 
-                                                {isFormSubmitted ? (
-                                                    <>
-                                                        <p>Form submitted successfully!</p>
-                                                        <Button onClick={handleCloseForm} style={{ float: 'right' }}>
-                                                            Close
-                                                        </Button>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                                                            Submit
-                                                        </Button>
-                                                        <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
-                                                            Close
-                                                        </Button>
-                                                    </>
-                                                )}
+
+                                                <Button
+
+                                                    type="submit"
+                                                    variant="contained"
+                                                    color="primary"
+                                                    style={{ float: 'right' }}
+                                                    disabled={btnLoading} // Disable the button when loading is true
+                                                >
+                                                    {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+                                                </Button>
+
+                                                <Button type='button' onClick={handleClickClose1} style={{ float: 'right', color: 'red', marginRight: '4%' }}>
+                                                    Close
+                                                </Button>
+
 
 
                                             </div>
@@ -821,142 +1116,151 @@ export default function Usermanagement() {
 
 
                 <Grid item xs={12} style={{ marginTop: '2%' }}>
-                    <Item>
-                        <Card >
 
-                            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                                <TableContainer sx={{ height: "65vh" }}>
-                                    <Table stickyHeader aria-label="sticky table">
-                                        <TableHead>
-                                            <TableRow>
-                                                {columns.map((column) => (
-                                                    <TableCell
-                                                        key={column.id}
+                    <Card >
 
-                                                        align={column.align}
-                                                        style={{ minWidth: column.minWidth }}
-                                                    >
-                                                        {column.label}
-                                                    </TableCell>
-                                                ))}
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {rows.length === 0 ? (<TableCell colSpan={columns.length}>
-                                                <Typography
-                                                    variant="p"
-                                                    component="div"
-                                                    style={{ textAlign: 'center', padding: '20px' }} // Adjust padding as needed
+                        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                            <TableContainer sx={{ height: '65vh' }}>
+                                <Table stickyHeader aria-label="sticky table">
+                                    <TableHead>
+                                        <TableRow>
+                                            {columns.map((column) => (
+                                                <TableCell
+                                                    key={column.id}
+                                                    align={column.align}
+                                                    style={{ minWidth: column.minWidth }}
                                                 >
-                                                    No Data Available
-                                                </Typography>
-                                            </TableCell>) :
-                                                searchItem
-                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                    .map((row) => (
-                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                            {columns.map((column) => {
-                                                                const value = row[column.id];
+                                                    {column.label}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={columns.length}>
+                                                    <Typography
+                                                        variant="body1"
+                                                        component="div"
+                                                        style={{ textAlign: 'center', padding: '20px' }}
+                                                    >
+                                                        No Data Available
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            searchItem
+                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                .map((row) => (
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                        {columns.map((column) => {
+                                                            const value = row[column.id];
 
-                                                                if (column.id === 'srno') {
-                                                                    sr += 1;
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value === null ? '' : String(sr)}
-                                                                        </TableCell>
-                                                                    );
+                                                            if (column.id === 'srno') {
+                                                                sr += 1;
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        {value === null ? '' : String(sr)}
+                                                                    </TableCell>
+                                                                );
+                                                            }
+
+
+                                                            if (column.id === 'status') {
+                                                                let labelColor;
+                                                                let displayValue;
+
+                                                                if (value === true) {
+                                                                    labelColor = 'success';
+                                                                    displayValue = 'Active';
+                                                                } else {
+                                                                    labelColor = 'error';
+                                                                    displayValue = 'Disabled';
                                                                 }
-
-
-                                                                if (column.id === 'button') {
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            <Button onClick={() => routeChange4(row.id,row.role.id)} variant="contained"> Details </Button>
-                                                                            <Dialog
-                                                                                open={open}
-                                                                                onClose={handleClose}
-                                                                                aria-labelledby="alert-dialog-title"
-                                                                                aria-describedby="alert-dialog-description"
-
-                                                                            >
-                                                                                <DialogTitle id="alert-dialog-title">
-                                                                                    {"View Details"}
-                                                                                </DialogTitle>
-                                                                                <DialogContent>
-                                                                                    <DialogContentText>
-
-                                                                                        <div>
-                                                                                            <Container>
-                                                                                                <Grid container spacing={2}>
-                                                                                                    <Grid item xs={10}>
-                                                                                                        <Item>xs=8</Item>
-                                                                                                    </Grid>
-                                                                                                    <Grid item xs={10}>
-                                                                                                        <Item>xs=4</Item>
-                                                                                                    </Grid>
-                                                                                                    <Grid item xs={4}>
-                                                                                                        <Item>xs=4</Item>
-                                                                                                    </Grid>
-                                                                                                    <Grid item xs={8}>
-                                                                                                        <Item>xs=8</Item>
-                                                                                                    </Grid>
-                                                                                                </Grid>
-
-                                                                                            </Container>
-                                                                                        </div>
-
-
-
-
-                                                                                    </DialogContentText>
-                                                                                </DialogContent>
-                                                                                <DialogActions>
-                                                                                    <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
-                                                                                    <Button onClick={handleClose} autoFocus>
-                                                                                        Accept
-                                                                                    </Button>
-                                                                                </DialogActions>
-                                                                            </Dialog>
-                                                                        </TableCell>
-
-                                                                    );
-
-
-                                                                }
-
 
                                                                 return (
                                                                     <TableCell key={column.id} align={column.align}>
-                                                                        {value}
+                                                                        <Label color={labelColor}>{displayValue}</Label>
                                                                     </TableCell>
-
                                                                 );
-                                                            })}
-                                                        </TableRow>
-
-                                                    ))}
-                                        </TableBody>
+                                                            }
 
 
 
-                                    </Table>
-                                </TableContainer>
-                                <TablePagination
-                                    rowsPerPageOptions={[10, 25, 100]}
-                                    component="div"
-                                    count={rows.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onPageChange={handleChangePage}
-                                    onRowsPerPageChange={handleChangeRowsPerPage}
-
-                                />
-                            </Paper>
-
-                        </Card>
+                                                            if (column.id === 'button1') {
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
 
 
-                    </Item>
+                                                                        {/* <Switch
+                                                                                checked={row.status}
+                                                                                onChange={() => handleSwitchChange(row.id)}
+                                                                                disabled={isLoading} // Disable the button when loading is true
+                                                                            />
+                                                                            {isLoading && <CircularProgress size={20} />} */}
+
+                                                                        <div key={row.id}>
+                                                                            {!isLoading[row.id] && (
+                                                                                <Switch
+                                                                                    checked={row.status}
+                                                                                    onChange={() => handleSwitchChange(row.id)}
+                                                                                />
+                                                                            )}
+                                                                            {isLoading[row.id] && (
+                                                                                <CircularProgress size={24} color="secondary" />
+                                                                            )}
+                                                                        </div>
+
+                                                                    </TableCell>
+                                                                );
+                                                            }
+
+
+                                                            if (column.id === 'button') {
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        <Button onClick={() => routeChange4(row.id, row.role.id)} variant="contained"> Details </Button>
+                                                                        <Dialog
+                                                                            open={open}
+                                                                            onClose={handleClose}
+                                                                            aria-labelledby="alert-dialog-title"
+                                                                            aria-describedby="alert-dialog-description"
+                                                                        >
+                                                                            {/* Dialog content */}
+                                                                            {/* ... */}
+                                                                        </Dialog>
+                                                                    </TableCell>
+                                                                );
+                                                            }
+
+                                                            return (
+                                                                <TableCell key={column.id} align={column.align} style={{ overflowWrap: 'break-word', maxWidth: '10rem' }}>
+                                                                    {value}
+                                                                </TableCell>
+
+                                                            );
+                                                        })}
+                                                    </TableRow>
+                                                ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[10, 25, 100]}
+                                component="div"
+                                count={rows.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </Paper>
+
+                    </Card>
+
+
+
                 </Grid>
 
 

@@ -34,7 +34,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 
 // import EditableInputs from './EditableInputs';
-
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -55,7 +59,7 @@ import baseUrl from '../utils/baseUrl';
 import Label from '../components/label/Label';
 
 const columnsCompt = [
-    { id: 'srno', label: 'Sr.No', minWidth: 80, align: 'center' },
+    { id: 'sr', label: 'Sr.No', minWidth: 80, align: 'center' },
     { id: 'productName', label: 'Product Name', minWidth: 140, align: 'center' },
     { id: 'productType', label: 'Product Type', minWidth: 140, align: 'center' },
     { id: 'serialNo', label: 'Serial No', minWidth: 100, align: 'center' },
@@ -70,7 +74,7 @@ const columnsCompt = [
     // },
     {
         id: 'warrantyPeriod',
-        label: ' Warranty Period',
+        label: ' Warranty Period (in month)',
         minWidth: 140,
         align: 'center',
         // format: (value) => value.toLocaleString('en-US'),
@@ -155,7 +159,8 @@ export default function Customerdetail() {
     const [password, setPassword] = useState('');
     const [city, setCity] = useState('');
     const [confirmpassword, setConfirmpassword] = useState('');
-
+    const [showPassword, setShowPassword] = useState(false);
+    const [btnLoading, setBtnLoading] = useState(false);
     const [productName, setProductName] = useState('');
     const [productType, setProductType] = useState('');
     const [serialNo, setSerialNo] = useState('');
@@ -190,6 +195,12 @@ export default function Customerdetail() {
 
     const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+
+
+
     const handleImageChange = (event) => {
         const file = event.target.files[0];
 
@@ -208,6 +219,9 @@ export default function Customerdetail() {
     const [categories, setCategories] = useState([]);
     const [getCategory, setgetCategory] = useState([]);
     const [productImages, setProductsImages] = useState([]);
+    const [showconfirmpassword, setShowconfirmpassword] = useState(false);
+
+
 
     const token = localStorage.getItem('token');
 
@@ -278,6 +292,7 @@ export default function Customerdetail() {
 
     const handleClickClose2 = () => {
         setUserOpenProduct(false);
+        resetpasswordproduct();
     };
     const handleClickOpen3 = () => {
         setUserOpenProduct(false);
@@ -296,6 +311,9 @@ export default function Customerdetail() {
 
     const handleClickClose3 = () => {
         setOpenuserpassword(false);
+        resetpassword();
+
+
     };
 
     //  11/9/2023 change end
@@ -417,33 +435,43 @@ export default function Customerdetail() {
         const requestBody = JSON.stringify(formData1);
 
         console.log(formData1);
-        console.log(token);
 
-        const response = await fetch(`${baseUrl}/api/user/product-customer/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: requestBody,
-        });
+        try {
+            setBtnLoading(true); // Set loading to true when the submission starts
 
-        const data = await response.json();
-        console.log(data);
+            const response = await fetch(`${baseUrl}/api/user/product-customer/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: requestBody,
+            });
 
-        if (response.ok) {
-            setUserOpenProduct(false);
-            toast.success('Form submitted successfully');
-            window.location.reload();
-        } else {
-            setMessage(data.message);
-            toast.error('somthing went worng');
+            const data = await response.json();
+
+            if (response.ok) {
+                setUserOpenProduct(false);
+                toast.success('Form submitted successfully');
+                window.location.reload();
+            } else {
+                setMessage(data.message);
+                toast.error('Something went wrong');
+            }
+
+            console.log('Form data submitted:', formData1);
+            // Now you can close the form.
+            setIsFormOpen(false);
+        } catch (error) {
+            console.error('An error occurred:', error);
+            toast.error('An error occurred while submitting the form', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        } finally {
+            setBtnLoading(false); // Set loading back to false after submission is complete
         }
-
-        console.log('Form data submitted:', formData1);
-        // Now you can close the form.
-        setIsFormOpen(false);
     };
+
 
     useEffect(() => {
         // Check if all required fields are valid
@@ -521,51 +549,68 @@ export default function Customerdetail() {
 
         const token = localStorage.getItem('token');
 
-        const formData = {
-            //   adminId: 1,
-            id: userId,
-            name,
-            contact,
-            email,
-            areaPin,
-            address,
-            city,
-            state,
-            status,
-        };
+        try {
+            // Set loading to true when the submission starts
+            setBtnLoading(true);
+            const formData = {
+                id: userId,
+                name,
+                contact,
+                email,
+                areaPin,
+                address,
+                city,
+                state,
+                status,
+            };
 
-        // Convert form data object to JSON
-        const requestBody = JSON.stringify(formData);
+            // Convert form data object to JSON
+            const requestBody = JSON.stringify(formData);
 
-        console.log(formData);
-        console.log(token);
-        const response = await fetch(`${baseUrl}/api/user/`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-            body: requestBody,
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            setUserOpenProduct(false);
-            toast.success('updated successfully', {
-                position: toast.POSITION.TOP_CENTER,
+            console.log(formData);
+            console.log(token);
+            const response = await fetch(`${baseUrl}/api/user/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: requestBody,
             });
-            window.location.reload();
-        } else {
-            toast.error(data.message || 'An error occurred', {
-                position: toast.POSITION.TOP_CENTER,
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setUserOpenProduct(false);
+                toast.success('Updated successfully', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+                window.location.reload();
+            } else {
+                toast.error(data.message || 'An error occurred', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            }
+
+            console.log('Form data submitted:', formData);
+            // Now you can close the form.
+            setIsFormOpen(false);
+            setBtnLoading(false);
+        } catch (error) {
+            console.error('An error occurred:', error);
+            toast.error('An error occurred while submitting the form', {
+                position: toast.POSITION.TOP_RIGHT,
             });
+        } finally {
+            setLoading(false); // Set loading back to false after submission is complete
         }
-
-        console.log('Form data submitted:', formData);
-        // Now you can close the form.
-        setIsFormOpen(false);
     };
+
+
+
+
+
+
 
     const handleChange5 = (event) => {
         const token = localStorage.getItem('token');
@@ -581,7 +626,7 @@ export default function Customerdetail() {
             .then((json) => {
                 console.log('Fetched data:', json.data); // This line will print the data to the console
                 // setUsers(json);
-                setRowsCompt(json.data);
+                setRowsCompt(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
                 console.log('rowdata', rowsCompt);
             })
             .finally(() => {
@@ -602,13 +647,16 @@ export default function Customerdetail() {
             .then((json) => {
                 console.log('Fetched data:', json.data); // This line will print the data to the console
                 // setUsers(json);
-                setRows(json.data);
+                setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
                 console.log('rowdata', rows);
             })
             .finally(() => {
                 setLoading(false);
             });
     };
+
+
+
 
     // const handleChange6 = (event) => {
 
@@ -708,23 +756,106 @@ export default function Customerdetail() {
         setConfirmpassword(newConfirmPassword);
     };
 
-    const handleSubmit4 = () => {
-        debugger; // eslint-disable-line no-debugger
-        if (password !== confirmpassword) {
-            // Set an error message and return
-            toast.error('Passwords do not match');
-            return;
-        }
 
-        if (password === '' || password.length < 6) {
-            // Set an error message for password validation
-            toast.error('Password must be at least 6 characters long');
-            return;
-        }
+    const resetpassword = (e) => {
 
-        updateUser();
-        setIsFormOpen(false);
+        setConfirmpassword(null);
+        setPassword(null);
+
+    }
+
+
+
+
+
+
+
+
+
+
+    // const handleSubmit4 = async () => {
+    //     try {
+    //         setBtnLoading(true); // Set loading to true when the submission starts
+
+    //         if (password !== confirmpassword) {
+    //             // Set an error message and return
+
+    //             toast.error('Passwords do not match');
+    //             return;
+    //         }
+
+    //         if (password === '' || password.length < 6) {
+    //             // Set an error message for password validation
+
+    //             toast.error('Password must be at least 6 characters long');
+    //             return;
+    //         }
+
+    //         // Assuming updateUser is an async function
+    //         await updateUser();
+
+    //         // After submission is complete (success), set loading back to false
+    //         setBtnLoading(false);
+
+    //         setIsFormOpen(false);
+    //     } catch (error) {
+    //         // Handle errors if needed
+    //         setBtnLoading(false);
+    //         // setLoading(false); // Set loading to false in case of errors
+    //         console.error('Error:', error); // Log the error
+    //         // Optionally, you can display an error message or perform other error handling here
+    //         toast.error('An error occurred during submission');
+    //     }
+    // };
+
+    const handleSubmit4 = async () => {
+        try {
+            if (password === '' || confirmpassword === '') {
+                // Set an error message for empty fields
+                toast.error('Empty password fields');
+                return;
+            }
+
+            if (password !== confirmpassword) {
+                // Set an error message and return
+                toast.error('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 6) {
+                // Set an error message for password validation
+                toast.error('Password must be at least 6 characters long');
+                return;
+            }
+
+            setBtnLoading(true); // Set loading to true when the submission starts
+
+            // Assuming updateUser is an async function
+            if (isFormOpen) {
+                await updateUser();
+            }
+
+            // After submission is complete (success), check if the form is still open before updating
+            if (isFormOpen) {
+                setBtnLoading(false);
+                setIsFormOpen(false);
+            }
+        } catch (error) {
+            // Handle errors if needed
+            setBtnLoading(false);
+            console.error('Error:', error); // Log the error
+            // Optionally, you can display an error message or perform other error handling here
+            toast.error('An error occurred during submission');
+        }
     };
+
+
+
+
+
+
+
+
 
     const updateUser = async () => {
         try {
@@ -758,7 +889,7 @@ export default function Customerdetail() {
             } else {
                 // Display the error message using toast.error
                 toast.error(data.message || 'An error occurred', {
-                    position: toast.POSITION.TOP_CENTER,
+                    position: toast.POSITION.TOP_RIGHT,
                 });
             }
 
@@ -768,27 +899,79 @@ export default function Customerdetail() {
             console.error('An error occurred:', error);
             // Display an error message to the user using toast.error
             toast.error('An error occurred while updating. Please try again later.', {
-                position: toast.POSITION.TOP_CENTER,
+                position: toast.POSITION.TOP_RIGHT,
             });
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const togglePasswordVisibility1 = () => {
+
+        setShowconfirmpassword(!showconfirmpassword);
+    };
+
+
+
+    const resetpasswordproduct = (e) => {
+
+        setCategory('');
+        setProductType('');
+        setSerialNo('');
+        setConstructionType('');
+        setRating('');
+        setDispatchDate('');
+        setSelectedProduct('');
+        setPurchaseDate('');
+        setManufacturingDate('');
+        setInstallationDate('');
+        setWarrantyPeriod('');
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
     return (
         <div className="container">
+
             <div className="row">
+
                 <div className="col-md-12">
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' }} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh', borderRadius: '4px' }} position="static">
+
+
                             <Toolbar>
+
+
                                 <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: { xs: '3', sm: 'block' } }}>
                                     <div className="container emp-profile">
                                         <br />
                                         <div className="row">
                                             <div className="col-md-3">
+
+
+
+
+
                                                 <div className="profile-img">
                                                     <img
                                                         style={{ width: '8rem', height: '8rem', borderRadius: '100px' }}
-                                                        src="/image1/images.jpg"
+                                                        src="/image1/png-clipart-user-profile-computer-icons-girl-customer-avatar-angle-heroes-thumbnail 1.png"
                                                         alt="customer"
                                                     />
                                                 </div>
@@ -796,11 +979,14 @@ export default function Customerdetail() {
 
                                             <div className="col-md-6">
                                                 <div className="profile-head">
-                                                    <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
+                                                    <br />
+                                                    <div style={{ overflowWrap: 'break-word', maxWidth: "22rem" }}>
+                                                        <h5>{user.name}</h5><br />
 
-                                                        <h4>{user.name}</h4>
-                                                        <h6 style={{ marginTop: '-5%' }}>{user.city}</h6>
-                                                        <h6>{user.address}</h6>
+                                                        <h6 style={{ marginTop: '-6%' }}>Address: {user.address}</h6>
+                                                        <h6>City: {user.city}</h6>
+                                                        <h6>Area pin: {user.areaPin}</h6>
+                                                        <h6>State: {user.state}</h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -826,29 +1012,48 @@ export default function Customerdetail() {
                                                     <DialogTitle id="alert-dialog-title">{'Reset Password'}</DialogTitle>
                                                     <DialogContent>
                                                         <Container maxWidth="md">
-                                                            <form>
+                                                            <form >
                                                                 <Grid container spacing={3}>
                                                                     <Grid item xs={12} md={12}>
                                                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                                             <TextField
                                                                                 label="New Password"
+                                                                                type={showPassword ? 'text' : 'password'} // Toggle between text and password type
                                                                                 value={password}
-                                                                                onChange={handlePasswordChange10}
+                                                                                onChange={handlePasswordChange}
                                                                                 fullWidth
                                                                                 required
+                                                                                inputProps={{ maxLength: 15 }}
                                                                                 sx={{ m: 1, width: '250px' }}
                                                                                 error={passwordError !== ''}
                                                                                 helperText={passwordError}
-
+                                                                                InputProps={{
+                                                                                    endAdornment: (
+                                                                                        <InputAdornment position="end">
+                                                                                            <IconButton onClick={togglePasswordVisibility} edge="end">
+                                                                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                                                            </IconButton>
+                                                                                        </InputAdornment>
+                                                                                    ),
+                                                                                }}
                                                                             />
                                                                             <TextField
                                                                                 label="Confirm New Password"
+                                                                                type={showconfirmpassword ? 'text' : 'password'}
                                                                                 value={confirmpassword}
                                                                                 onChange={handleConfirmPasswordChange12}
                                                                                 fullWidth
                                                                                 required
-                                                                                type="password"
                                                                                 sx={{ m: 1, width: '250px' }}
+                                                                                InputProps={{
+                                                                                    endAdornment: (
+                                                                                        <InputAdornment position="end">
+                                                                                            <IconButton onClick={togglePasswordVisibility1} edge="end">
+                                                                                                {showconfirmpassword ? <Visibility /> : <VisibilityOff />}
+                                                                                            </IconButton>
+                                                                                        </InputAdornment>
+                                                                                    ),
+                                                                                }}
                                                                             />
                                                                         </div>
                                                                     </Grid>
@@ -860,9 +1065,11 @@ export default function Customerdetail() {
                                                                         variant="contained"
                                                                         color="primary"
                                                                         style={{ float: 'right' }}
+                                                                        disabled={btnLoading} // Disable the button when loading is true
                                                                     >
-                                                                        Submit
+                                                                        {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
                                                                     </Button>
+
                                                                     <Button
                                                                         onClick={handleClickClose3}
                                                                         style={{ float: 'right', color: 'red', marginRight: '3%' }}
@@ -930,6 +1137,7 @@ export default function Customerdetail() {
                                                                                     label="Category"
                                                                                     onChange={handleChange3}
                                                                                     required
+
                                                                                 >
                                                                                     <MenuItem value="" key="">
                                                                                         Select Catagory
@@ -949,6 +1157,7 @@ export default function Customerdetail() {
                                                                                 fullWidth
                                                                                 required
                                                                                 style={{ marginTop: '7%' }}
+                                                                                inputProps={{ maxLength: 50 }}
                                                                             // style={{ padding: '7px', width: '250px' }}
                                                                             />
                                                                             <TextField
@@ -958,6 +1167,7 @@ export default function Customerdetail() {
                                                                                 fullWidth
                                                                                 required
                                                                                 style={{ marginTop: '7%' }}
+                                                                                inputProps={{ maxLength: 50 }}
                                                                             />
                                                                             <TextField
                                                                                 label="Construction Type"
@@ -966,6 +1176,7 @@ export default function Customerdetail() {
                                                                                 fullWidth
                                                                                 required
                                                                                 style={{ marginTop: '7%' }}
+                                                                                inputProps={{ maxLength: 50 }}
                                                                             // style={{ padding: '7px', width: '250px' }}
                                                                             />
                                                                             <TextField
@@ -975,6 +1186,7 @@ export default function Customerdetail() {
                                                                                 fullWidth
                                                                                 required
                                                                                 style={{ marginTop: '7%' }}
+                                                                                inputProps={{ maxLength: 50 }}
                                                                             // style={{ padding: '7px', width: '250px' }}
                                                                             />
 
@@ -987,6 +1199,7 @@ export default function Customerdetail() {
                                                                                     id="datepicker"
                                                                                     label="Dispatch Date"
                                                                                     variant="outlined"
+                                                                                    required
                                                                                     value={dispatchDate}
                                                                                     onChange={handleDateChange}
                                                                                     type="date" // Use type "date" for date picker
@@ -997,9 +1210,16 @@ export default function Customerdetail() {
                                                                                         // Set placeholder value here
                                                                                         min: new Date().toISOString().split('T')[0],
                                                                                     }}
-                                                                                    required
+
                                                                                 />
                                                                             </FormControl>
+
+
+
+
+
+
+
                                                                         </div>
                                                                     </Grid>
                                                                     <Grid item xs={12} md={6}>
@@ -1015,8 +1235,9 @@ export default function Customerdetail() {
                                                                                     id="demo-select-small"
                                                                                     value={selectedProduct}
                                                                                     label="Select Product"
-                                                                                    onChange={(e) => { setSelectedProduct(e.target.value); }}
                                                                                     required
+                                                                                    onChange={(e) => { setSelectedProduct(e.target.value); }}
+
                                                                                 >
                                                                                     {products.map((product) => (
                                                                                         <MenuItem key={product.id} value={product}>
@@ -1025,6 +1246,9 @@ export default function Customerdetail() {
                                                                                     ))}
                                                                                 </Select>
                                                                             </FormControl>
+
+
+
 
                                                                             <FormControl
                                                                                 variant="outlined"
@@ -1035,10 +1259,11 @@ export default function Customerdetail() {
                                                                                     id="datepicker"
                                                                                     label="Purchase Date"
                                                                                     variant="outlined"
+                                                                                    required
                                                                                     value={purchaseDate}
                                                                                     onChange={handleDateChange1}
                                                                                     type="date" // Use type "date" for date picker
-                                                                                    required
+
                                                                                     InputLabelProps={{
                                                                                         shrink: true,
                                                                                     }}
@@ -1048,6 +1273,9 @@ export default function Customerdetail() {
                                                                                     }}
                                                                                 />
                                                                             </FormControl>
+
+
+
 
                                                                             <FormControl
                                                                                 variant="outlined"
@@ -1058,10 +1286,11 @@ export default function Customerdetail() {
                                                                                     id="datepicker"
                                                                                     label="Manufacturing Date"
                                                                                     variant="outlined"
+                                                                                    required
                                                                                     value={manufacturingDate}
                                                                                     onChange={handleDateChange2}
                                                                                     type="date" // Use type "date" for date picker
-                                                                                    required
+
                                                                                     InputLabelProps={{
                                                                                         shrink: true,
                                                                                     }}
@@ -1072,6 +1301,10 @@ export default function Customerdetail() {
                                                                                     }}
                                                                                 />
                                                                             </FormControl>
+
+
+
+
 
                                                                             <FormControl
                                                                                 variant="outlined"
@@ -1082,10 +1315,11 @@ export default function Customerdetail() {
                                                                                     id="datepicker"
                                                                                     label="Installation Date"
                                                                                     variant="outlined"
+                                                                                    required
                                                                                     value={installationDate}
                                                                                     onChange={handleDateChange3}
                                                                                     type="date" // Use type "date" for date picker
-                                                                                    required
+
                                                                                     InputLabelProps={{
                                                                                         shrink: true,
                                                                                     }}
@@ -1097,19 +1331,23 @@ export default function Customerdetail() {
                                                                                 />
                                                                             </FormControl>
 
+
+
+
                                                                             <TextField
-                                                                                label="Warranty Period"
+                                                                                label="Warranty (In month)"
                                                                                 value={warrantyPeriod}
                                                                                 sx={{ marginTop: '7%' }}
                                                                                 onChange={(e) => setWarrantyPeriod(e.target.value)}
                                                                                 fullWidth
                                                                                 required
+                                                                                inputProps={{ maxLength: 2 }}
                                                                             // style={{ padding: '7px', width: '250px' }}
                                                                             />
                                                                         </div>
                                                                     </Grid>
                                                                 </Grid>
-                                                                <div style={{ marginBottom: '50px' }}>
+                                                                <div style={{}}>
                                                                     {/* <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
                                                                         Submit
                                                                     </Button>
@@ -1117,31 +1355,24 @@ export default function Customerdetail() {
                                                                         Close
                                                                     </Button> */}
 
-                                                                    {isFormSubmitted ? (
-                                                                        <>
-                                                                            <p>Form submitted successfully!</p>
-                                                                            <Button onClick={handleCloseForm} style={{ float: 'right' }}>
-                                                                                Close
-                                                                            </Button>
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <Button
-                                                                                type="submit"
-                                                                                variant="contained"
-                                                                                color="primary"
-                                                                                style={{ float: 'right' }}
-                                                                            >
-                                                                                Submit
-                                                                            </Button>
-                                                                            <Button
-                                                                                onClick={handleClickClose2}
-                                                                                style={{ float: 'right', color: 'red', marginRight: '4%' }}
-                                                                            >
-                                                                                Close
-                                                                            </Button>
-                                                                        </>
-                                                                    )}
+                                                                    <Button
+                                                                        type="submit"
+                                                                        variant="contained"
+                                                                        color="primary"
+                                                                        style={{ float: 'right', }}
+                                                                        disabled={btnLoading} // Disable the button when loading is true
+                                                                    >
+                                                                        {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+                                                                    </Button>
+
+                                                                    <Button
+                                                                        onClick={handleClickClose2}
+                                                                        style={{ float: 'right', color: 'red', marginRight: '4%' }}
+                                                                    >
+                                                                        Close
+                                                                    </Button><br />
+
+
                                                                 </div>
                                                             </form>
                                                         </Container>
@@ -1160,6 +1391,7 @@ export default function Customerdetail() {
                                                         <Container maxWidth="md">
                                                             {' '}
                                                             {/* Adjusted maxWidth for responsiveness */}
+
                                                             <form onSubmit={handleSubmit1}>
                                                                 <Grid container spacing={3}>
                                                                     <Grid item xs={12}>
@@ -1168,19 +1400,20 @@ export default function Customerdetail() {
                                                                                 <Button
                                                                                     component="span"
                                                                                     style={{
-                                                                                        width: 75,
-                                                                                        height: 100,
+                                                                                        width: 90,
+                                                                                        height: 82,
                                                                                         cursor: 'pointer',
                                                                                         backgroundSize: 'cover',
                                                                                         backgroundPosition: 'center',
                                                                                         backgroundImage: selectedImage
                                                                                             ? `url(${selectedImage})`
-                                                                                            : `url("/image1/images.jpg")`, // Use selected image or default image
+                                                                                            : `url("/image1/png-clipart-user-profile-computer-icons-girl-customer-avatar-angle-heroes-thumbnail 1.png" )`, // Use selected image or default image
+                                                                                        borderRadius: '50%'
                                                                                     }}
                                                                                 >
                                                                                     {/* Content of the button */}
                                                                                 </Button>
-                                                                                <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p>
+                                                                                {/* <p style={{ margin: '5px 0 0', fontWeight: 'bold' }}>Add Image</p> */}
                                                                             </InputLabel>
                                                                         </div>
                                                                     </Grid>
@@ -1205,11 +1438,16 @@ export default function Customerdetail() {
                                                                                 name="name"
                                                                                 value={name}
                                                                                 sx={{ m: 1, width: '250px' }}
-                                                                                onChange={(e) => setName(e.target.value)}
+                                                                                onChange={(e) => {
+                                                                                    if (e.target.value.length <= 50) {
+                                                                                        setName(e.target.value);
+                                                                                    }
+                                                                                }}
                                                                                 fullWidth
                                                                                 required
-                                                                            // style={{ padding: '7px', width: '250px' }}
+                                                                                inputProps={{ maxLength: 50 }}
                                                                             />
+
 
                                                                             <TextField
                                                                                 label="Contact No"
@@ -1222,12 +1460,17 @@ export default function Customerdetail() {
                                                                                 sx={{ m: 1, width: '250px' }}
                                                                                 error={contactError !== ''}
                                                                                 helperText={contactError}
+                                                                                inputProps={{ maxLength: 10 }}
                                                                             />
 
                                                                             <TextField
                                                                                 label="Email"
                                                                                 value={email}
-                                                                                onChange={handleEmailChange}
+                                                                                onChange={(e) => {
+                                                                                    if (e.target.value.length <= 50) {
+                                                                                        handleEmailChange(e); // Call your email change handler
+                                                                                    }
+                                                                                }}
                                                                                 name="email"
                                                                                 fullWidth
                                                                                 required
@@ -1235,17 +1478,23 @@ export default function Customerdetail() {
                                                                                 sx={{ m: 1, width: '250px' }}
                                                                                 error={emailError !== ''}
                                                                                 helperText={emailError}
+                                                                                inputProps={{ maxLength: 50 }}
                                                                             />
 
+
                                                                             <TextField
-                                                                                label="Area pin"
+                                                                                label="Area Pin"
                                                                                 value={areaPin}
-                                                                                onChange={(e) => setAreapin(e.target.value)}
+                                                                                onChange={(e) => {
+                                                                                    if (e.target.value.length <= 6) {
+                                                                                        setAreapin(e.target.value);
+                                                                                    }
+                                                                                }}
                                                                                 name="areaPin"
                                                                                 fullWidth
                                                                                 required
-                                                                                // style={{ padding: '7px', width: '250px' }}
                                                                                 sx={{ m: 1, width: '250px' }}
+                                                                                inputProps={{ maxLength: 6 }}
                                                                             />
                                                                         </div>
                                                                     </Grid>
@@ -1265,43 +1514,92 @@ export default function Customerdetail() {
                                                                             <TextField
                                                                                 label="Address"
                                                                                 value={address}
-                                                                                onChange={(e) => setAddress(e.target.value)}
+                                                                                onChange={(e) => {
+                                                                                    if (e.target.value.length <= 50) {
+                                                                                        setAddress(e.target.value);
+                                                                                    }
+                                                                                }}
                                                                                 name="address"
                                                                                 fullWidth
-                                                                                multilin
+                                                                                multiline // Use the correct 'multiline' prop
                                                                                 rows={4}
                                                                                 required
-                                                                                // style={{ padding: '7px', width: '250px', height: '120px' }}
                                                                                 sx={{ m: 1, width: '250px' }}
+                                                                                inputProps={{ maxLength: 50 }}
                                                                             />
 
                                                                             <TextField
                                                                                 label="City"
                                                                                 value={city}
-                                                                                onChange={(e) => setCity(e.target.value)}
+                                                                                onChange={(e) => {
+                                                                                    if (e.target.value.length <= 20) {
+                                                                                        setCity(e.target.value);
+                                                                                    }
+                                                                                }}
                                                                                 name="city"
                                                                                 fullWidth
-                                                                                multilin
-                                                                                rows={4}
                                                                                 required
-                                                                                // style={{ padding: '7px', width: '250px', height: '120px' }}
                                                                                 sx={{ m: 1, width: '250px' }}
+                                                                                inputProps={{ maxLength: 20 }}
                                                                             />
-                                                                            <TextField
-                                                                                label="State"
-                                                                                value={state}
-                                                                                onChange={(e) => setState(e.target.value)}
-                                                                                name="state"
-                                                                                fullWidth
-                                                                                multilin
-                                                                                rows={4}
-                                                                                required
-                                                                                // style={{ padding: '7px', width: '250px', height: '120px' }}
-                                                                                sx={{ m: 1, width: '250px' }}
-                                                                            />
+                                                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                                                                <FormControl sx={{ m: 2, width: '250px' }} size="small" fullWidth>
+                                                                                    <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>
+                                                                                        State
+                                                                                    </InputLabel>
+                                                                                    <Select
+                                                                                        labelId="demo-select-small-label"
+                                                                                        id="demo-select-small"
+                                                                                        value={state}
+                                                                                        label="State"
+                                                                                        required
+                                                                                        onChange={(e) => setState(e.target.value)}
+                                                                                        sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                                                                    >
+                                                                                        <MenuItem value="AndhraPradesh">Andhra Pradesh</MenuItem>
+                                                                                        <MenuItem value="Arunachal Pradesh">Arunachal Pradesh</MenuItem>
+                                                                                        <MenuItem value="Assam">Assam</MenuItem>
+                                                                                        <MenuItem value=" Bihar"> Bihar</MenuItem>
+                                                                                        <MenuItem value="AndhraPradesh">Chhattisgarh</MenuItem>
+                                                                                        <MenuItem value="Goa"> Goa</MenuItem>
+                                                                                        <MenuItem value="Gujarat"> Gujarat</MenuItem>
+                                                                                        <MenuItem value="Haryana"> Haryana</MenuItem>
+                                                                                        <MenuItem value="Himachal Pradesh"> Himachal Pradesh</MenuItem>
+                                                                                        <MenuItem value="Jharkhand"> Jharkhand</MenuItem>
+                                                                                        <MenuItem value="Karnataka"> Karnataka</MenuItem>
+                                                                                        <MenuItem value="Kerala"> Kerala</MenuItem>
+                                                                                        <MenuItem value="Madhya Pradesh"> Madhya Pradesh</MenuItem>
+                                                                                        <MenuItem value="Maharashtra"> Maharashtra</MenuItem>
+                                                                                        <MenuItem value="Manipur"> Manipur</MenuItem>
+                                                                                        <MenuItem value="Meghalaya"> Meghalaya</MenuItem>
+                                                                                        <MenuItem value="Mizoram"> Mizoram</MenuItem>
+                                                                                        <MenuItem value="Nagaland"> Nagaland</MenuItem>
+                                                                                        <MenuItem value="Odish"> Odisha</MenuItem>
+                                                                                        <MenuItem value="Punjab"> Punjab</MenuItem>
+                                                                                        <MenuItem value="Rajasthan"> Rajasthan</MenuItem>
+                                                                                        <MenuItem value="Sikkim"> Sikkim</MenuItem>
+                                                                                        <MenuItem value="TamilNadu"> Tamil Nadu</MenuItem>
+                                                                                        <MenuItem value="Telangana">Telangana</MenuItem>
+
+                                                                                        <MenuItem value="Tripura"> Tripura</MenuItem>
+                                                                                        <MenuItem value="Uttar Pradesh"> Uttar Pradesh</MenuItem>
+                                                                                        <MenuItem value="Uttarakhand"> Uttarakhand</MenuItem>
+                                                                                        <MenuItem value=" West Bengal"> West Bengal</MenuItem>
+                                                                                        <MenuItem value=" JammuandKashmir(Union Territory)"> Jammu and Kashmir (Union Territory)</MenuItem>
+                                                                                        <MenuItem value=" Chandigarh(Union Territory)"> Chandigarh (Union Territory)</MenuItem>
+                                                                                        <MenuItem value=" Andaman and Nicobar Islands(Union Territory)"> Andaman and Nicobar Islands (Union Territory)</MenuItem>
+                                                                                        <MenuItem value=" Delhi(Union Territory)"> Delhi (Union Territory)</MenuItem>
+                                                                                        <MenuItem value=" Lakshadweep(Union Territory)"> Lakshadweep (Union Territory)</MenuItem>
+                                                                                        <MenuItem value=" Puducherry(Union Territory)"> Puducherry (Union Territory)</MenuItem>
+                                                                                        <MenuItem value=" Dadra and Nagar Haveli and Daman and Diu(Union Territory)"> Dadra and Nagar Haveli and Daman and Diu (Union Territory)</MenuItem>
+                                                                                        <MenuItem value="Ladakh(Union Territory)"> Ladakh (Union Territory)</MenuItem>
+
+                                                                                    </Select>
+                                                                                </FormControl>
+                                                                            </div>
 
                                                                             <div>
-                                                                                <FormControl sx={{ minWidth: 200, marginTop: '5%' }} size="small" fullWidth>
+                                                                                {/* <FormControl sx={{ minWidth: 250, marginTop: '5%' }} size="small" fullWidth>
                                                                                     <InputLabel id="demo-select-small-label" style={{ color: 'black' }}>
                                                                                         Status
                                                                                     </InputLabel>
@@ -1319,39 +1617,35 @@ export default function Customerdetail() {
                                                                                         <MenuItem value="Active">Active</MenuItem>
                                                                                         <MenuItem value="Disabled">disabled</MenuItem>
                                                                                     </Select>
-                                                                                </FormControl>
+                                                                                </FormControl> */}
                                                                             </div>
                                                                         </div>
                                                                     </Grid>
                                                                 </Grid>
-                                                                <div style={{ marginTop: '20px' }}>
-                                                                    {/* <Button type="submit" variant="contained" color="primary" style={{ float: 'right', marginRight: '-5px' }}>
-                                                                        Submit
-                                                                    </Button>
-                                                                    <Button onClick={handleClickClose1} style={{ float: 'right', color: 'red' }}>
-                                                                        Close
-                                                                    </Button> */}
+                                                                <div >
 
-                                                                    {/* <button  color="primary" onClick={handleSaveClick} style={{ float: 'right', marginRight: '-5px' }} >Save</button> */}
 
                                                                     <Button
-                                                                        onClick={handleSaveClick}
                                                                         type="submit"
                                                                         variant="contained"
                                                                         color="primary"
                                                                         style={{ float: 'right' }}
+                                                                        disabled={btnLoading} // Disable the button when loading is true
                                                                     >
-                                                                        submit
+                                                                        {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
                                                                     </Button>
+
 
                                                                     <Button
                                                                         onClick={handleClickClose1}
                                                                         style={{ float: 'right', color: 'red', marginRight: '3%' }}
                                                                     >
                                                                         Close
-                                                                    </Button>
+                                                                    </Button><br />
+
                                                                 </div>
                                                             </form>
+
                                                         </Container>
                                                     </DialogContent>
                                                 </Dialog>
@@ -1359,6 +1653,7 @@ export default function Customerdetail() {
                                         </div>
 
                                         <br />
+
                                         <div className="row">
                                             <div className="col-md-3">
 
@@ -1369,6 +1664,9 @@ export default function Customerdetail() {
                                                     </div>
                                                 </div>
                                             </div>
+
+
+
                                             <div className="col-md-3">
                                                 <div className="profile-head">
                                                     <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
@@ -1376,9 +1674,8 @@ export default function Customerdetail() {
                                                         <h6>{user.contact}</h6>
                                                     </div>
                                                 </div>
-
-
                                             </div>
+
                                         </div>
                                     </div>
                                 </Typography>
@@ -1391,10 +1688,10 @@ export default function Customerdetail() {
                     <Box>
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider', background: '#007F6D' }}>
-                                <TabList onChange={handleChange} aria-label="lab API tabs example">
+                                <TabList onChange={handleChange} aria-label="lab API tabs example" indicatorColor="white" textColor="inherit">
                                     <Tab style={{ color: 'white' }} label="Products" value="1" />
                                     <Tab style={{ color: 'white' }} label="Complaints" value="2" />
-                                    {/* <Tab label="Item Three" value="3" /> */}
+                                    {/* Add more tabs as needed */}
                                 </TabList>
                             </Box>
 
@@ -1469,7 +1766,7 @@ export default function Customerdetail() {
                                                                                                             alt="product"
                                                                                                         />
                                                                                                         <div style={{ margin: 'auto', textAlign: 'center', padding: '10' }}>
-                                                                                                            <button
+                                                                                                            {/* <button
                                                                                                                 className="btn btn-primary"
                                                                                                                 onClick={() =>
                                                                                                                     FileSaver.saveAs(
@@ -1479,7 +1776,7 @@ export default function Customerdetail() {
                                                                                                                 }
                                                                                                             >
                                                                                                                 Download
-                                                                                                            </button>
+                                                                                                            </button> */}
                                                                                                         </div>
                                                                                                     </DialogContent>
                                                                                                     <DialogContent>
@@ -1504,7 +1801,7 @@ export default function Customerdetail() {
                                                                                                 </div>
 
                                                                                                 <div className="col-md-8">
-                                                                                                    <table style={{ width: '100%', lineHeight: '40px' }}>
+                                                                                                    <table style={{ width: '100%', lineHeight: '30px' }}>
                                                                                                         <tr>
                                                                                                             {console.log('product data:', productCustomerData)}
                                                                                                             <th>Product Name : </th>
@@ -1547,12 +1844,24 @@ export default function Customerdetail() {
                                                                                                             <td>{productCustomerData.dispatchDate}</td>
                                                                                                         </tr>
                                                                                                         <tr>
-                                                                                                            <th>constructionType</th>
+                                                                                                            <th>Construction Type :</th>
                                                                                                             <td>{productCustomerData.constructionType}</td>
                                                                                                         </tr>
                                                                                                     </table>
                                                                                                 </div>
+
+                                                                                                <div className="row" style={{ justifyContent: 'flex-end', marginTop: '20px' }}>
+                                                                                                    <button
+                                                                                                        className="btn btn-dangerr"
+                                                                                                        onClick={handleClose} // Attach the onClick handler to close the dialog
+                                                                                                        style={{ width: '8%', color: 'red' }}
+
+                                                                                                    >
+                                                                                                        Close
+                                                                                                    </button>
+                                                                                                </div>
                                                                                             </div>
+
                                                                                         </div>
                                                                                     </Dialog>
                                                                                 </TableCell>
@@ -1560,9 +1869,10 @@ export default function Customerdetail() {
                                                                         }
 
                                                                         return (
-                                                                            <TableCell key={column.id} align={column.align}>
+                                                                            <TableCell key={column.id} align={column.align} style={{ overflowWrap: 'break-word', maxWidth: '10rem' }}>
                                                                                 {value}
                                                                             </TableCell>
+
                                                                         );
                                                                     })}
                                                                 </TableRow>
@@ -1586,159 +1896,159 @@ export default function Customerdetail() {
                             </TabPanel>
 
                             <TabPanel value="2">
-                                <Item>
-                                    <Card>
-                                        <Paper sx={{ width: '100%' }}>
-                                            <TableContainer sx={{ maxHeight: '100%' }}>
-                                                <Table stickyHeader aria-label="sticky table">
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            {columns.map((column) => (
-                                                                <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
-                                                                    {column.label}
-                                                                </TableCell>
-                                                            ))}
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {rows === null || rows === undefined || rows.length === 0 ? (
-                                                            <TableCell colSpan={columns.length}>
-                                                                <Typography
-                                                                    variant="p"
-                                                                    component="div"
-                                                                    style={{ textAlign: 'center', padding: '20px' }} // Adjust padding as needed
-                                                                >
-                                                                    No Data Available
-                                                                </Typography>
-                                                            </TableCell>
-                                                        ) : (
-                                                            rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                                                                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                                    {columns.map((column) => {
-                                                                        const value =
-                                                                            column.id === 'productCustomer' ? row[column.id][column.subId] : row[column.id];
 
-                                                                        if (column.id === 'sr') {
-                                                                            sr += 1;
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {value === null ? '' : String(sr)}
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
+                                <Card>
+                                    {/* <Paper sx={{ width: '100%' }}> */}
+                                    <TableContainer sx={{ maxHeight: '100%' }}>
+                                        <Table stickyHeader aria-label="sticky table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    {columns.map((column) => (
+                                                        <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                                                            {column.label}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows === null || rows === undefined || rows.length === 0 ? (
+                                                    <TableCell colSpan={columns.length}>
+                                                        <Typography
+                                                            variant="p"
+                                                            component="div"
+                                                            style={{ textAlign: 'center', padding: '20px' }} // Adjust padding as needed
+                                                        >
+                                                            No Data Available
+                                                        </Typography>
+                                                    </TableCell>
+                                                ) : (
+                                                    rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                            {columns.map((column) => {
+                                                                const value =
+                                                                    column.id === 'productCustomer' ? row[column.id][column.subId] : row[column.id];
 
-                                                                        if (column.id === 'compaintStatus') {
-                                                                            // console.log(value);
-                                                                            let labelColor;
+                                                                if (column.id === 'sr') {
+                                                                    sr += 1;
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value === null ? '' : String(sr)}
+                                                                        </TableCell>
+                                                                    );
+                                                                }
 
-                                                                            if (value === 'Pending Assign') {
-                                                                                labelColor = 'error';
-                                                                            } else if (value === 'Engineer Assigned') {
-                                                                                labelColor = 'warning';
-                                                                            } else if (value === 'Completed') {
-                                                                                labelColor = 'success';
-                                                                            } else {
-                                                                                labelColor = 'default';
-                                                                            }
+                                                                if (column.id === 'compaintStatus') {
+                                                                    // console.log(value);
+                                                                    let labelColor;
 
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
+                                                                    if (value === 'Pending Assign') {
+                                                                        labelColor = 'error';
+                                                                    } else if (value === 'Engineer Assigned') {
+                                                                        labelColor = 'warning';
+                                                                    } else if (value === 'Completed') {
+                                                                        labelColor = 'success';
+                                                                    } else {
+                                                                        labelColor = 'default';
+                                                                    }
 
-                                                                        if (column.id === 'priority') {
-                                                                            // console.log(value);
-                                                                            let labelColor;
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
+                                                                        </TableCell>
+                                                                    );
+                                                                }
 
-                                                                            if (value === 'High') {
-                                                                                labelColor = 'error';
-                                                                            } else if (value === 'Normal') {
-                                                                                labelColor = 'warning';
-                                                                            } else if (value === 'Low') {
-                                                                                labelColor = 'success';
-                                                                            } else {
-                                                                                labelColor = 'default';
-                                                                            }
+                                                                if (column.id === 'priority') {
+                                                                    // console.log(value);
+                                                                    let labelColor;
 
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
-                                                                        if (column.id === 'action') {
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    <Button onClick={() => routeChange1(row.id)} variant="contained">
-                                                                                        Details
-                                                                                    </Button>
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
+                                                                    if (value === 'High') {
+                                                                        labelColor = 'error';
+                                                                    } else if (value === 'Normal') {
+                                                                        labelColor = 'warning';
+                                                                    } else if (value === 'Low') {
+                                                                        labelColor = 'success';
+                                                                    } else {
+                                                                        labelColor = 'default';
+                                                                    }
 
-                                                                        if (column.id === 'engineerName') {
-                                                                            // console.log(`Desired Value ${  value}`);
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {value !== null ? value : 'Pending Assign'}
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            <Label color={labelColor}>{value === null ? '' : String(value)}</Label>
+                                                                        </TableCell>
+                                                                    );
+                                                                }
+                                                                if (column.id === 'action') {
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            <Button onClick={() => routeChange1(row.id)} variant="contained">
+                                                                                Details
+                                                                            </Button>
+                                                                        </TableCell>
+                                                                    );
+                                                                }
 
-                                                                        if (column.id === 'estimatedDate') {
-                                                                            console.log(`Desired Value ${value}`);
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {value !== null ? formatDateTime(value) : 'Pending Assign'}
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
+                                                                if (column.id === 'engineerName') {
+                                                                    // console.log(`Desired Value ${  value}`);
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value !== null ? value : 'Pending Assign'}
+                                                                        </TableCell>
+                                                                    );
+                                                                }
 
-                                                                        if (column.id === 'createdDateTime') {
-                                                                            console.log(`Desired Value ${value}`);
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {value !== null ? formatDateTime(value) : ''}
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
+                                                                if (column.id === 'estimatedDate') {
+                                                                    console.log(`Desired Value ${value}`);
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value !== null ? formatDateTime(value) : 'Pending Assign'}
+                                                                        </TableCell>
+                                                                    );
+                                                                }
 
-                                                                        console.log(column);
-                                                                        if (column.id === 'button') {
-                                                                            return (
-                                                                                <TableCell key={column.id} align={column.align}>
-                                                                                    {/* view dialog box customerdetail */}
+                                                                if (column.id === 'createdDateTime') {
+                                                                    console.log(`Desired Value ${value}`);
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value !== null ? formatDateTime(value) : ''}
+                                                                        </TableCell>
+                                                                    );
+                                                                }
 
-                                                                                    <Button onClick={() => routeChange2(row.id)} variant="contained">
-                                                                                        {' '}
-                                                                                        Details{' '}
-                                                                                    </Button>
-                                                                                    <Dialog
-                                                                                        open={open}
-                                                                                        onClose={handleClose}
-                                                                                        aria-labelledby="alert-dialog-title"
-                                                                                        aria-describedby="alert-dialog-description"
-                                                                                    >
-                                                                                        <DialogTitle id="alert-dialog-title">
-                                                                                            {'View Details'}
+                                                                console.log(column);
+                                                                if (column.id === 'button') {
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {/* view dialog box customerdetail */}
 
-                                                                                            <div>
-                                                                                                {/* Add more input fields as needed */}
-                                                                                                {/* <button style={{ marginLeft: '75%',color:'white',backgroundColor:'blue',width:'24%',height:'39px',borderRadius:'7px' }}  onClick={handleToggleEdit}>
+                                                                            <Button onClick={() => routeChange2(row.id)} variant="contained">
+                                                                                {' '}
+                                                                                Details{' '}
+                                                                            </Button>
+                                                                            <Dialog
+                                                                                open={open}
+                                                                                onClose={handleClose}
+                                                                                aria-labelledby="alert-dialog-title"
+                                                                                aria-describedby="alert-dialog-description"
+                                                                            >
+                                                                                <DialogTitle id="alert-dialog-title">
+                                                                                    {'View Details'}
+
+                                                                                    <div>
+                                                                                        {/* Add more input fields as needed */}
+                                                                                        {/* <button style={{ marginLeft: '75%',color:'white',backgroundColor:'blue',width:'24%',height:'39px',borderRadius:'7px' }}  onClick={handleToggleEdit}>
                                                                                                             {isEditable ? 'Disable Editing' : ' Editing'}
                                                                                                         </button> */}
-                                                                                            </div>
-                                                                                        </DialogTitle>
-                                                                                        <DialogContent>
-                                                                                            <DialogContentText>
-                                                                                                <div style={{ padding: '20px' }}>
-                                                                                                    {/* <img style={{ width: 125, height: 70, marginLeft: '90px', marginTop: '-30px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
+                                                                                    </div>
+                                                                                </DialogTitle>
+                                                                                <DialogContent>
+                                                                                    <DialogContentText>
+                                                                                        <div style={{ padding: '20px' }}>
+                                                                                            {/* <img style={{ width: 125, height: 70, marginLeft: '90px', marginTop: '-30px' }} alt="Bx bxs lock alt" src="/image1/charger_a 1.svg" /> */}
 
-                                                                                                    <Grid container spacing={5}>
-                                                                                                        <Grid item xs={6}>
-                                                                                                            {/* <ul>
+                                                                                            <Grid container spacing={5}>
+                                                                                                <Grid item xs={6}>
+                                                                                                    {/* <ul>
                                                                                                                         <li > Asset id  </li>
                                                                                                                         <li> Serial no  </li>
                                                                                                                         <li>SLA        </li>
@@ -1756,18 +2066,18 @@ export default function Customerdetail() {
                                                                                                                         <li>Longitude</li>
                                                                                                                     </ul> */}
 
-                                                                                                            {/* <label htmlFor={id}>{label}</label> */}
+                                                                                                    {/* <label htmlFor={id}>{label}</label> */}
 
-                                                                                                            {/* <input style={{ marginTop: '40%' }} type="text" value="Field 1" disabled={!isEditable} />
+                                                                                                    {/* <input style={{ marginTop: '40%' }} type="text" value="Field 1" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} />
                                                                                                                         <input type="text" value="Field 2" disabled={!isEditable} /> */}
 
-                                                                                                            <div>
-                                                                                                                <form>
-                                                                                                                    <Grid container spacing={5}>
-                                                                                                                        {/* <Grid item xs={6}>
+                                                                                                    <div>
+                                                                                                        <form>
+                                                                                                            <Grid container spacing={5}>
+                                                                                                                {/* <Grid item xs={6}>
 
 
 
@@ -1937,12 +2247,12 @@ export default function Customerdetail() {
 
 
                                                                                                                             </Grid> */}
-                                                                                                                    </Grid>
-                                                                                                                </form>
-                                                                                                            </div>
-                                                                                                        </Grid>
+                                                                                                            </Grid>
+                                                                                                        </form>
+                                                                                                    </div>
+                                                                                                </Grid>
 
-                                                                                                        {/* <Grid item xs={6}>
+                                                                                                {/* <Grid item xs={6}>
 
                                                                                                                     <li>Rapid Pod</li>
                                                                                                                     <li>Rapid Pod TRI01 </li>
@@ -1964,76 +2274,77 @@ export default function Customerdetail() {
 
 
                                                                                                                 </Grid> */}
-                                                                                                    </Grid>
-                                                                                                </div>
-                                                                                            </DialogContentText>
-                                                                                        </DialogContent>
-                                                                                        <DialogActions>
-                                                                                            <Button
-                                                                                                onClick={handleClose}
-                                                                                                style={{ color: 'red', marginRight: '4%' }}
-                                                                                            >
-                                                                                                Close
-                                                                                            </Button>
-                                                                                            {isEditable ? (
-                                                                                                <button
-                                                                                                    onClick={handleSaveClick}
-                                                                                                    style={{
-                                                                                                        width: '15%',
-                                                                                                        marginRight: '4%',
-                                                                                                        color: 'white',
-                                                                                                        backgroundColor: 'blue',
-                                                                                                        height: '35px',
-                                                                                                        borderRadius: '7px',
-                                                                                                    }}
-                                                                                                >
-                                                                                                    Save
-                                                                                                </button>
-                                                                                            ) : (
-                                                                                                <button
-                                                                                                    onClick={handleEditClick}
-                                                                                                    style={{
-                                                                                                        width: '15%',
-                                                                                                        marginRight: '4%',
-                                                                                                        color: 'white',
-                                                                                                        backgroundColor: 'blue',
-                                                                                                        height: '35px',
-                                                                                                        borderRadius: '7px',
-                                                                                                    }}
-                                                                                                >
-                                                                                                    Edit
-                                                                                                </button>
-                                                                                            )}
-                                                                                        </DialogActions>
-                                                                                    </Dialog>
-                                                                                </TableCell>
-                                                                            );
-                                                                        }
+                                                                                            </Grid>
+                                                                                        </div>
+                                                                                    </DialogContentText>
+                                                                                </DialogContent>
+                                                                                <DialogActions>
+                                                                                    <Button
+                                                                                        onClick={handleClose}
+                                                                                        style={{ color: 'red', marginRight: '4%' }}
+                                                                                    >
+                                                                                        Close
+                                                                                    </Button>
+                                                                                    {isEditable ? (
+                                                                                        <button
+                                                                                            onClick={handleSaveClick}
+                                                                                            style={{
+                                                                                                width: '15%',
+                                                                                                marginRight: '4%',
+                                                                                                color: 'white',
+                                                                                                backgroundColor: 'blue',
+                                                                                                height: '35px',
+                                                                                                borderRadius: '7px',
+                                                                                            }}
+                                                                                        >
+                                                                                            Save
+                                                                                        </button>
+                                                                                    ) : (
+                                                                                        <button
+                                                                                            onClick={handleEditClick}
+                                                                                            style={{
+                                                                                                width: '15%',
+                                                                                                marginRight: '4%',
+                                                                                                color: 'white',
+                                                                                                backgroundColor: 'blue',
+                                                                                                height: '35px',
+                                                                                                borderRadius: '7px',
+                                                                                            }}
+                                                                                        >
+                                                                                            Edit
+                                                                                        </button>
+                                                                                    )}
+                                                                                </DialogActions>
+                                                                            </Dialog>
+                                                                        </TableCell>
+                                                                    );
+                                                                }
 
-                                                                        return (
-                                                                            <TableCell key={column.id} align={column.align}>
-                                                                                {value}
-                                                                            </TableCell>
-                                                                        );
-                                                                    })}
-                                                                </TableRow>
-                                                            ))
-                                                        )}
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                            <TablePagination
-                                                rowsPerPageOptions={[10, 25, 100]}
-                                                component="div"
-                                                count={rows.length}
-                                                rowsPerPage={rowsPerPage}
-                                                page={page}
-                                                onPageChange={handleChangePage}
-                                                onRowsPerPageChange={handleChangeRowsPerPage}
-                                            />
-                                        </Paper>
-                                    </Card>
-                                </Item>
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align} style={{ overflowWrap: 'break-word', maxWidth: '10rem' }}>
+                                                                        {value}
+                                                                    </TableCell>
+
+                                                                );
+                                                            })}
+                                                        </TableRow>
+                                                    ))
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <TablePagination
+                                        rowsPerPageOptions={[10, 25, 100]}
+                                        component="div"
+                                        count={rows.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onPageChange={handleChangePage}
+                                        onRowsPerPageChange={handleChangeRowsPerPage}
+                                    />
+                                    {/* </Paper> */}
+                                </Card>
+
                             </TabPanel>
                             {/* <TabPanel value="3">Item Three</TabPanel> */}
                         </TabContext>
