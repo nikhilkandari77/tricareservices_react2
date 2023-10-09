@@ -48,24 +48,20 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 
 
+// import { styled } from '@mui/material/styles';
+// import Table from '@mui/material/Table';
+// import TableBody from '@mui/material/TableBody';
+// import TableCell from '@mui/material/TableCell';
+// import TableContainer from '@mui/material/TableContainer';
+// import TableHead from '@mui/material/TableHead';
+// import TablePagination from '@mui/material/TablePagination';
+// import TableRow from '@mui/material/TableRow';
+
+
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
 import baseUrl from '../utils/baseUrl';
-
-
-
-
-const columns = [
-    { id: 'srno', label: 'Sr.No', minWidth: 75, align: 'center' },
-    { id: 'remark', label: 'Remark', minWidth: 100, align: 'center' },
-    { id: 'username', label: 'Engineer', minWidth: 140, align: 'center' },
-    { id: 'activityDatetime', label: 'Time', minWidth: 100, align: 'center', },
-  
-];
-
-
-
 
 
 const override = css`
@@ -74,6 +70,16 @@ const override = css`
 `;
 
 
+// table column
+const columns = [
+
+    { id: 'srno', label: 'Sr.No', minWidth: 10, align: 'center' },
+    { id: 'remark', label: 'Activity', minWidth: 50, align: 'center' },
+    { id: 'username', label: 'User', minWidth: 100, align: 'center' },
+    { id: 'message', label: 'Message', minWidth: 140, align: 'center' },
+    { id: 'activityDatetime', label: 'TimeStamp', minWidth: 100, align: 'center' },
+
+];
 
 
 
@@ -81,9 +87,9 @@ const override = css`
 
 
 export default function Taskdetail() {
-    const [rows, setRows] = useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    // const [rows, setRows] = useState([]);
+    // const [page, setPage] = React.useState(0);
+    // const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [zoomedIn, setZoomedIn] = useState(false);
 
     const location = useLocation();
@@ -100,15 +106,30 @@ export default function Taskdetail() {
     const [engineer, setEngineer] = React.useState('');
     const [engineerId, setEngineerId] = React.useState('');
     const [priority, setPriority] = React.useState('');
+    const [status, setStatus] = React.useState('');
+    const [statusofengineer, setStatusofengineer] = React.useState('');
 
 
-    const [productImages, setProductImages] = useState('')
+    const [productImages, setProductImages] = useState('');
     const [task, setTask] = useState({}); /* sets complaint details */
     const [customer, setCustomer] = useState({}); /* gets customer's details */
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
 
     const token = localStorage.getItem('token');
 
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+    
     const postComplaintDetails = async (data) => {
 
         setIsLoading(true);
@@ -127,7 +148,7 @@ export default function Taskdetail() {
 
             if (response.ok) {
                 toast.success("Complaint has been updated");
-                setIsLoading(true)
+                setIsLoading(true);
                 setTimeout(() => {
                     navigate("/dashboard/task");
                 }, 2000);
@@ -149,12 +170,13 @@ export default function Taskdetail() {
         e.preventDefault();
         const d = {
             id: `${taskId}`,
-            complaintStatus: "Closed",
+            complaintStatus: task.engineerId !== null ? 'Closed' : 'Rejected',
             ticketStatus: "Closed"
         };
         postComplaintDetails(d);
         toast.warn("Complaint has been closed sucessfully");
         setTimeout(() => {
+
             navigate("/dashboard/task");
 
         }, 2000);
@@ -172,6 +194,13 @@ export default function Taskdetail() {
 
         // const formattedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
         //     .toISOString().substring(0, 10);
+
+        // if (task.engineerId == null) {
+        //     console.log(task.engineerId);
+        //     setStatus("Engineer Assigned");
+        //     // status = "Engineer Assigned";
+        // }
+
         const d = {
 
             id: `${taskId}`,
@@ -181,16 +210,30 @@ export default function Taskdetail() {
             serviceType: `${serviceType}`,
             priority: `${priority}`,
             visitDatetime: `${`${visitDate} ${visitTime}:00`}`,
-            complaintStatus: "Engineer Assigned"
-
+            complaintStatus: task.engineerId === null
+            ? "Engineer Assigned"
+            : task.engineerId !== engineerId
+            ? "Engineer Reassigned"
+            : status,
+            statusofengineer: task.engineerId === null
+            ? "Pending"
+            : task.engineerId !== engineerId
+            ? "Pending"
+            : statusofengineer,
         };
 
+        if(task.statusofcustomer !== null){
+
+            d.complaintStatus = "Submitted";
+            d.statusofengineer = "Pending";
+            d.statusofcustomer = null;
+            d.ticketStatus = "reassign";
+        }
+
         console.log(JSON.stringify(d));
-       postComplaintDetails(d);
-        // toast.success("Engineer has been assigned");
-        // setTimeout(() => {
-        //     navigate("/");
-        // }, 4000);
+
+        postComplaintDetails(d);
+
 
     };
 
@@ -204,6 +247,7 @@ export default function Taskdetail() {
 
         return { formattedDate, formattedTime };
     }
+    const [rows, setRows] = useState([]);
 
     const [openImage, setOpenImage] = useState(false);
     const [image, setImage] = useState(null);
@@ -238,18 +282,21 @@ export default function Taskdetail() {
         setPriority(event.target.value);
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    // const handleChangePage = (event, newPage) => {
+    //     setPage(newPage);
+    // };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    // const handleChangeRowsPerPage = (event) => {
+    //     setRowsPerPage(+event.target.value);
+    //     setPage(0);
+    // };
 
+    const handleChangeStatus = (event) => {
+        setStatus(event.target.value);
+    };
 
     const getProduct = (productId) => {
-        console.log(productId)
+        console.log(productId);
         fetch(`${baseUrl}/api/user/product-master/${productId}`, {
 
             method: 'GET',
@@ -260,14 +307,14 @@ export default function Taskdetail() {
 
         }).then(response => response.json()).then(data => {
             setProductImages(data.data.imageName.toString().split(","));
-            console.log("product", data.data.imageName)
+            console.log("product", data.data.imageName);
         }).catch(error => console.log(error));
-    }
+    };
 
 
 
     useEffect(() => {
-        console.log("state is :", state)
+        console.log("state is :", state);
 
         try {
             setIsTaskLoading(true);
@@ -301,6 +348,8 @@ export default function Taskdetail() {
                     setComplaintType(json.data.complaintType);
                     setServiceType(json.data.serviceType);
                     setPriority(json.data.priority);
+                    setStatus(json.data.complaintStatus);
+                    setStatusofengineer(json.data.statusofengineer);
                     setEngineerId(json.data.engineerId);
                     setEngineer(json.data.engineerName);
 
@@ -313,6 +362,7 @@ export default function Taskdetail() {
                         setSelectedTime("");
 
                     } else {
+                        
                         setSelectedDate(formattedDate);
                         setSelectedTime(formattedTime);
 
@@ -333,13 +383,13 @@ export default function Taskdetail() {
                         setVisitTime(formattedTime2);
                     }
 
-                    console.log(formattedDate2)
+                    console.log(formattedDate2);
                     showCustomer(json.data.customerId, token);
 
                 });
         } catch (error) {
             console.error("Error:", error);
-            navigate("dashboard/task")
+            navigate("dashboard/task");
         } finally {
             setIsTaskLoading(false);
         }
@@ -400,36 +450,40 @@ export default function Taskdetail() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        setLoading(true);
-        fetch(`${baseUrl}/api/user/task-activity/`, {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-    
+        setIsLoading(false);
+        fetch(`${baseUrl}/api/user/task-activity/${taskId}`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+
         })
+
+            .then(response => response.json())
+            .then(json => {
+                console.log("Fetched data:", json); // This line will print the data to the console
+                // setUsers(json);
+                setRows(json.data);
+
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [taskId]);
     
-          .then(response => response.json())
-          .then(json => {
-            console.log("Fetched data:", json); // This line will print the data to the console
-            // setUsers(json);
-            setRows(json.data);
-    
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }, []);
-    
-      if (loading) {
-        return <div>Loading...</div>;
-      }
+      
 
 
     function formatDate(dateString) {
         const options = { day: 'numeric', month: 'short', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('en-US', options);
+    }
+
+    function formatTime(dateTimeString) {
+        const dateTime = new Date(dateTimeString);
+        const formattedTime = format(dateTime, 'HH:mm');
+        return formattedTime;
     }
 
     const statusColors = {
@@ -441,10 +495,21 @@ export default function Taskdetail() {
     const handleOpenImage = (e) => {
         setImage(e.target.src);
         setOpenImage(true);
-    }
+    };
     const toggleZoom = () => {
         setZoomedIn(!zoomedIn);
     };
+
+    // table API
+
+    
+
+
+    let sr = 0;
+
+    if (loading) {
+        return <div>Loading...</div>;
+      }
 
     return (
 
@@ -796,242 +861,264 @@ export default function Taskdetail() {
                                     
                                 )
                             } */}
-                           
+
                             <Paper style={{ height: '100%', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
                                 <Card style={{ width: '100%', height: '100%' }}>
                                     <CardContent>
-                                    <form onSubmit={btnAssignTask}>
-                                        <Card style={{ width: '100%', height: '100%', border: '2px solid red', borderRadius: '8px', marginBottom: '10%' }}>
-                                            <CardContent>
-                                                <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
-                                                    {task.problem}<br />
+                                        {/* onSubmit={btnAssignTask} */}
+                                        <form onSubmit={btnAssignTask} >
+                                            <Card style={{ width: '100%', height: '100%', border: '2px solid red', borderRadius: '8px', marginBottom: '10%' }}>
+                                                <CardContent>
+                                                    <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
+                                                        {task.problem}<br />
+                                                    </Typography>
+                                                    {/* <Typography variant="body1" style={{ textAlign: 'center' }}>
+                                                    {task.problemDescription}
+                                                </Typography> */}
+                                                    {
+
+                                                        Object.keys(task).length !== 0 ? (
+                                                            <Typography variant="body1" style={{ textAlign: 'center' }}>
+                                                                {task.problemDescription}
+                                                            </Typography>
+                                                        ) : (
+                                                            <div
+                                                                style={{
+                                                                    display: "flex",
+                                                                    justifyContent: "center",
+                                                                    alignItems: "center",
+                                                                    height: "100%",
+                                                                    marginTop: '10%'
+                                                                }}
+                                                            >
+                                                                <ClipLoader
+                                                                    color={"#007F6D"}
+                                                                    loading
+                                                                    css={override}
+                                                                    size={10}
+                                                                />
+                                                            </div>
+                                                        )
+
+                                                    }
+                                                </CardContent>
+                                            </Card>
+
+                                            <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
+                                                <InputLabel id="labelServiceType">Service Type</InputLabel>
+                                                <Select
+                                                    labelId="labelServiceType"
+                                                    id="selectServiceType"
+                                                    value={serviceType}
+                                                    label="Service Type"
+                                                    onChange={handleChangeServiceType}
+                                                    required
+                                                >
+
+                                                    <MenuItem value="Free">Free</MenuItem>
+                                                    <MenuItem value="Paid">Paid</MenuItem>
+                                                </Select>
+                                            </FormControl>
+
+                                            <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
+                                                <InputLabel id="demo-select-small-label">Task Type</InputLabel>
+                                                <Select
+                                                    labelId="demo-select-small-label"
+                                                    id="demo-select-small"
+                                                    value={complaintType}
+                                                    label="Task Type"
+                                                    onChange={handleChangeComplaintType}
+                                                    required
+                                                >
+
+                                                    <MenuItem value="Remote Support">Remote Support</MenuItem>
+                                                    <MenuItem value="On Site Visit">On Site Visit</MenuItem>
+                                                </Select>
+                                            </FormControl>
+
+                                            <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
+                                                <InputLabel id="slectEngineerLabel">
+                                                    Select Engineer
+                                                </InputLabel>
+                                                <Select
+                                                    labelId="slectEngineerLabel"
+                                                    id="slectEngineer"
+                                                    value={engineerId}
+                                                    label="Select Engineer"
+                                                    onChange={handleChangeEngineer}
+                                                    required
+                                                >
+
+
+                                                    {Object.keys(engineers).length === 0 ? null : (
+                                                        engineers.map(engineer0 => (
+                                                            <MenuItem key={engineer0.id} value={engineer0.id}>
+                                                                {engineer0.name}
+                                                            </MenuItem>
+                                                        ))
+                                                    )}
+                                                </Select>
+                                            </FormControl>
+                                            <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
+                                                <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
+                                                    Select Visit Date And Time
                                                 </Typography>
-                                                
-                                                {
-
-                                                    Object.keys(task).length !== 0 ? (
-                                                        <Typography variant="body1" style={{ textAlign: 'center' }}>
-                                                            {task.problemDescription}
-                                                        </Typography>
-                                                    ) : (
-                                                        <div
-                                                            style={{
-                                                                display: "flex",
-                                                                justifyContent: "center",
-                                                                alignItems: "center",
-                                                                height: "100%",
-                                                                marginTop: '10%'
-                                                            }}
-                                                        >
-                                                            <ClipLoader
-                                                                color={"#007F6D"}
-                                                                loading
-                                                                css={override}
-                                                                size={10}
-                                                            />
-                                                        </div>
-                                                    )
-
-                                                }
-                                            </CardContent>
-                                        </Card>
-
-                                        <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
-                                            <InputLabel id="labelServiceType">Service Type</InputLabel>
-                                            <Select
-                                                labelId="labelServiceType"
-                                                id="selectServiceType"
-                                                value={serviceType}
-                                                label="Service Type"
-                                                onChange={handleChangeServiceType}
-                                                required
-                                            >
-
-                                                <MenuItem value="Free">Free</MenuItem>
-                                                <MenuItem value="Paid">Paid</MenuItem>
-                                            </Select>
-                                        </FormControl>
-
-                                        <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
-                                            <InputLabel id="demo-select-small-label">Task Type</InputLabel>
-                                            <Select
-                                                labelId="demo-select-small-label"
-                                                id="demo-select-small"
-                                                value={complaintType}
-                                                label="Task Type"
-                                                onChange={handleChangeComplaintType}
-                                                required
-                                            >
-
-                                                <MenuItem value="Remote">Remote Support</MenuItem>
-                                                <MenuItem value="Onsite">On Site Visit</MenuItem>
-                                            </Select>
-                                        </FormControl>
-
-                                        <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
-                                            <InputLabel id="slectEngineerLabel">
-                                                Select Engineer
                                             </InputLabel>
-                                            <Select
-                                                labelId="slectEngineerLabel"
-                                                id="slectEngineer"
-                                                value={engineerId}
-                                                label="Select Engineer"
-                                                onChange={handleChangeEngineer}
-                                                required
-                                            >
+                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                                <TextField
+                                                    id="datepicker"
+                                                    variant="outlined"
+                                                    value={visitDate}
+                                                    onChange={(e) => setVisitDate(e.target.value)}
+                                                    type="date" // Use type "date" for date picker
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    inputProps={{
+                                                        // Set placeholder value here
+                                                        // min: new Date().toISOString().split('T')[0],
+                                                    }}
+                                                    required
+                                                />
+                                            </FormControl>
+                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+
+                                                <TextField
+                                                    id="timepicker"
+                                                    variant="outlined"
+                                                    value={visitTime}
+                                                    onChange={(e) => setVisitTime(e.target.value)}
+                                                    type="time" // Use type "time" for date picker
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    required
+                                                />
+
+                                            </FormControl>
+
+                                            <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
+                                                <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
+                                                    Select End Date And Time
+                                                </Typography>
+                                            </InputLabel>
 
 
-                                                {Object.keys(engineers).length === 0 ? null : (
-                                                    engineers.map(engineer0 => (
-                                                        <MenuItem key={engineer0.id} value={engineer0.id}>
-                                                            {engineer0.name}
-                                                        </MenuItem>
-                                                    ))
-                                                )}
-                                            </Select>
-                                        </FormControl>
-                                        <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
-                                            <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                Select Visit Date And Time
-                                            </Typography>
-                                        </InputLabel>
-                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                            <TextField
-                                                id="datepicker"
-                                                variant="outlined"
-                                                value={visitDate}
-                                                onChange={(e) => setVisitDate(e.target.value)}
-                                                type="date" // Use type "date" for date picker
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                inputProps={{
-                                                    // Set placeholder value here
-                                                    min: new Date().toISOString().split('T')[0],
-                                                }}
-                                                required
-                                            />
-                                        </FormControl>
-                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-
-                                            <TextField
-                                                id="timepicker"
-                                                variant="outlined"
-                                                value={visitTime}
-                                                onChange={(e) => setVisitTime(e.target.value)}
-                                                type="time" // Use type "time" for date picker
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                required
-                                            />
-
-                                        </FormControl>
-
-                                        <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
-                                            <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                Select Estimated Date And Time
-                                            </Typography>
-                                        </InputLabel>
+                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                                <TextField
+                                                    id="datepicker"
+                                                    variant="outlined"
+                                                    value={estimatedDate}
+                                                    onChange={handleDateChange}
+                                                    type="date" // Use type "date" for date picker
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    inputProps={{
+                                                        // Set placeholder value here
+                                                        min: new Date().toISOString().split('T')[0],
+                                                    }}
+                                                    required
+                                                />
 
 
-                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                            <TextField
-                                                id="datepicker"
-                                                variant="outlined"
-                                                value={estimatedDate}
-                                                onChange={handleDateChange}
-                                                type="date" // Use type "date" for date picker
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                inputProps={{
-                                                    // Set placeholder value here
-                                                    min: new Date().toISOString().split('T')[0],
-                                                }}
-                                                required
-                                            />
+                                            </FormControl>
+
+                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                                <TextField
+                                                    id="timepicker"
+                                                    variant="outlined"
+                                                    value={estimatedTime}
+                                                    onChange={handleTimeChange}
+                                                    type="time" // Use type "time" for date picker
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params} variant="standard" />}
+
+                                                    required
+                                                />
+
+                                            </FormControl>
 
 
-                                        </FormControl>
+                                            <FormControl sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                                <InputLabel id="demo-select-small-label">
+                                                    Select Priority
+                                                </InputLabel>
+                                                <Select
+                                                    labelId="selectPriorityLabel"
+                                                    id="selectPriority"
+                                                    value={priority}
+                                                    label="Select Priority"
+                                                    onChange={handleChangePriority}
+                                                    required
+                                                >
 
-                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                            <TextField
-                                                id="timepicker"
-                                                variant="outlined"
-                                                value={estimatedTime}
-                                                onChange={handleTimeChange}
-                                                type="time" // Use type "time" for date picker
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                renderInput={(params) => <TextField {...params} variant="standard" />}
+                                                    <MenuItem value="High">High</MenuItem>
+                                                    <MenuItem value="Medium">Medium</MenuItem>
+                                                    <MenuItem value="Low">Low</MenuItem>
+                                                </Select>
+                                            </FormControl>
 
-                                                required
-                                            />
-
-                                        </FormControl>
-                                       
-
-                                        <FormControl sx={{ width: '100%', marginBottom: '2%' }} size="small">
+                                            {/* <FormControl sx={{ width: '100%', marginBottom: '2%' }} size="small">
                                             <InputLabel id="demo-select-small-label">
-                                                Select Priority
+                                                Change Status
                                             </InputLabel>
                                             <Select
-                                                labelId="selectPriorityLabel"
-                                                id="selectPriority"
-                                                value={priority}
-                                                label="Select Priority"
-                                                onChange={handleChangePriority}
+                                                labelId="changeStatusLabel"
+                                                id="changeStatus"
+                                                value={status}
+                                                label="Change Status"
+                                                onChange={handleChangeStatus}
                                                 required
                                             >
 
-                                                <MenuItem value="High">High</MenuItem>
-                                                <MenuItem value="Medium">Medium</MenuItem>
-                                                <MenuItem value="Low">Low</MenuItem>
+                                                <MenuItem value="Engineer Assigned">Engineer Assigned</MenuItem>
+                                                <MenuItem value="Work In Progress">Work In Progress</MenuItem>
+                                                <MenuItem value="Completed">Completed</MenuItem>
+
                                             </Select>
-                                        </FormControl>
+                                        </FormControl> */}
 
-                                        <Button
-                                            variant="contained"
-                                            type='submit'
-                                            sx={{
-                                                backgroundColor: '#00764D',
-                                                width: '100%',
-                                                height: '10%',
-                                                margin: '5% auto', // Horizontally centers the button
-                                                borderRadius: '10px',
-                                                color: 'white',
-                                            }}
-                                            
-                                        >
-                                            {task.engineerId !== null ? (
-                                                task.ticketStatus === 'Closed' ? 'Re-Assign' : 'Update'
-                                            ) : (
-                                                'Assign'
-                                            )}
-                                        </Button>
+                                            <Button
+                                                variant="contained"
+                                                type='submit'
+                                                sx={{
+                                                    backgroundColor: '#00764D',
+                                                    width: '100%',
+                                                    height: '10%',
+                                                    margin: '5% auto', // Horizontally centers the button
+                                                    borderRadius: '10px',
+                                                    color: 'white',
+                                                }}
 
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                backgroundColor: 'red',
-                                                width: '100%',
-                                                height: '10%',
-                                                margin: '5% auto', // Horizontally centers the button
-                                                borderRadius: '10px',
-                                                color: 'white',
-                                            }}
-                                            onClick={btnRejectTask}
-                                        >
-                                            {task.engineerId !== null ? (
-                                                'Close'
-                                            ) : (
-                                                'Reject'
-                                            )}
-                                        </Button>
+                                            >
+                                                {task.engineerId !== null ? (
+                                                    task.statusofcustomer !== null ? 'Re-Assign' : 'Update'
+                                                ) : (
+                                                    'Assign'
+                                                )}
+                                            </Button>
+
+                                            {task.engineerId === null || task.complaintStatus === "Completed" ? (
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        backgroundColor: 'red',
+                                                        width: '100%',
+                                                        height: '10%',
+                                                        margin: '5% auto',
+                                                        borderRadius: '10px',
+                                                        color: 'white',
+                                                    }}
+                                                    onClick={btnRejectTask}
+                                                >
+                                                    {task.engineerId !== null ? 'Close' : 'Reject'}
+                                                </Button>
+                                            ) : null}
+
                                         </form>
                                     </CardContent>
 
@@ -1041,20 +1128,19 @@ export default function Taskdetail() {
                                 </Card>
 
                             </Paper>
-                          
-
 
                         </Grid>
 
+                        
                         <Grid item xs={12} style={{ marginTop: '0%' }}>
                             {/* <Item> */}
                                 {/* <Card > */}
-                                <Typography variant="subtitle1" style={{ marginRight:'90%' }}>
-                                                Activity
-                                            </Typography>
+                                <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
+                                    Activity
+                                </Typography>
 
 
-                                <Paper sx={{ width: '100%', overflow: 'hidden',marginTop:'1%' }}>
+                                <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
                                     <TableContainer sx={{ height: "65vh" }}>
                                         <Table stickyHeader aria-label="sticky table">
                                             <TableHead>
@@ -1075,36 +1161,43 @@ export default function Taskdetail() {
                                                 {rows
                                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                                     .map((row) => (
-                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                                {columns.map((column) => {
-                                                                    const value = row[column.id];
+                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                            {columns.map((column) => {
+                                                                const value = row[column.id];
 
-                                                                   
-
-
-                                                                    if (column.id === 'activityDatetime') {
-                                                                        return (
-                                                                            <TableCell key={column.id} align={column.align}>
-                                                                                {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
-                                                                                {formatDate(task.createdDateTime)}
-                                                                            </TableCell>
-
-                                                                        );
-
-
-                                                                    }
-
-
+                                                                if (column.id === 'srno') {
+                                                                    sr += 1;
                                                                     return (
                                                                         <TableCell key={column.id} align={column.align}>
-                                                                            {value}
+                                                                            {value === null ? '' : String(sr)}
+                                                                        </TableCell>
+                                                                    );
+                                                                }
+
+
+                                                                if (column.id === 'activityDatetime') {
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
+                                                                            {formatDate(value)}  {formatTime(value)}
                                                                         </TableCell>
 
                                                                     );
-                                                                })}
-                                                            </TableRow>
 
-                                                        ))}
+
+                                                                }
+
+
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        {value}
+                                                                    </TableCell>
+
+                                                                );
+                                                            })}
+                                                        </TableRow>
+
+                                                    ))}
                                             </TableBody>
 
 
@@ -1128,6 +1221,13 @@ export default function Taskdetail() {
 
                             {/* </Item> */}
                         </Grid>
+
+
+
+                                {/* </Card> */}
+
+
+                            {/* </Item> */}
 
 
 

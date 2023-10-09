@@ -12,7 +12,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, Tooltip } from '@mui/material';
+import { Button, Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, Tooltip, Input } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -172,7 +172,7 @@ export default function Usermanagement() {
 
     const [password, setPassword] = useState('');
     // const [confirmpassword, setConfirmpassword] = useState('');
-
+    const [excelFile, setExcelFile] = useState(null);
     const [formData, setFormData] = useState({});
     const [isFormOpen, setIsFormOpen] = useState(true);
     const [id, setId] = useState('');
@@ -193,7 +193,7 @@ export default function Usermanagement() {
     const [isSwitchOn, setIsSwitchOn] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [designation, setDesignation] = useState('');
-
+    const [openUserImport, setOpenUserImport] = useState(false);
 
 
 
@@ -245,6 +245,8 @@ export default function Usermanagement() {
 
     const [open, setOpen] = React.useState(false);
     const [openUser, setUserOpen] = React.useState(false);
+    const [openUserImportfile, setOpenUserImportfile] = React.useState(false);
+    const [openUserimport, setUserOpenimport] = React.useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -253,12 +255,33 @@ export default function Usermanagement() {
     const handleClose = () => {
         setOpen(false);
     };
+    const handleCloseimportexcle = () => {
+        setOpenUserImport(false);
+    };
     const handleClickOpenUserPopup = () => {
         setUserOpen(true);
+        setUserOpenimport(true);
+
     }
+
+    const handleClickOpenUserPopupimportexcle = () => {
+
+        setUserOpenimport(true);
+
+    }
+    const handleClickCloseimportexcle = () => {
+        setUserOpenimport(false);
+
+    }
+
+
     const handleClickClose1 = () => {
         setUserOpen(false);
         resetpassword();
+    }
+    const handleClickCloseimport = () => {
+        setOpenUserImportfile(false);
+
     }
     const handleClickOpen1 = () => {
         setUserOpen(false);
@@ -405,11 +428,11 @@ export default function Usermanagement() {
         // setAddselectedrole(event.target.value);
         fetchUserData(event.target.value);
         console.log(event.target.value);
-        
+
 
     };
     const handleChangeaddrole = (event) => {
-        
+
         setAddselectedrole(event.target.value);
         // fetchUserData(event.target.value);
         console.log(event.target.value);
@@ -559,6 +582,43 @@ export default function Usermanagement() {
 
 
 
+
+    const handleExcelFileSubmit = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+
+        const formData = new FormData();
+        formData.append("excelSheet", excelFile[0]);
+        try {
+            const response = await fetch(`${baseUrl}/api/user/import/`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                },
+
+                body: formData,
+            }).finally(() => {
+                setLoading(false);
+            });
+
+            if (response.ok) {
+                console.log('Users added successfully');
+                setOpenUserImport(false);
+                toast.success('Users added successfully'); // Display success toast
+            } else {
+                console.error('Failed to add users');
+                toast.error('Failed to add users'); // Display error toast
+            }
+        } catch (error) {
+            console.error('Error while adding users:', error);
+            toast.error('Error while adding users'); // Display error toast
+        }
+    }
+
+
+
+
     const fetchUserData = (roleId) => {
         const token = localStorage.getItem('token');
 
@@ -683,6 +743,23 @@ export default function Usermanagement() {
 
 
 
+    const handleDownloadExcel = () => {
+
+
+
+
+
+    }
+
+    const handleCloseImportExcel = () => {
+        setOpenUserImport(false);
+    };
+
+
+
+
+
+
     const label = { inputProps: { 'aria-label': 'Size switch demo' } };
 
 
@@ -696,7 +773,7 @@ export default function Usermanagement() {
 
     const resetpassword = (e) => {
 
-    
+
         setPassword('');
         setName('');
         setContact('');
@@ -707,7 +784,7 @@ export default function Usermanagement() {
         setState('');
         setAddselectedrole('');
         // setConfirmpassword('');
-    
+
     }
 
 
@@ -728,7 +805,7 @@ export default function Usermanagement() {
         <div>
             <Grid container spacing={0} >
                 <Box sx={{ flexGrow: 6 }}>
-                    <AppBar style={{ backgroundColor: '#007F6D',borderRadius:'5px' }} position="static">
+                    <AppBar style={{ backgroundColor: '#007F6D', borderRadius: '5px' }} position="static">
                         <Toolbar variant="dense">
                             <Typography
                                 variant="h6"
@@ -786,6 +863,83 @@ export default function Usermanagement() {
                                     <Iconify icon="eva:plus-fill" />
                                 </Button>
                             </div>
+
+                            <Tooltip title="Excel Import">
+                                <Button
+                                    variant="contained"
+                                    onClick={() => setOpenUserImport(true)}
+                                    color="primary"
+                                    style={{ cursor: 'pointer', fontSize: 14, marginLeft: '3%', textAlign: 'center' }}
+                                >
+                                    Import
+                                </Button>
+                            </Tooltip>
+
+                            <Dialog
+                                open={openUserImport}
+                                onClose={handleCloseimportexcle}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                                style={{ height: 'auto', maxWidth: '100%' }} // Adjusted height and maxWidth for responsiveness
+                            >
+                                <DialogTitle id="alert-dialog-title">
+                                    {"Import user form excel file"}
+                                </DialogTitle>
+                                <DialogContent>
+                                    <form onSubmit={handleExcelFileSubmit}>
+                                        <Container maxWidth="md">
+                                            <InputLabel id="products-images">Import Users(.xlsx)</InputLabel>
+                                            <Input
+                                                type="file"
+                                                onChange={(e) => setExcelFile(Array.from(e.target.files))}
+                                                id="products-images"
+                                                inputProps={{ accept: ['.xlsx'] }}
+                                                required
+                                            />
+                                        </Container><br />
+                                        <div style={{ textAlign: 'center' }}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                type='submit'
+                                                style={{ marginTop: '20px', alignItems: 'center' }}
+                                            >
+                                                Upload Excel File
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </DialogContent>
+                                <div style={{ textAlign: 'right', margin: '20px' }}>
+                                    <Button
+                                        onClick={() => setOpenUserImport(false)}
+                                        style={{ color: 'red' }}
+                                    >
+                                        Close
+                                    </Button>
+                                </div>
+
+                            </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                             <Tooltip title="Excel Export">
                                 <Button
@@ -1030,17 +1184,17 @@ export default function Usermanagement() {
 
 
                                                         <div>
-                                                        {roleId === 3 ? (
-                                                            <TextField
-                                                                label="Skill"
-                                                                value={designation}
-                                                                onChange={(e) => setDesignation(e.target.value)}
-                                                                fullWidth
-                                                                required
-                                                                sx={{ m: 1, width: '250px' }}
-                                                                inputProps={{ maxLength: 20 }}
-                                                            />
-                                                        ) : null}
+                                                            {roleId === 3 ? (
+                                                                <TextField
+                                                                    label="Skill"
+                                                                    value={designation}
+                                                                    onChange={(e) => setDesignation(e.target.value)}
+                                                                    fullWidth
+                                                                    required
+                                                                    sx={{ m: 1, width: '250px' }}
+                                                                    inputProps={{ maxLength: 20 }}
+                                                                />
+                                                            ) : null}
                                                         </div>
 
 
