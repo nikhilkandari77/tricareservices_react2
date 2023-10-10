@@ -47,7 +47,7 @@ const columns = [
   { id: 'imageList', label: ' Image', minWidth: 50 },
   { id: 'id', label: 'Product Id', minWidth: 100 },
   { id: 'name', label: 'Name', minWidth: 100 },
-  { id: 'categoryId', label: ' Category', minWidth: 100 },
+  { id: 'category', label: ' Category', minWidth: 100 },
 
   {
     id: 'button',

@@ -7,7 +7,7 @@ import { LoadingButton } from '@mui/lab';
 import FormControl from '@mui/material/FormControl';
 import { toast } from 'react-toastify';
 // components
-import Iconify from '../../../components/iconify';
+import CircularProgress from '@mui/material/CircularProgress';
 import baseUrl from '../../../utils/baseUrl';
 // import {  messaging } from '../../../firebase';
 
@@ -23,13 +23,15 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
 
+  const [loading, setLoading] = useState(false);
+
   const [message, setMessage] = useState('');
   // const [username, setUsername] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
   const [authenticated, setauthenticated] = useState(localStorage.getItem(localStorage.getItem("authenticated") || false));
   // const users = [{ email: "bkc@gmail.com", password: "testpassword" }];
-
+  const [btnLoading, setBtnLoading] = useState(false);
 
 
   // const validateEmail = (email) => {
@@ -105,6 +107,7 @@ export default function LoginForm() {
 
     const username = email;
     try {
+      setBtnLoading(true);
       const response = await fetch(`${baseUrl}/api/login/`, {
         method: 'POST',
         headers: {
@@ -132,10 +135,14 @@ export default function LoginForm() {
         const errorData = await response.json();
         if (response.status === 501) {
           toast.error("invalid username or password",{position:"top-center"}); // Show alert for invalid credentials
-        } 
+        } else{
+          toast.error("invalid username or password",{position:"top-center"}); // Show alert for invalid credentials
+        }
       }
     } catch (error) {
       toast.warn("Something went wrong",{position:"top-center"});
+    } finally {
+      setBtnLoading(false);
     }
   }
 
@@ -174,7 +181,7 @@ export default function LoginForm() {
         </Stack>
 
         <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleSubmit} >
-          Login
+          {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'LogIn'}
         </LoadingButton>
         </form>
       </>
