@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FileSaver from 'file-saver';
+// import moment from 'moment'; // Import moment or dayjs here
 
 import { useLocation, useParams, Navigate, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
@@ -252,8 +253,8 @@ export default function Customerdetail() {
 
     const handleProductDetails = (row) => {
         setProductCustomerData(row);
-        setProductsImages(row.productImageName.split(','));
-        console.log('jbhbjb', row.productImageName.split(','));
+        // setProductsImages(row.productImageName.split(','));
+        // console.log('jbhbjb', row.productImageName.split(','));
         setOpenProductDetails(true);
     };
 
@@ -807,6 +808,7 @@ export default function Customerdetail() {
         formData.append("excelSheet", excelFile[0]);
         formData.append("customerId", user.id);
         try {
+            setBtnLoading(true); // Set loading to true when the submission starts
             const response = await fetch(`${baseUrl}/api/user/product-customer/import/`, {
                 method: 'POST',
                 headers: {
@@ -831,6 +833,8 @@ export default function Customerdetail() {
         } catch (error) {
             console.error('Error while adding products:', error);
             toast.error('Error while adding products'); // Display error toast
+        } finally{
+            setBtnLoading(false); // Set loading to true when the submission starts
         }
     }
 
@@ -1032,9 +1036,6 @@ export default function Customerdetail() {
                                             <div className="col-md-3">
 
 
-
-
-
                                                 <div className="profile-img">
                                                     <img
                                                         style={{ width: '8rem', height: '8rem', borderRadius: '100px' }}
@@ -1210,8 +1211,9 @@ export default function Customerdetail() {
                                                                     color="primary"
                                                                     type='submit'
                                                                     style={{ marginTop: '20px', alignItems: 'center' }}
+                                                                    disabled={btnLoading} // Disable the button when loading is true
                                                                 >
-                                                                    Upload Excel File
+                                                                    {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Upload Excel File'} 
                                                                 </Button>
                                                             </div>
                                                         </form>
@@ -1853,15 +1855,25 @@ export default function Customerdetail() {
                                                                                 </TableCell>
                                                                             );
                                                                         }
+                                                                        if (column.id === 'purchaseDate') {
+                                                                            return (
+                                                                                <TableCell key={column.id} align={column.align}>
+                                                                                    {value === null ? '' : new Date(value).toLocaleDateString('en-GB')}
+                                                                                </TableCell>
+                                                                            );
+                                                                        }
+
+                                                                        
+
 
                                                                         if (column.id === 'button') {
                                                                             const value2=productCustomerData.productImageList;
                                                                             return (
                                                                                 <TableCell key={column.id} align={column.align}>
-                                                                                    <Button onClick={() => handleProductDetails(row)}>
+                                                                                    <Button onClick={() => handleProductDetails(row)} title="Details" >
                                                                                         <DetailsIcon color="primary" />
                                                                                     </Button>
-                                                                                    <Button onClick={() => handleDeleteOption(row)} ><DeleteIcon color='error' /></Button>
+                                                                                    <Button onClick={() => handleDeleteOption(row)}  title="Delete"><DeleteIcon color='error' /></Button>
 
                                                                                     <Dialog
                                                                                         open={openProductDetails}
