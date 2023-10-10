@@ -61,16 +61,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 // import TableRow from '@mui/material/TableRow';
 
 
-// import { styled } from '@mui/material/styles';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import TablePagination from '@mui/material/TablePagination';
-// import TableRow from '@mui/material/TableRow';
-
-
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
@@ -165,7 +155,6 @@ export default function Taskdetail() {
             if (response.ok) {
                 toast.success("Complaint has been updated");
                 setIsLoading(true);
-                setIsLoading(true);
                 setTimeout(() => {
                     navigate("/dashboard/task");
                 }, 2000);
@@ -188,13 +177,11 @@ export default function Taskdetail() {
         const d = {
             id: `${taskId}`,
             complaintStatus: task.engineerId !== null ? 'Closed' : 'Rejected',
-            complaintStatus: task.engineerId !== null ? 'Closed' : 'Rejected',
             ticketStatus: "Closed"
         };
         postComplaintDetails(d);
         toast.success("Complaint has been closed sucessfully");
         setTimeout(() => {
-
 
             navigate("/dashboard/task");
 
@@ -213,13 +200,6 @@ export default function Taskdetail() {
 
         // const formattedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
         //     .toISOString().substring(0, 10);
-
-        // if (task.engineerId == null) {
-        //     console.log(task.engineerId);
-        //     setStatus("Engineer Assigned");
-        //     // status = "Engineer Assigned";
-        // }
-
 
         // if (task.engineerId == null) {
         //     console.log(task.engineerId);
@@ -258,9 +238,6 @@ export default function Taskdetail() {
         }
 
         console.log(JSON.stringify(d));
-
-        postComplaintDetails(d);
-
 
         postComplaintDetails(d);
 
@@ -315,17 +292,7 @@ export default function Taskdetail() {
     // const handleChangePage = (event, newPage) => {
     //     setPage(newPage);
     // };
-    // const handleChangePage = (event, newPage) => {
-    //     setPage(newPage);
-    // };
 
-    // const handleChangeRowsPerPage = (event) => {
-    //     setRowsPerPage(+event.target.value);
-    //     setPage(0);
-    // };
-
-    const handleChangeStatus = (event) => {
-        setStatus(event.target.value);
     // const handleChangeRowsPerPage = (event) => {
     //     setRowsPerPage(+event.target.value);
     //     setPage(0);
@@ -336,7 +303,6 @@ export default function Taskdetail() {
     };
 
     const getProduct = (productId) => {
-        console.log(productId);
         console.log(productId);
         fetch(`${baseUrl}/api/user/product-master/${productId}`, {
 
@@ -349,15 +315,12 @@ export default function Taskdetail() {
         }).then(response => response.json()).then(data => {
             setProductImages(data.data.imageName.toString().split(","));
             console.log("product", data.data.imageName);
-            console.log("product", data.data.imageName);
         }).catch(error => console.log(error));
-    };
     };
 
 
 
     useEffect(() => {
-        console.log("state is :", state);
         console.log("state is :", state);
 
         try {
@@ -394,8 +357,6 @@ export default function Taskdetail() {
                     setPriority(json.data.priority);
                     setStatus(json.data.complaintStatus);
                     setStatusofengineer(json.data.statusofengineer);
-                    setStatus(json.data.complaintStatus);
-                    setStatusofengineer(json.data.statusofengineer);
                     setEngineerId(json.data.engineerId);
                     setEngineer(json.data.engineerName);
 
@@ -430,13 +391,11 @@ export default function Taskdetail() {
                     }
 
                     console.log(formattedDate2);
-                    console.log(formattedDate2);
                     showCustomer(json.data.customerId, token);
 
                 });
         } catch (error) {
             console.error("Error:", error);
-            navigate("dashboard/task");
             navigate("dashboard/task");
         } finally {
             setIsTaskLoading(false);
@@ -506,14 +465,6 @@ export default function Taskdetail() {
                 Authorization: `Bearer ${token}`
             },
 
-        setIsLoading(false);
-        fetch(`${baseUrl}/api/user/task-activity/${taskId}`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-
         })
 
             .then(response => response.json())
@@ -542,12 +493,6 @@ export default function Taskdetail() {
         return formattedTime;
     }
 
-    function formatTime(dateTimeString) {
-        const dateTime = new Date(dateTimeString);
-        const formattedTime = format(dateTime, 'HH:mm');
-        return formattedTime;
-    }
-
     const statusColors = {
         'Completed': 'success', // Green color
         'Submitted': 'warning',  // Yellow color
@@ -557,7 +502,6 @@ export default function Taskdetail() {
     const handleOpenImage = (e) => {
         setImage(e.target.src);
         setOpenImage(true);
-    };
     };
     const toggleZoom = () => {
         setZoomedIn(!zoomedIn);
@@ -925,7 +869,6 @@ export default function Taskdetail() {
                                 )
                             } */}
 
-
                             <Paper style={{ height: '100%', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
 
                                 <Card style={{ width: '100%', height: '100%' }}>
@@ -941,40 +884,7 @@ export default function Taskdetail() {
                                                     {task.problemDescription}
                                                 </Typography> */}
                                                     {
-                                        {/* onSubmit={btnAssignTask} */}
-                                        <form onSubmit={btnAssignTask} >
-                                            <Card style={{ width: '100%', height: '100%', border: '2px solid red', borderRadius: '8px', marginBottom: '10%' }}>
-                                                <CardContent>
-                                                    <Typography variant="h6" style={{ textAlign: 'center', marginBottom: '2%' }}>
-                                                        {task.problem}<br />
-                                                    </Typography>
-                                                    {/* <Typography variant="body1" style={{ textAlign: 'center' }}>
-                                                    {task.problemDescription}
-                                                </Typography> */}
-                                                    {
 
-                                                        Object.keys(task).length !== 0 ? (
-                                                            <Typography variant="body1" style={{ textAlign: 'center' }}>
-                                                                {task.problemDescription}
-                                                            </Typography>
-                                                        ) : (
-                                                            <div
-                                                                style={{
-                                                                    display: "flex",
-                                                                    justifyContent: "center",
-                                                                    alignItems: "center",
-                                                                    height: "100%",
-                                                                    marginTop: '10%'
-                                                                }}
-                                                            >
-                                                                <ClipLoader
-                                                                    color={"#007F6D"}
-                                                                    loading
-                                                                    css={override}
-                                                                    size={10}
-                                                                />
-                                                            </div>
-                                                        )
                                                         Object.keys(task).length !== 0 ? (
                                                             <Typography variant="body1" style={{ textAlign: 'center' }}>
                                                                 {task.problemDescription}
@@ -1001,20 +911,7 @@ export default function Taskdetail() {
                                                     }
                                                 </CardContent>
                                             </Card>
-                                                    }
-                                                </CardContent>
-                                            </Card>
 
-                                            <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
-                                                <InputLabel id="labelServiceType">Service Type</InputLabel>
-                                                <Select
-                                                    labelId="labelServiceType"
-                                                    id="selectServiceType"
-                                                    value={serviceType}
-                                                    label="Service Type"
-                                                    onChange={handleChangeServiceType}
-                                                    required
-                                                >
                                             <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
                                                 <InputLabel id="labelServiceType">Service Type</InputLabel>
                                                 <Select
@@ -1030,21 +927,7 @@ export default function Taskdetail() {
                                                     <MenuItem value="Paid">Paid</MenuItem>
                                                 </Select>
                                             </FormControl>
-                                                    <MenuItem value="Free">Free</MenuItem>
-                                                    <MenuItem value="Paid">Paid</MenuItem>
-                                                </Select>
-                                            </FormControl>
 
-                                            <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
-                                                <InputLabel id="demo-select-small-label">Task Type</InputLabel>
-                                                <Select
-                                                    labelId="demo-select-small-label"
-                                                    id="demo-select-small"
-                                                    value={complaintType}
-                                                    label="Task Type"
-                                                    onChange={handleChangeComplaintType}
-                                                    required
-                                                >
                                             <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
                                                 <InputLabel id="demo-select-small-label">Task Type</InputLabel>
                                                 <Select
@@ -1060,23 +943,7 @@ export default function Taskdetail() {
                                                     <MenuItem value="On Site Visit">On Site Visit</MenuItem>
                                                 </Select>
                                             </FormControl>
-                                                    <MenuItem value="Remote Support">Remote Support</MenuItem>
-                                                    <MenuItem value="On Site Visit">On Site Visit</MenuItem>
-                                                </Select>
-                                            </FormControl>
 
-                                            <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
-                                                <InputLabel id="slectEngineerLabel">
-                                                    Select Engineer
-                                                </InputLabel>
-                                                <Select
-                                                    labelId="slectEngineerLabel"
-                                                    id="slectEngineer"
-                                                    value={engineerId}
-                                                    label="Select Engineer"
-                                                    onChange={handleChangeEngineer}
-                                                    required
-                                                >
                                             <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
                                                 <InputLabel id="slectEngineerLabel">
                                                     Select Engineer
@@ -1123,50 +990,7 @@ export default function Taskdetail() {
                                                 />
                                             </FormControl>
                                             <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                    {Object.keys(engineers).length === 0 ? null : (
-                                                        engineers.map(engineer0 => (
-                                                            <MenuItem key={engineer0.id} value={engineer0.id}>
-                                                                {engineer0.name}
-                                                            </MenuItem>
-                                                        ))
-                                                    )}
-                                                </Select>
-                                            </FormControl>
-                                            <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
-                                                <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                    Select Visit Date And Time
-                                                </Typography>
-                                            </InputLabel>
-                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                <TextField
-                                                    id="datepicker"
-                                                    variant="outlined"
-                                                    value={visitDate}
-                                                    onChange={(e) => setVisitDate(e.target.value)}
-                                                    type="date" // Use type "date" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    inputProps={{
-                                                        // Set placeholder value here
-                                                        // min: new Date().toISOString().split('T')[0],
-                                                    }}
-                                                    required
-                                                />
-                                            </FormControl>
-                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
 
-                                                <TextField
-                                                    id="timepicker"
-                                                    variant="outlined"
-                                                    value={visitTime}
-                                                    onChange={(e) => setVisitTime(e.target.value)}
-                                                    type="time" // Use type "time" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    required
-                                                />
                                                 <TextField
                                                     id="timepicker"
                                                     variant="outlined"
@@ -1203,11 +1027,6 @@ export default function Taskdetail() {
                                                     Select End Date And Time
                                                 </Typography>
                                             </InputLabel>
-                                            <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
-                                                <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                    Select End Date And Time
-                                                </Typography>
-                                            </InputLabel>
 
 
                                             <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
@@ -1226,38 +1045,10 @@ export default function Taskdetail() {
                                                     }}
                                                     required
                                                 />
-                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                <TextField
-                                                    id="datepicker"
-                                                    variant="outlined"
-                                                    value={estimatedDate}
-                                                    onChange={handleDateChange}
-                                                    type="date" // Use type "date" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    inputProps={{
-                                                        // Set placeholder value here
-                                                        min: new Date().toISOString().split('T')[0],
-                                                    }}
-                                                    required
-                                                />
 
 
                                             </FormControl>
-                                            </FormControl>
 
-                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                <TextField
-                                                    id="timepicker"
-                                                    variant="outlined"
-                                                    value={estimatedTime}
-                                                    onChange={handleTimeChange}
-                                                    type="time" // Use type "time" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    renderInput={(params) => <TextField {...params} variant="standard" />}
                                             <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
                                                 <TextField
                                                     id="timepicker"
@@ -1272,10 +1063,6 @@ export default function Taskdetail() {
 
                                                     required
                                                 />
-                                                    required
-                                                />
-
-                                            </FormControl>
 
                                             </FormControl>
 
@@ -1292,44 +1079,7 @@ export default function Taskdetail() {
                                                     onChange={handleChangePriority}
                                                     required
                                                 >
-                                            <FormControl sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                <InputLabel id="demo-select-small-label">
-                                                    Select Priority
-                                                </InputLabel>
-                                                <Select
-                                                    labelId="selectPriorityLabel"
-                                                    id="selectPriority"
-                                                    value={priority}
-                                                    label="Select Priority"
-                                                    onChange={handleChangePriority}
-                                                    required
-                                                >
 
-                                                    <MenuItem value="High">High</MenuItem>
-                                                    <MenuItem value="Medium">Medium</MenuItem>
-                                                    <MenuItem value="Low">Low</MenuItem>
-                                                </Select>
-                                            </FormControl>
-
-                                            {/* <FormControl sx={{ width: '100%', marginBottom: '2%' }} size="small">
-                                            <InputLabel id="demo-select-small-label">
-                                                Change Status
-                                            </InputLabel>
-                                            <Select
-                                                labelId="changeStatusLabel"
-                                                id="changeStatus"
-                                                value={status}
-                                                label="Change Status"
-                                                onChange={handleChangeStatus}
-                                                required
-                                            >
-
-                                                <MenuItem value="Engineer Assigned">Engineer Assigned</MenuItem>
-                                                <MenuItem value="Work In Progress">Work In Progress</MenuItem>
-                                                <MenuItem value="Completed">Completed</MenuItem>
-
-                                            </Select>
-                                        </FormControl> */}
                                                     <MenuItem value="High">High</MenuItem>
                                                     <MenuItem value="Medium">Medium</MenuItem>
                                                     <MenuItem value="Low">Low</MenuItem>
@@ -1375,42 +1125,6 @@ export default function Taskdetail() {
                                                     'Assign'
                                                 )}
                                             </Button>
-                                            <Button
-                                                variant="contained"
-                                                type='submit'
-                                                sx={{
-                                                    backgroundColor: '#00764D',
-                                                    width: '100%',
-                                                    height: '10%',
-                                                    margin: '5% auto', // Horizontally centers the button
-                                                    borderRadius: '10px',
-                                                    color: 'white',
-                                                }}
-
-                                            >
-                                                {task.engineerId !== null ? (
-                                                    task.statusofcustomer !== null ? 'Re-Assign' : 'Update'
-                                                ) : (
-                                                    'Assign'
-                                                )}
-                                            </Button>
-
-                                            {task.engineerId === null || task.complaintStatus === "Completed" ? (
-                                                <Button
-                                                    variant="contained"
-                                                    sx={{
-                                                        backgroundColor: 'red',
-                                                        width: '100%',
-                                                        height: '10%',
-                                                        margin: '5% auto',
-                                                        borderRadius: '10px',
-                                                        color: 'white',
-                                                    }}
-                                                    onClick={btnRejectTask}
-                                                >
-                                                    {task.engineerId !== null ? 'Close' : 'Reject'}
-                                                </Button>
-                                            ) : null}
 
                                             {task.engineerId === null || task.complaintStatus === "Completed" ? (
                                                 <Button
@@ -1438,7 +1152,6 @@ export default function Taskdetail() {
                                 </Card>
 
                             </Paper>
-
 
                         </Grid>
 
