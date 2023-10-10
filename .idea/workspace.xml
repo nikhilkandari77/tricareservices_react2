@@ -11,7 +11,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../Tricare Services Minimal" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -45,6 +45,7 @@
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;
   }
 }</component>
@@ -211,7 +212,55 @@
       <option name="project" value="LOCAL" />
       <updated>1695285723047</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695979279627</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1695979279627</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695979309772</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1695979309772</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695979339268</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1695979339268</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1695980335818</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1695980335818</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1696656717700</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1696656717700</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
+      <option name="closed" value="true" />
+      <created>1696656738778</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1696656738778</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

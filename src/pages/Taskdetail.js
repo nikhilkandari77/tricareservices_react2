@@ -31,6 +31,23 @@ import CardMedia from '@mui/material/CardMedia';
 import Box from '@mui/material/Box';
 // import Input from '@mui/joy/Input';
 
+// import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+import CircularProgress from '@material-ui/core/CircularProgress';
+// import { Card, Container, Stack, TextField, Typography, DialogContent, DialogContentText, Grid, } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+// import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogTitle from '@mui/material/DialogTitle';
+
+
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -45,6 +62,17 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 
 import baseUrl from '../utils/baseUrl';
+
+
+
+
+const columns = [
+    { id: 'srno', label: 'Sr.No', minWidth: 75, align: 'center' },
+    { id: 'remark', label: 'Remark', minWidth: 100, align: 'center' },
+    { id: 'username', label: 'Engineer', minWidth: 140, align: 'center' },
+    { id: 'activityDatetime', label: 'Time', minWidth: 100, align: 'center', },
+  
+];
 
 
 
@@ -73,6 +101,11 @@ const columns = [
 
 
 export default function Taskdetail() {
+    const [rows, setRows] = useState([]);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [zoomedIn, setZoomedIn] = useState(false);
+
     const location = useLocation();
     const taskId = location.state?.taskId;
     const { state } = useLocation();
@@ -81,7 +114,7 @@ export default function Taskdetail() {
     const [isLoading, setIsLoading] = useState(false);
     const [isCustomerLoading, setIsCustomerLoading] = useState(false);
     const [isTaskLoading, setIsTaskLoading] = useState(false);
-
+    const [loading,setLoading]=useState(false);
     const [serviceType, setServiceType] = React.useState("Free");
     const [complaintType, setComplaintType] = React.useState("Remote");
     const [engineer, setEngineer] = React.useState('');
@@ -213,13 +246,14 @@ export default function Taskdetail() {
 
     function formatDateTime(dateTimeString) {
         const dateTime = new Date(dateTimeString);
-
+       
         const formattedDate = format(dateTime, 'yyyy-MM-dd');
         const formattedTime = format(dateTime, 'HH:mm');
 
         return { formattedDate, formattedTime };
     }
     const [rows, setRows] = useState([]);
+
     const [openImage, setOpenImage] = useState(false);
     const [image, setImage] = useState(null);
     const [estimatedTime, setSelectedTime] = useState(null);
@@ -252,6 +286,16 @@ export default function Taskdetail() {
     const handleChangePriority = (event) => {
         setPriority(event.target.value);
     };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
     const handleChangeStatus = (event) => {
         setStatus(event.target.value);
     };
@@ -408,6 +452,36 @@ export default function Taskdetail() {
 
     };
 
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setLoading(true);
+        fetch(`${baseUrl}/api/user/task-activity/`, {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+    
+        })
+    
+          .then(response => response.json())
+          .then(json => {
+            console.log("Fetched data:", json); // This line will print the data to the console
+            // setUsers(json);
+            setRows(json.data);
+    
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }, []);
+    
+      if (loading) {
+        return <div>Loading...</div>;
+      }
+
+
     function formatDate(dateString) {
         const options = { day: 'numeric', month: 'short', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('en-US', options);
@@ -432,7 +506,6 @@ export default function Taskdetail() {
     const toggleZoom = () => {
         setZoomedIn(!zoomedIn);
     };
-    const [zoomedIn, setZoomedIn] = useState(false);
 
     // table API
 
@@ -488,7 +561,7 @@ export default function Taskdetail() {
 
                 <div>
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' }} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' ,borderRadius:"3px"}} position="static">
 
 
                             {Object.keys(task).length === 0 ? (
@@ -545,8 +618,15 @@ export default function Taskdetail() {
                             )
                             }
 
+
+
                         </AppBar>
+
+
+
+
                     </Box>
+
 
                     <Grid container spacing={0}>
 
@@ -577,6 +657,7 @@ export default function Taskdetail() {
                                         <Typography variant="h6" gutterBottom>
                                             Customer Profile
                                         </Typography>
+                                        <Card style={{ height: '97%', maxWidth: '100%', margin: 'auto' }}>
                                         <Card style={{ height: '97%', maxWidth: '100%', margin: 'auto' }}>
                                             <CardMedia
                                                 component="img"
@@ -794,7 +875,10 @@ export default function Taskdetail() {
                                     </Paper>
                                 )
                             }
+
+
                         </Grid>
+
 
 
                         <Grid item xs={12} md={3}>
@@ -1064,7 +1148,11 @@ export default function Taskdetail() {
                                         </form>
                                     </CardContent>
 
+
+
+
                                 </Card>
+
                             </Paper>
 
                         </Grid>
@@ -1162,7 +1250,87 @@ export default function Taskdetail() {
 
 
 
+
+                                <Paper sx={{ width: '100%', overflow: 'hidden',marginTop:'1%' }}>
+                                    <TableContainer sx={{ height: "65vh" }}>
+                                        <Table stickyHeader aria-label="sticky table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    {columns.map((column) => (
+                                                        <TableCell
+                                                            key={column.id}
+
+                                                            align={column.align}
+                                                            style={{ minWidth: column.minWidth }}
+                                                        >
+                                                            {column.label}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows
+                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                    .map((row) => (
+                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                                {columns.map((column) => {
+                                                                    const value = row[column.id];
+
+                                                                   
+
+
+                                                                    if (column.id === 'activityDatetime') {
+                                                                        return (
+                                                                            <TableCell key={column.id} align={column.align}>
+                                                                                {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
+                                                                                {formatDate(task.createdDateTime)}
+                                                                            </TableCell>
+
+                                                                        );
+
+
+                                                                    }
+
+
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value}
+                                                                        </TableCell>
+
+                                                                    );
+                                                                })}
+                                                            </TableRow>
+
+                                                        ))}
+                                            </TableBody>
+
+
+
+                                        </Table>
+                                    </TableContainer>
+                                    <TablePagination
+                                        rowsPerPageOptions={[10, 25, 100]}
+                                        component="div"
+                                        count={rows.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onPageChange={handleChangePage}
+                                        onRowsPerPageChange={handleChangeRowsPerPage}
+
+                                    />
+                                </Paper>
+
+                                {/* </Card> */}
+
+
+                            {/* </Item> */}
+                        </Grid>
+
+
+
+
                     </Grid>
+
 
                 </div>
 
@@ -1170,6 +1338,7 @@ export default function Taskdetail() {
 
 
         </div>
+
     );
 
 }

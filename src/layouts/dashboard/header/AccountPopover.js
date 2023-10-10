@@ -88,7 +88,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar style={{ marginTop: '-75%' }} src={account.photoURL} alt="photoURL" />
+        <Avatar  src={account.photoURL} alt="photoURL" />
       </IconButton>
 
       <Popover

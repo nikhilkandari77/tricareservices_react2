@@ -350,6 +350,8 @@ export default function TaskHistoryDetail() {
     let sr = 0;
 
 
+
+    
     return (
 
         <div>
@@ -375,7 +377,7 @@ export default function TaskHistoryDetail() {
 
                 <div>
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' }} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh',borderRadius:"3px" }} position="static">
 
 
                             {Object.keys(task).length === 0 ? (

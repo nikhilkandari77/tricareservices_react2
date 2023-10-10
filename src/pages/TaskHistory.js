@@ -258,7 +258,7 @@ export default function TaskHistory() {
     //       row : null;
 
     //   })
-    const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined
+    const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined&&row[column.id] !== null
             && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
             || (row.productCustomer.productName.toLowerCase().includes(search.toLowerCase()))
             ? row : null)
@@ -316,7 +316,8 @@ export default function TaskHistory() {
     //    let sr = 0;
 
 
-
+    if(loading)
+        return "Loading..."
 
 
 
@@ -325,7 +326,7 @@ export default function TaskHistory() {
         <div >
             <Grid >
                 <Box sx={{ flexGrow: 6 }}>
-                    <AppBar style={{ backgroundColor: '#007F6D' }} position="static">
+                    <AppBar style={{ backgroundColor: '#007F6D',borderRadius:"3px" }} position="static">
                         <Toolbar variant="dense">
                             <Typography
                                 variant="h6"
@@ -369,13 +370,13 @@ export default function TaskHistory() {
 
 
                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                                <div style={{ height: "70vh", width: '100%' }}>
-                                <DataGrid rows={rows} columns={columns} initialState={{
+                                <div style={{ height: "80vh", width: '100%' }}>
+                                <DataGrid rows={searchItem} columns={columns} initialState={{
                                         ...rows.initialState,
                                         pagination: { paginationModel: { pageSize: 10 } },
                                     }}
-                                        pageSizeOptions={[10, 25,50]}
-                                        rowsPerPageOptions={[10, 20, 30, 40]}
+                                        pageSizeOptions={[10, 25,100]}
+                                        rowsPerPageOptions={[10, 25,100]}
                                     />
                                 </div>
 
