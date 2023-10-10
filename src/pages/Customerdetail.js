@@ -10,9 +10,12 @@ import { toast } from 'react-toastify';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
+import DetailsIcon from '@mui/icons-material/Details';
+
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
+import DeleteIcon from '@mui/icons-material/Delete';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
@@ -82,7 +85,7 @@ const columnsCompt = [
     },
     {
         id: 'button',
-        label: 'Details',
+        label: 'Actions',
         minWidth: 140,
         align: 'center',
         // format: (value) => value.toFixed(2),
@@ -175,6 +178,7 @@ export default function Customerdetail() {
     const [warrantyPeriod, setWarrantyPeriod] = useState('');
     const [formData, setformData] = useState([]);
     const [excelFile, setExcelFile] = useState(null);
+    const [refresh, setRefresh] = useState(false);
 
     const [value, setValue] = React.useState('1');
     const [isEditable, setIsEditable] = useState(true);
@@ -474,7 +478,35 @@ export default function Customerdetail() {
         }
     };
 
+    const handleDeleteOption = async (row) => {
+        const isConfirmed = window.confirm("Are you sure you want to delete this assigned product?");
 
+        if (!isConfirmed) {
+            // User canceled the deletion
+            return;
+        }
+        try {
+            const response = await fetch(`${baseUrl}/api/user/product-customer/${row.id}`, {
+                method: 'DELETE',
+                headers: {
+                    Authorization: `Bearer ${token}`
+
+                }
+            });
+
+            if (response.ok) {
+                console.log('Product Deleted successfully');
+                toast.success('Product deleted successfully'); // Display success toast
+                setRefresh((prevRefresh) => !prevRefresh);
+            } else {
+                console.error('operation not allowed', response);
+                toast.error('Operation not allowed'); // Display error toast
+            }
+        } catch (error) {
+            console.error('Error while updating product:', error);
+            toast.error('Error while updating product'); // Display error toast
+        }
+    }
     useEffect(() => {
         // Check if all required fields are valid
         const isValid =
@@ -490,7 +522,7 @@ export default function Customerdetail() {
             contactError !== '';
 
         setIsFormValid(isValid);
-    }, [name, contact, email, areaPin, address, city, state, emailError, passwordError, contactError]);
+    }, [name, contact, email, areaPin, address, city, state, emailError, passwordError, contactError, refresh]);
 
     const validateEmail = (email) => {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -714,7 +746,7 @@ export default function Customerdetail() {
         handleChange5();
         handleChange6();
         getAllProductCategory();
-    }, []);
+    }, [refresh]);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -773,7 +805,7 @@ export default function Customerdetail() {
 
         const formData = new FormData();
         formData.append("excelSheet", excelFile[0]);
-        formData.append("customerId",user.id);
+        formData.append("customerId", user.id);
         try {
             const response = await fetch(`${baseUrl}/api/user/product-customer/import/`, {
                 method: 'POST',
@@ -783,10 +815,10 @@ export default function Customerdetail() {
 
                 body: formData,
             })
-            .catch((e)=>toast.error(e))
-            .finally(() => {
-                setLoading(false);
-            });
+                .catch((e) => toast.error(e))
+                .finally(() => {
+                    setLoading(false);
+                });
 
             if (response.ok) {
                 console.log('Product added successfully');
@@ -1829,12 +1861,14 @@ export default function Customerdetail() {
                                                                         }
 
                                                                         if (column.id === 'button') {
+                                                                            const value2=productCustomerData.productImageList;
                                                                             return (
                                                                                 <TableCell key={column.id} align={column.align}>
-                                                                                    <Button onClick={() => handleProductDetails(row)} variant="contained">
-                                                                                        {' '}
-                                                                                        Details{' '}
+                                                                                    <Button onClick={() => handleProductDetails(row)}>
+                                                                                        <DetailsIcon color="primary" />
                                                                                     </Button>
+                                                                                    <Button onClick={() => handleDeleteOption(row)} ><DeleteIcon color='error' /></Button>
+
                                                                                     <Dialog
                                                                                         open={openProductDetails}
                                                                                         onClose={handleClose}
@@ -1852,10 +1886,14 @@ export default function Customerdetail() {
                                                                                             <div className="row">
                                                                                                 <div className="col-md-4">
                                                                                                     <DialogContent textAlign="center">
-                                                                                                        <img
-                                                                                                            src={`${baseUrl}/resources/products/${productCustomerData.productId}/${productImages[0]}`}
-                                                                                                            alt="product"
-                                                                                                        />
+                                                                                                        <div style={{ display: "flex", margin: "auto", textAlign: "center", alignItems: "center" }}>
+                                                                                                            {productCustomerData.productImageList === undefined || productCustomerData.productImageList === null || productCustomerData.productImageList.length === 0 ? (
+                                                                                                                <img style={{ height: "10vh", margin: "auto" }} src="/products/logo.png" alt='product' />
+                                                                                                            ) : (
+                                                                                                                // <LazyLoad height={100} offset={100}>
+                                                                                                                <img  loading="lazy" src={`${baseUrl}${productCustomerData.productImageList[0]}`} alt='product' />
+                                                                                                            )}
+                                                                                                        </div>
                                                                                                         <div style={{ margin: 'auto', textAlign: 'center', padding: '10' }}>
                                                                                                             {/* <button
                                                                                                                 className="btn btn-primary"
@@ -2116,6 +2154,7 @@ export default function Customerdetail() {
                                                                                 {' '}
                                                                                 Details{' '}
                                                                             </Button>
+
                                                                             <Dialog
                                                                                 open={open}
                                                                                 onClose={handleClose}
