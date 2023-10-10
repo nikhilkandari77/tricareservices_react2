@@ -27,6 +27,7 @@ import {
     DialogContentText,
     Grid,
     EditableInputs,
+    Input,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Dialog from '@mui/material/Dialog';
@@ -169,10 +170,11 @@ export default function Customerdetail() {
     const [dispatchDate, setDispatchDate] = useState('');
     const [purchaseDate, setPurchaseDate] = useState('');
     const [manufacturingDate, setManufacturingDate] = useState('');
-
+    const [openUserImport, setOpenUserImport] = useState(false);
     const [installationDate, setInstallationDate] = useState('');
     const [warrantyPeriod, setWarrantyPeriod] = useState('');
     const [formData, setformData] = useState([]);
+    const [excelFile, setExcelFile] = useState(null);
 
     const [value, setValue] = React.useState('1');
     const [isEditable, setIsEditable] = useState(true);
@@ -765,7 +767,40 @@ export default function Customerdetail() {
     }
 
 
+    const handleExcelFileSubmit = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
 
+        const formData = new FormData();
+        formData.append("excelSheet", excelFile[0]);
+        formData.append("customerId",user.id);
+        try {
+            const response = await fetch(`${baseUrl}/api/user/product-customer/import/`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+
+                body: formData,
+            })
+            .catch((e)=>toast.error(e))
+            .finally(() => {
+                setLoading(false);
+            });
+
+            if (response.ok) {
+                console.log('Product added successfully');
+                setOpenUserImport(false);
+                toast.success('Product added successfully'); // Display success toast
+            } else {
+                console.error("invalid product data format");
+                toast.error("invalid product data format"); // Display error toast
+            }
+        } catch (error) {
+            console.error('Error while adding products:', error);
+            toast.error('Error while adding products'); // Display error toast
+        }
+    }
 
 
 
@@ -1104,6 +1139,62 @@ export default function Customerdetail() {
                                                 >
                                                     Add Product
                                                 </Button>
+                                                <br />
+                                                <br />
+                                                <div>
+
+                                                    <Button
+                                                        onClick={() => setOpenUserImport(true)}
+                                                        variant="contained"
+                                                        style={{ backgroundColor: 'white', color: 'black', width: '100%' }}
+                                                    >
+                                                        Import Products
+                                                    </Button>
+                                                </div>
+                                                <Dialog
+                                                    open={openUserImport}
+                                                    aria-labelledby="alert-dialog-title"
+                                                    aria-describedby="alert-dialog-description"
+                                                    style={{ height: 'auto', maxWidth: '100%' }} // Adjusted height and maxWidth for responsiveness
+                                                >
+                                                    <DialogTitle id="alert-dialog-title">
+                                                        {"Import user form excel file"}
+                                                    </DialogTitle>
+                                                    <DialogContent>
+                                                        <form onSubmit={handleExcelFileSubmit}>
+                                                            <Container maxWidth="md">
+                                                                <InputLabel id="products-images">Assign products (.xlsx)</InputLabel>
+                                                                <Input
+                                                                    type="file"
+                                                                    onChange={(e) => setExcelFile(Array.from(e.target.files))}
+                                                                    id="products-images"
+                                                                    inputProps={{ accept: ['.xlsx'] }}
+                                                                    required
+                                                                />
+                                                            </Container><br />
+                                                            <div style={{ textAlign: 'center' }}>
+                                                                <Button
+                                                                    variant="contained"
+                                                                    color="primary"
+                                                                    type='submit'
+                                                                    style={{ marginTop: '20px', alignItems: 'center' }}
+                                                                >
+                                                                    Upload Excel File
+                                                                </Button>
+                                                            </div>
+                                                        </form>
+                                                    </DialogContent>
+                                                    <div style={{ textAlign: 'right', margin: '20px' }}>
+                                                        <Button
+                                                            onClick={() => setOpenUserImport(false)}
+                                                            style={{ color: 'red' }}
+                                                        >
+                                                            Close
+                                                        </Button>
+                                                    </div>
+
+                                                </Dialog>
+
 
                                                 <Dialog
                                                     open={openProductUser}

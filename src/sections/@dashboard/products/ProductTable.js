@@ -47,7 +47,7 @@ const columns = [
   { id: 'imageList', label: ' Image', minWidth: 50 },
   { id: 'id', label: 'Product Id', minWidth: 100 },
   { id: 'name', label: 'Name', minWidth: 100 },
-  { id: 'category', label: ' Category', minWidth: 100 },
+  { id: 'categoryId', label: ' Category', minWidth: 100 },
 
   {
     id: 'button',
@@ -136,7 +136,7 @@ export default function StickyHeadTable() {
   const [categories, setCategories] = useState([]);
   const [deleteImages, setDeleteImages] = useState([]);
   const [imageList, setImageList] = useState([]);
-
+  const [excelFile,setExcelFile]=useState(null);
   const destroyData = () => {
     setName('');
     setCategory('')
@@ -145,7 +145,43 @@ export default function StickyHeadTable() {
     setId(null);
     setImageList([]);
     setDeleteImages([]);
+    setExcelFile(null);
   }
+
+  const handleSubmitExcel=async (e)=>{
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("excelSheet", excelFile[0]);
+    try {
+      const response = await fetch(`${baseUrl}/api/user/product-master/import/`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`
+
+        },
+
+        body: formData,
+      }).finally(() => {
+        setLoading(false);
+      });
+
+      if (response.ok) {
+        console.log('Product added successfully');
+        destroyData();
+        handleClickClose1();
+        handleUpdateClose();
+        toast.success('Product added successfully'); // Display success toast
+      } else {
+        console.error('Failed to add product');
+        toast.error('Failed to add product'); // Display error toast
+      }
+    } catch (error) {
+      console.error('Error while adding product:', error);
+      toast.error('Error while adding product'); // Display error toast
+    }
+  }
+
+
   const setRowData = (row) => {
     setId(row.id);
     setName(row.name);
@@ -164,7 +200,7 @@ export default function StickyHeadTable() {
   const token = localStorage.getItem('token');
 
 
-  const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined&&row[column.id] !== null
+  const searchItem = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined && row[column.id] !== null
     && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
     || (row.category.name.toLowerCase().includes(search.toLowerCase()))
     ? row : null)
@@ -264,7 +300,7 @@ export default function StickyHeadTable() {
   // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (images.length > 0) {
       if (images.length > 4) {
         toast.error("images must be upto 4");
@@ -317,7 +353,7 @@ export default function StickyHeadTable() {
       toast.error('Error while adding product'); // Display error toast
     }
     return "";
-  
+
   };
 
 
@@ -463,6 +499,8 @@ export default function StickyHeadTable() {
 
   );
 
+
+
   const CustomPrevArrow = (props) => (
     <button
       {...props}
@@ -502,7 +540,7 @@ export default function StickyHeadTable() {
 
 
         <Box sx={{ flexGrow: 6 }} item xs={12}>
-          <AppBar style={{ backgroundColor: '#007F6D',borderRadius:"3px" }} position="static">
+          <AppBar style={{ backgroundColor: '#007F6D', borderRadius: "3px" }} position="static">
             <Toolbar variant="dense">
               <Typography
                 variant="h6"
@@ -620,11 +658,12 @@ export default function StickyHeadTable() {
                                     id="products-images"
                                     inputProps={{ multiple: true, accept: ['.png'] }}
                                   />
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                          </Grid><br />
-                          <Button
+                                  
+                                </Grid >
+                              </Grid><br/>
+                              <Grid item xs={12}>
+
+                              <Button
                             variant="contained"
                             color="primary"
                             type='submit'
@@ -638,419 +677,452 @@ export default function StickyHeadTable() {
                           >
                             Close
                           </Button>
+                              </Grid>
+                              
+                            </Grid>
+                          </Grid><br />
+                        
                         </form>
-                      </Container>
-
-
-
-
-                    </DialogContentText>
-                  </DialogContent>
-
-                </Dialog>
-              </div>
-
-
-
-            </Toolbar>
-          </AppBar>
-        </Box>
-
-
-
-        <Grid item xs={12} >
-          <Item>
-            <Card>
-
-
-              <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: "70vh" }}>
-                  <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                      <TableRow>
-                        {columns.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                          >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {
-                        searchItem
-                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                          .map((row) => (
-                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                              {columns.map((column) => {
-                                let value = row[column.id];
-                                if (column.id === "category")
-                                  value = value.name;
-
-
-                                else if (column.id === "imageList") {
-
-
-
-                                  return (
-                                    <TableCell margin={0}>
-
-                                      {
-                                        (value === undefined || value === null || value.length === 0) ? (
-                                          <img style={{ height: "10vh" }} src="/products/logo.png" alt='product' />
-                                        ) : (
-                                          // <LazyLoad height={100} offset={100}>
-                                          <img style={{ height: "10vh" }} loading="lazy" src={`${baseUrl}${value[0]}`} alt='product' />
-                                        )
-                                      }
-
-                                    </TableCell>
-                                  )
-
-                                }
-                                else if (column.id === 'update') {
-
-                                  return (
-                                    <TableCell key={column.id} align={column.align}>
-
-                                      <Button color="error" onClick={() => handleUpdateOpen(row)} variant="contained">Update</Button>
-
-                                      <Dialog
-                                        open={updateForm}
-                                        onClose={handleUpdateClose}
-
-
-                                        fullWidth
-                                        maxWidth="md"
-
-                                        style={{
-                                          backgroundColor: 'transparent',
-                                          boxShadow: 'none',
-                                        }}
-                                      >
-                                        <DialogTitle id="alert-dialog-title" >
-                                          {"Update Product"}
-                                        </DialogTitle>
-                                        <DialogContent >
-
-                                          <DialogContentText>
-
-                                            <Container maxWidth="md">
-
-                                              <form encType="multipart/form-data">
-                                                <br />
-                                                <Grid container spacing={3}>
-                                                  {/* First Column */}
-
-                                                  <Grid item xs={12} sm={6}>
-                                                    <TextField
-                                                      label="Product Id"
-                                                      value={id}
-                                                      onChange={(e) => setId(e.target.value)}
-                                                      fullWidth
-                                                      required
-                                                      disabled
-                                                    // Added margin for spacing between fields
-                                                    />
-                                                    <TextField
-                                                      label="Product Name"
-                                                      value={name}
-                                                      onChange={(e) => setName(e.target.value)}
-                                                      fullWidth
-                                                      margin="normal"
-                                                      multiline
-                                                      inputProps={{ maxLength: 50 }}
-                                                      required
-                                                    />
-
-                                                    {/* Repeat for other fields in the first column */}
-                                                  </Grid>
-
-                                                  {/* Second Column */}
-                                                  <Grid item xs={12} sm={6}>
-
-                                                    <FormControl sx={{ minWidth: 170 }} size="medium" fullWidth>
-                                                      <InputLabel id="demo-select-small-label">Category</InputLabel>
-                                                      <Select
-                                                        labelId="demo-select-small-label"
-                                                        id="demo-select-small"
-                                                        value={category}
-                                                        label="Select Category"
-                                                        onChange={(e) => setCategory(e.target.value)}
-                                                        fullWidth
-                                                        
-
-                                                      >
-
-                                                        {categories.map(getCategory => (
-                                                          <MenuItem value={getCategory.id} key={getCategory.id}>
-                                                            {getCategory.name}
-                                                          </MenuItem>
-                                                        ))}
-                                                      </Select>
-                                                    </FormControl>
-                                                    {/* Repeat for other fields in the second column */}
-                                                    <Grid item xs={12}>
-
-                                                      <Grid marginTop={2}>
-                                                        <InputLabel id="products-images">Upload image</InputLabel>
-
-                                                        <Input
-                                                          type="file"
-                                                          onChange={(e) => setImages(Array.from(e.target.files))}
-                                                          id="products-images"
-                                                          inputProps={{ multiple: true, accept:['.png'] }}
-                                                        />
-                                                      </Grid>
-                                                    </Grid>
-                                                  </Grid>
-                                                  <Grid item md={12}>
-                                                    <TextField
-                                                      label="Description"
-                                                      value={description}
-                                                      onChange={(e) => setDescription(e.target.value)}
-                                                      fullWidth
-                                                      required
-                                                      multiline
-                                                      inputProps={{ maxLength: 150 }}
-                                                      margin="normal" // Added margin for spacing between fields
-                                                    /><br /><br />
-                                                    <div style={{ textAlign: "center" }}><h5>Select images for delete</h5></div>
-                                                  </Grid>
-                                                </Grid><br />
-
-
-                                                <br />
-                                                <Grid container spacing={3}>
-                                                  {
-                                                    imageList.map(img =>
-
-                                                      <Grid item xs={4} sm={4} margin={"normal"}>
-                                                        {/* <button value={img} className="btn btn-default" onClick={(e)=>{setDeleteImages([...deleteImages,e.target.alt])}}>
-                                                        <img src={`${baseUrl}/resources/products/${id}/${img}`}  alt={`${img}`} />
-                                                      </button> */}
-                                                        <Checkbox
-                                                          value={img}
-                                                          onClick={deleteImagesHandler}
-                                                          icon={<img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} />}
-                                                          checkedIcon={<div>selected<img src="/assets/icons/delete_icon.png" alt={`${img}`} /></div>} />
-
-                                                      </Grid>
-                                                    )
-                                                  }
-
-                                                </Grid>
-                                                <DialogActions>
-                                                  <Button
-
-                                                    variant="contained"
-                                                    color="primary"
-                                                    onClick={handleSubmit2}
-                                                  >
-                                                    Submit
-                                                  </Button>
-                                                  <Button
-                                                    onClick={handleUpdateClose}
-                                                    style={{ color: 'red', }}
-                                                  >
-                                                    Close
-                                                  </Button>
-                                                </DialogActions>
-
-
-
-                                              </form>
-                                            </Container>
-                                            {
-                                              console.log("image delete", deleteImages)
-                                            }
-
-
-
-                                          </DialogContentText>
-                                        </DialogContent>
-
-                                      </Dialog>
-                                    </TableCell>
-
-                                  );
-                                }
-
-
-                                else if (column.id === 'button') {
-                                  return (
-                                    <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={() => handleClickOpen(row)} variant="contained"> Details </Button>
-                                      <Dialog
-                                        open={open}
-                                        onClose={handleClose}
-                                        aria-labelledby="alert-dialog-title"
-                                        aria-describedby="alert-dialog-description"
-                                        data={data}
-                                        fullWidth
-                                        maxWidth="xl"
-                                      >
-                                        <DialogTitle id="alert-dialog-title" style={{ border: "2px solid black", borderRadius: "0 0 10px 10px" }}>
-                                          <h3>Product Details</h3>
-                                        </DialogTitle>
-                                        <DialogContent>
-                                          <DialogContentText>
-
-                                            <div className='Container'>
-
-
-                                              {/* {
-                                                  imageList.map(img =>
-                                                    <img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} />
-                                                  )
-                                                } */}
-                                              <div className='row'>
-                                                <div className='col-md-6'>
-                                                  <br />
-                                                  <Carousel
-
-                                                    renderArrowPrev={(onClickHandler, hasPrev, label) =>
-                                                      hasPrev && <CustomPrevArrow onClick={onClickHandler} />
-                                                    }
-                                                    renderArrowNext={(onClickHandler, hasNext, label) =>
-                                                      hasNext && <CustomNextArrow onClick={onClickHandler} />
-                                                    }
-
-
-
-
-                                                  >
-
-
-                                                    {
-                                                      imageList.map(img =>
-                                                        <div style={{ padding: "0 3vw 0 3vw", }}><img style={{ height: "100%", width: "100%" }} src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} /></div>
-                                                      )
-                                                    }
-                                                    {/* <p className="legend">Legend 3</p> */}
-
-
-
-                                                  </Carousel>
-                                                </div>
-
-
-                                                <div className='col-md-6'>
-                                                  <div><br />
-                                                    <table width={"80%"} style={{ margin: "auto", textAlign: "left", color: "black" }}>
-                                                      <tr>
-                                                        <th><b>Product Id :</b></th><td>{id}</td>
-                                                      </tr>
-                                                      <tr>
-                                                        <th><b>Product Name :</b></th><td>{name}</td>
-                                                      </tr>
-                                                      <tr>
-                                                        <th><b>Category Name : </b></th><td>{categories.filter(c => c.id === category).map(c => c.name)}</td>
-
-                                                      </tr>
-
-                                                    </table>
-                                                  </div>
-                                                  <Box
-                                                    sx={{
-                                                      display: 'flex',
-
-                                                      alignItems: 'center',
-                                                      justifyContent: 'center',
-                                                      minHeight: '40vh', // Set the minimum height to full viewport height
-                                                    }}
-
-                                                  >
-
-
-
-                                                    <div style={{ overflowWrap: 'break-word', width: "100%" }}>
-                                                      <h4 style={{ textAlign: "center", color: "black" }}>Description</h4>
-
-                                                      <br />
-                                                      <div style={{ border: "2px solid black", padding: "1vw", borderRadius: "10px" }}>
-                                                        <p >{description}</p>
-                                                      </div>
-                                                    </div>
-
-
-
-                                                  </Box>
-
-                                                </div>
-                                              </div>
-
-
-
-                                            </div>
-
-
-
-
-                                          </DialogContentText>
-                                        </DialogContent>
-                                        <DialogActions>
-                                          <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
-
-                                        </DialogActions>
-                                      </Dialog>
-                                    </TableCell>
-
-                                  );
-
-
-                                }
+                        <form onSubmit={handleSubmitExcel}>
+                        <Grid container spacing={3}>
+                        
+                          <Grid item xs={6}>
+                            <Grid >
+                              <InputLabel id="products-images">Import Products(.xlsx)</InputLabel>
+                              <Input
+                                type="file"
+                                onChange={(e) => setExcelFile(Array.from(e.target.files))}
+                                id="products-images"
+                                inputProps={{ accept: ['.xlsx'] }}
+                                required
+                              />
+                            </Grid>
+                          </Grid>
+
+                          <Grid item xs={6} style={{ position: "relative",display:"flex" ,alignItems: "flex-end", }}>
+                            <Button
+                              type='submit'
+                              variant="contained"
+                              style={{ color: 'white', background: "green" }}
+                            >
+                              Import
+                            </Button>
+                          </Grid>
+                         
+                        </Grid>
+                        </form>
+                    </Container>
+
+
+
+
+                  </DialogContentText>
+                </DialogContent>
+
+              </Dialog>
+            </div>
+
+
+
+          </Toolbar>
+        </AppBar>
+      </Box>
+
+
+
+      <Grid item xs={12} >
+        <Item>
+          <Card>
+
+
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+              <TableContainer sx={{ maxHeight: "70vh" }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {
+                      searchItem
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row) => (
+                          <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                            {columns.map((column) => {
+                              let value = row[column.id];
+                              if (column.id === "category")
+                                value = value.name;
+
+
+                              else if (column.id === "imageList") {
 
 
 
                                 return (
+                                  <TableCell margin={0}>
+
+                                    {
+                                      (value === undefined || value === null || value.length === 0) ? (
+                                        <img style={{ height: "10vh" }} src="/products/logo.png" alt='product' />
+                                      ) : (
+                                        // <LazyLoad height={100} offset={100}>
+                                        <img style={{ height: "10vh" }} loading="lazy" src={`${baseUrl}${value[0]}`} alt='product' />
+                                      )
+                                    }
+
+                                  </TableCell>
+                                )
+
+                              }
+                              else if (column.id === 'update') {
+
+                                return (
                                   <TableCell key={column.id} align={column.align}>
-                                    <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>{value}</div>
+
+                                    <Button color="error" onClick={() => handleUpdateOpen(row)} variant="contained">Update</Button>
+
+                                    <Dialog
+                                      open={updateForm}
+                                      onClose={handleUpdateClose}
+
+
+                                      fullWidth
+                                      maxWidth="md"
+
+                                      style={{
+                                        backgroundColor: 'transparent',
+                                        boxShadow: 'none',
+                                      }}
+                                    >
+                                      <DialogTitle id="alert-dialog-title" >
+                                        {"Update Product"}
+                                      </DialogTitle>
+                                      <DialogContent >
+
+                                        <DialogContentText>
+
+                                          <Container maxWidth="md">
+
+                                            <form encType="multipart/form-data">
+                                              <br />
+                                              <Grid container spacing={3}>
+                                                {/* First Column */}
+
+                                                <Grid item xs={12} sm={6}>
+                                                  <TextField
+                                                    label="Product Id"
+                                                    value={id}
+                                                    onChange={(e) => setId(e.target.value)}
+                                                    fullWidth
+                                                    required
+                                                    disabled
+                                                  // Added margin for spacing between fields
+                                                  />
+                                                  <TextField
+                                                    label="Product Name"
+                                                    value={name}
+                                                    onChange={(e) => setName(e.target.value)}
+                                                    fullWidth
+                                                    margin="normal"
+                                                    multiline
+                                                    inputProps={{ maxLength: 50 }}
+                                                    required
+                                                  />
+
+                                                  {/* Repeat for other fields in the first column */}
+                                                </Grid>
+
+                                                {/* Second Column */}
+                                                <Grid item xs={12} sm={6}>
+
+                                                  <FormControl sx={{ minWidth: 170 }} size="medium" fullWidth>
+                                                    <InputLabel id="demo-select-small-label">Category</InputLabel>
+                                                    <Select
+                                                      labelId="demo-select-small-label"
+                                                      id="demo-select-small"
+                                                      value={category}
+                                                      label="Select Category"
+                                                      onChange={(e) => setCategory(e.target.value)}
+                                                      fullWidth
+
+
+                                                    >
+
+                                                      {categories.map(getCategory => (
+                                                        <MenuItem value={getCategory.id} key={getCategory.id}>
+                                                          {getCategory.name}
+                                                        </MenuItem>
+                                                      ))}
+                                                    </Select>
+                                                  </FormControl>
+                                                  {/* Repeat for other fields in the second column */}
+                                                  <Grid item xs={12}>
+
+                                                    <Grid marginTop={2}>
+                                                      <InputLabel id="products-images">Upload image</InputLabel>
+
+                                                      <Input
+                                                        type="file"
+                                                        onChange={(e) => setImages(Array.from(e.target.files))}
+                                                        id="products-images"
+                                                        inputProps={{ multiple: true, accept: ['.png'] }}
+                                                      />
+                                                    </Grid>
+                                                  </Grid>
+                                                </Grid>
+                                                <Grid item md={12}>
+                                                  <TextField
+                                                    label="Description"
+                                                    value={description}
+                                                    onChange={(e) => setDescription(e.target.value)}
+                                                    fullWidth
+                                                    required
+                                                    multiline
+                                                    inputProps={{ maxLength: 150 }}
+                                                    margin="normal" // Added margin for spacing between fields
+                                                  /><br /><br />
+                                                  <div style={{ textAlign: "center" }}><h5>Select images for delete</h5></div>
+                                                </Grid>
+                                              </Grid><br />
+
+
+                                              <br />
+                                              <Grid container spacing={3}>
+                                                {
+                                                  imageList.map(img =>
+
+                                                    <Grid item xs={4} sm={4} margin={"normal"}>
+                                                      {/* <button value={img} className="btn btn-default" onClick={(e)=>{setDeleteImages([...deleteImages,e.target.alt])}}>
+                                                        <img src={`${baseUrl}/resources/products/${id}/${img}`}  alt={`${img}`} />
+                                                      </button> */}
+                                                      <Checkbox
+                                                        value={img}
+                                                        onClick={deleteImagesHandler}
+                                                        icon={<img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} />}
+                                                        checkedIcon={<div>selected<img src="/assets/icons/delete_icon.png" alt={`${img}`} /></div>} />
+
+                                                    </Grid>
+                                                  )
+                                                }
+
+                                              </Grid>
+                                              <DialogActions>
+                                                <Button
+
+                                                  variant="contained"
+                                                  color="primary"
+                                                  onClick={handleSubmit2}
+                                                >
+                                                  Submit
+                                                </Button>
+                                                <Button
+                                                  onClick={handleUpdateClose}
+                                                  style={{ color: 'red', }}
+                                                >
+                                                  Close
+                                                </Button>
+                                              </DialogActions>
+
+
+
+                                            </form>
+                                          </Container>
+                                          {
+                                            console.log("image delete", deleteImages)
+                                          }
+
+
+
+                                        </DialogContentText>
+                                      </DialogContent>
+
+                                    </Dialog>
                                   </TableCell>
 
                                 );
-                              })}
-                            </TableRow>
-
-                          ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-
-                <TablePagination
-                  rowsPerPageOptions={[ 10, 25, 100]}
-                  component="div"
-                  count={searchItem.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
+                              }
 
 
-                />
-              </Paper>
+                              else if (column.id === 'button') {
+                                return (
+                                  <TableCell key={column.id} align={column.align}>
+                                    <Button onClick={() => handleClickOpen(row)} variant="contained"> Details </Button>
+                                    <Dialog
+                                      open={open}
+                                      onClose={handleClose}
+                                      aria-labelledby="alert-dialog-title"
+                                      aria-describedby="alert-dialog-description"
+                                      data={data}
+                                      fullWidth
+                                      maxWidth="xl"
+                                    >
+                                      <DialogTitle id="alert-dialog-title" style={{ border: "2px solid black", borderRadius: "0 0 10px 10px" }}>
+                                        <h3>Product Details</h3>
+                                      </DialogTitle>
+                                      <DialogContent>
+                                        <DialogContentText>
 
-            </Card>
+                                          <div className='Container'>
 
 
-          </Item>
-        </Grid>
+                                            {/* {
+                                                  imageList.map(img =>
+                                                    <img src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} />
+                                                  )
+                                                } */}
+                                            <div className='row'>
+                                              <div className='col-md-6'>
+                                                <br />
+                                                <Carousel
+
+                                                  renderArrowPrev={(onClickHandler, hasPrev, label) =>
+                                                    hasPrev && <CustomPrevArrow onClick={onClickHandler} />
+                                                  }
+                                                  renderArrowNext={(onClickHandler, hasNext, label) =>
+                                                    hasNext && <CustomNextArrow onClick={onClickHandler} />
+                                                  }
 
 
 
 
+                                                >
+
+
+                                                  {
+                                                    imageList.map(img =>
+                                                      <div style={{ padding: "0 3vw 0 3vw", }}><img style={{ height: "100%", width: "100%" }} src={`${baseUrl}/resources/products/${id}/${img}`} alt={`${img}`} /></div>
+                                                    )
+                                                  }
+                                                  {/* <p className="legend">Legend 3</p> */}
+
+
+
+                                                </Carousel>
+                                              </div>
+
+
+                                              <div className='col-md-6'>
+                                                <div><br />
+                                                  <table width={"80%"} style={{ margin: "auto", textAlign: "left", color: "black" }}>
+                                                    <tr>
+                                                      <th><b>Product Id :</b></th><td>{id}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <th><b>Product Name :</b></th><td>{name}</td>
+                                                    </tr>
+                                                    <tr>
+                                                      <th><b>Category Name : </b></th><td>{categories.filter(c => c.id === category).map(c => c.name)}</td>
+
+                                                    </tr>
+
+                                                  </table>
+                                                </div>
+                                                <Box
+                                                  sx={{
+                                                    display: 'flex',
+
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    minHeight: '40vh', // Set the minimum height to full viewport height
+                                                  }}
+
+                                                >
+
+
+
+                                                  <div style={{ overflowWrap: 'break-word', width: "100%" }}>
+                                                    <h4 style={{ textAlign: "center", color: "black" }}>Description</h4>
+
+                                                    <br />
+                                                    <div style={{ border: "2px solid black", padding: "1vw", borderRadius: "10px" }}>
+                                                      <p >{description}</p>
+                                                    </div>
+                                                  </div>
+
+
+
+                                                </Box>
+
+                                              </div>
+                                            </div>
+
+
+
+                                          </div>
 
 
 
 
+                                        </DialogContentText>
+                                      </DialogContent>
+                                      <DialogActions>
+                                        <Button onClick={handleClose} style={{ color: 'red' }} >Close</Button>
+
+                                      </DialogActions>
+                                    </Dialog>
+                                  </TableCell>
+
+                                );
+
+
+                              }
 
 
 
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>{value}</div>
+                                </TableCell>
 
+                              );
+                            })}
+                          </TableRow>
+
+                        ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={searchItem.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+
+
+              />
+            </Paper>
+
+          </Card>
+
+
+        </Item>
       </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+    </Grid>
 
     </div >
   );
