@@ -18,6 +18,9 @@ import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
+import dayjs, { Dayjs } from 'dayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 import { format } from 'date-fns'; // make sure to have date-fns installed
 import { css } from "@emotion/react";
 import { ClipLoader } from "react-spinners";
@@ -48,34 +51,21 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 
 
-import { styled } from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+// import { styled } from '@mui/material/styles';
+// import Table from '@mui/material/Table';
+// import TableBody from '@mui/material/TableBody';
+// import TableCell from '@mui/material/TableCell';
+// import TableContainer from '@mui/material/TableContainer';
+// import TableHead from '@mui/material/TableHead';
+// import TablePagination from '@mui/material/TablePagination';
+// import TableRow from '@mui/material/TableRow';
 
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
+import { DesktopDateTimePicker, MobileDateTimePicker, StaticDateTimePicker } from '@mui/x-date-pickers';
 import baseUrl from '../utils/baseUrl';
-
-
-
-
-const columns = [
-    { id: 'srno', label: 'Sr.No', minWidth: 75, align: 'center' },
-    { id: 'remark', label: 'Remark', minWidth: 100, align: 'center' },
-    { id: 'username', label: 'Engineer', minWidth: 140, align: 'center' },
-    { id: 'activityDatetime', label: 'Time', minWidth: 100, align: 'center', },
-  
-];
-
-
-
 
 
 const override = css`
@@ -89,7 +79,7 @@ const columns = [
 
     { id: 'srno', label: 'Sr.No', minWidth: 10, align: 'center' },
     { id: 'remark', label: 'Activity', minWidth: 50, align: 'center' },
-    { id: 'username', label: 'User', minWidth: 100, align: 'center' },
+    { id: 'username', label: 'By', minWidth: 100, align: 'center' },
     { id: 'message', label: 'Message', minWidth: 140, align: 'center' },
     { id: 'activityDatetime', label: 'TimeStamp', minWidth: 100, align: 'center' },
 
@@ -101,9 +91,11 @@ const columns = [
 
 
 export default function Taskdetail() {
-    const [rows, setRows] = useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    // const [rows, setRows] = useState([]);
+    // const [page, setPage] = React.useState(0);
+    // const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [value, setValue] = React.useState(dayjs('2022-04-17T15:30'));
+
     const [zoomedIn, setZoomedIn] = useState(false);
 
     const location = useLocation();
@@ -114,7 +106,7 @@ export default function Taskdetail() {
     const [isLoading, setIsLoading] = useState(false);
     const [isCustomerLoading, setIsCustomerLoading] = useState(false);
     const [isTaskLoading, setIsTaskLoading] = useState(false);
-    const [loading,setLoading]=useState(false);
+    const [loading, setLoading] = useState(false);
     const [serviceType, setServiceType] = React.useState("Free");
     const [complaintType, setComplaintType] = React.useState("Remote");
     const [engineer, setEngineer] = React.useState('');
@@ -143,7 +135,7 @@ export default function Taskdetail() {
         setPage(0);
     };
 
-    
+
     const postComplaintDetails = async (data) => {
 
         setIsLoading(true);
@@ -188,7 +180,7 @@ export default function Taskdetail() {
             ticketStatus: "Closed"
         };
         postComplaintDetails(d);
-        toast.warn("Complaint has been closed sucessfully");
+        toast.success("Complaint has been closed sucessfully");
         setTimeout(() => {
 
             navigate("/dashboard/task");
@@ -225,18 +217,28 @@ export default function Taskdetail() {
             priority: `${priority}`,
             visitDatetime: `${`${visitDate} ${visitTime}:00`}`,
             complaintStatus: task.engineerId === null
-            ? "Engineer Assigned"
-            : task.engineerId !== engineerId
-            ? "Engineer Reassigned"
-            : status,
+                ? "Engineer Assigned"
+                : task.engineerId !== engineerId
+                    ? "Engineer Reassigned"
+                    : status,
             statusofengineer: task.engineerId === null
-            ? "Pending"
-            : task.engineerId !== engineerId
-            ? "Pending"
-            : statusofengineer,
+                ? "Pending"
+                : task.engineerId !== engineerId
+                    ? "Pending"
+                    : statusofengineer,
         };
 
+        if (task.statusofcustomer !== null) {
+
+            // d.complaintStatus = "Submitted";
+            // d.statusofengineer = "Pending";
+            // d.statusofcustomer = null;
+            d.ticketStatus = "reassign";
+
+        }
+
         console.log(JSON.stringify(d));
+
         postComplaintDetails(d);
 
 
@@ -246,7 +248,7 @@ export default function Taskdetail() {
 
     function formatDateTime(dateTimeString) {
         const dateTime = new Date(dateTimeString);
-       
+
         const formattedDate = format(dateTime, 'yyyy-MM-dd');
         const formattedTime = format(dateTime, 'HH:mm');
 
@@ -287,14 +289,14 @@ export default function Taskdetail() {
         setPriority(event.target.value);
     };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    // const handleChangePage = (event, newPage) => {
+    //     setPage(newPage);
+    // };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
+    // const handleChangeRowsPerPage = (event) => {
+    //     setRowsPerPage(+event.target.value);
+    //     setPage(0);
+    // };
 
     const handleChangeStatus = (event) => {
         setStatus(event.target.value);
@@ -367,7 +369,7 @@ export default function Taskdetail() {
                         setSelectedTime("");
 
                     } else {
-                        
+
                         setSelectedDate(formattedDate);
                         setSelectedTime(formattedTime);
 
@@ -455,31 +457,29 @@ export default function Taskdetail() {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        setLoading(true);
-        fetch(`${baseUrl}/api/user/task-activity/`, {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-    
+        setIsLoading(false);
+        fetch(`${baseUrl}/api/user/task-activity/${taskId}`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+
         })
-    
-          .then(response => response.json())
-          .then(json => {
-            console.log("Fetched data:", json); // This line will print the data to the console
-            // setUsers(json);
-            setRows(json.data);
-    
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }, []);
-    
-      if (loading) {
-        return <div>Loading...</div>;
-      }
+
+            .then(response => response.json())
+            .then(json => {
+                console.log("Fetched data:", json); // This line will print the data to the console
+                // setUsers(json);
+                setRows(json.data);
+
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [taskId]);
+
+
 
 
     function formatDate(dateString) {
@@ -509,32 +509,14 @@ export default function Taskdetail() {
 
     // table API
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        setIsLoading(false);
-        fetch(`${baseUrl}/api/user/task-activity/${taskId}`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
 
-        })
-
-            .then(response => response.json())
-            .then(json => {
-                console.log("Fetched data:", json); // This line will print the data to the console
-                // setUsers(json);
-                setRows(json.data);
-
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }, [taskId]);
 
 
     let sr = 0;
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
 
@@ -561,7 +543,7 @@ export default function Taskdetail() {
 
                 <div>
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' ,borderRadius:"3px"}} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh', borderRadius: "3px" }} position="static">
 
 
                             {Object.keys(task).length === 0 ? (
@@ -657,7 +639,6 @@ export default function Taskdetail() {
                                         <Typography variant="h6" gutterBottom>
                                             Customer Profile
                                         </Typography>
-                                        <Card style={{ height: '97%', maxWidth: '100%', margin: 'auto' }}>
                                         <Card style={{ height: '97%', maxWidth: '100%', margin: 'auto' }}>
                                             <CardMedia
                                                 component="img"
@@ -1024,6 +1005,23 @@ export default function Taskdetail() {
 
                                             </FormControl>
 
+                                            {/* <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+
+
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DemoContainer
+                                                        components={[
+                                                            'DateTimePicker',
+                                                        ]}
+                                                    >
+                                                        <DemoItem label="Select Visit Date Time">
+                                                            <DateTimePicker defaultValue={dayjs('2022-04-17T15:30')} />
+                                                        </DemoItem>
+                                                    </DemoContainer>
+                                                </LocalizationProvider>
+
+                                            </FormControl> */}
+
                                             <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
                                                 <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
                                                     Select End Date And Time
@@ -1122,7 +1120,7 @@ export default function Taskdetail() {
 
                                             >
                                                 {task.engineerId !== null ? (
-                                                    task.ticketStatus === 'Closed' ? 'Re-Assign' : 'Update'
+                                                    task.statusofcustomer !== null ? 'Re-Assign' : 'Update'
                                                 ) : (
                                                     'Assign'
                                                 )}
@@ -1157,174 +1155,103 @@ export default function Taskdetail() {
 
                         </Grid>
 
-                        
+
                         <Grid item xs={12} style={{ marginTop: '0%' }}>
                             {/* <Item> */}
-                                {/* <Card > */}
-                                <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
-                                    Activity
-                                </Typography>
+                            {/* <Card > */}
+                            <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
+                                Activity
+                            </Typography>
 
 
-                                <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
-                                    <TableContainer sx={{ height: "65vh" }}>
-                                        <Table stickyHeader aria-label="sticky table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    {columns.map((column) => (
-                                                        <TableCell
-                                                            key={column.id}
+                            <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
+                                <TableContainer sx={{ height: "65vh" }}>
+                                    <Table stickyHeader aria-label="sticky table">
+                                        <TableHead>
+                                            <TableRow>
+                                                {columns.map((column) => (
+                                                    <TableCell
+                                                        key={column.id}
 
-                                                            align={column.align}
-                                                            style={{ minWidth: column.minWidth }}
-                                                        >
-                                                            {column.label}
-                                                        </TableCell>
-                                                    ))}
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {rows
-                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                    .map((row) => (
-                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                            {columns.map((column) => {
-                                                                const value = row[column.id];
+                                                        align={column.align}
+                                                        style={{ minWidth: column.minWidth }}
+                                                    >
+                                                        {column.label}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {rows
+                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                .map((row) => (
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                        {columns.map((column) => {
+                                                            const value = row[column.id];
 
-                                                                if (column.id === 'srno') {
-                                                                    sr += 1;
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value === null ? '' : String(sr)}
-                                                                        </TableCell>
-                                                                    );
-                                                                }
-
-
-                                                                if (column.id === 'activityDatetime') {
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
-                                                                            {formatDate(value)}  {formatTime(value)}
-                                                                        </TableCell>
-
-                                                                    );
-
-
-                                                                }
-
-
+                                                            if (column.id === 'srno') {
+                                                                sr += 1;
                                                                 return (
                                                                     <TableCell key={column.id} align={column.align}>
-                                                                        {value}
+                                                                        {value === null ? '' : String(sr)}
+                                                                    </TableCell>
+                                                                );
+                                                            }
+
+
+                                                            if (column.id === 'activityDatetime') {
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
+                                                                        {formatDate(value)}  {formatTime(value)}
                                                                     </TableCell>
 
                                                                 );
-                                                            })}
-                                                        </TableRow>
-
-                                                    ))}
-                                            </TableBody>
 
 
-
-                                        </Table>
-                                    </TableContainer>
-                                    <TablePagination
-                                        rowsPerPageOptions={[10, 25, 100]}
-                                        component="div"
-                                        count={rows.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        onPageChange={handleChangePage}
-                                        onRowsPerPageChange={handleChangeRowsPerPage}
-
-                                    />
-                                </Paper>
-
-                                {/* </Card> */}
+                                                            }
 
 
-                            {/* </Item> */}
-                        </Grid>
+                                                            return (
+                                                                <TableCell key={column.id} align={column.align}>
+                                                                    {value}
+                                                                </TableCell>
+
+                                                            );
+                                                        })}
+                                                    </TableRow>
+
+                                                ))}
+                                        </TableBody>
 
 
 
+                                    </Table>
+                                </TableContainer>
+                                <TablePagination
+                                    rowsPerPageOptions={[10, 25, 100]}
+                                    component="div"
+                                    count={rows.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
 
-                                <Paper sx={{ width: '100%', overflow: 'hidden',marginTop:'1%' }}>
-                                    <TableContainer sx={{ height: "65vh" }}>
-                                        <Table stickyHeader aria-label="sticky table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    {columns.map((column) => (
-                                                        <TableCell
-                                                            key={column.id}
+                                />
+                            </Paper>
 
-                                                            align={column.align}
-                                                            style={{ minWidth: column.minWidth }}
-                                                        >
-                                                            {column.label}
-                                                        </TableCell>
-                                                    ))}
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {rows
-                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                    .map((row) => (
-                                                            <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                                {columns.map((column) => {
-                                                                    const value = row[column.id];
-
-                                                                   
-
-
-                                                                    if (column.id === 'activityDatetime') {
-                                                                        return (
-                                                                            <TableCell key={column.id} align={column.align}>
-                                                                                {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
-                                                                                {formatDate(task.createdDateTime)}
-                                                                            </TableCell>
-
-                                                                        );
-
-
-                                                                    }
-
-
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value}
-                                                                        </TableCell>
-
-                                                                    );
-                                                                })}
-                                                            </TableRow>
-
-                                                        ))}
-                                            </TableBody>
-
-
-
-                                        </Table>
-                                    </TableContainer>
-                                    <TablePagination
-                                        rowsPerPageOptions={[10, 25, 100]}
-                                        component="div"
-                                        count={rows.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        onPageChange={handleChangePage}
-                                        onRowsPerPageChange={handleChangeRowsPerPage}
-
-                                    />
-                                </Paper>
-
-                                {/* </Card> */}
+                            {/* </Card> */}
 
 
                             {/* </Item> */}
                         </Grid>
+
+
+
+                        {/* </Card> */}
+
+
+                        {/* </Item> */}
 
 
 

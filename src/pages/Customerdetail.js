@@ -1214,12 +1214,6 @@ export default function Customerdetail() {
                                                                                 />
                                                                             </FormControl>
 
-
-
-
-
-
-
                                                                         </div>
                                                                     </Grid>
                                                                     <Grid item xs={12} md={6}>
