@@ -171,6 +171,7 @@ export default function StickyHeadTable() {
         handleClickClose1();
         handleUpdateClose();
         toast.success('Product added successfully'); // Display success toast
+        setRefresh((prevRefresh) => !prevRefresh);
       } else {
         console.error('Failed to add product');
         toast.error('Failed to add product'); // Display error toast
