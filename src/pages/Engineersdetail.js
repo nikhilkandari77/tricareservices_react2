@@ -707,7 +707,7 @@ export default function Customerdetail() {
 
         console.log(id)
 
-        navigate("/dashboard/task-history-details", { state: { taskId: id } });
+        navigate("/admin/task-history/details", { state: { taskId: id } });
 
 
     }
@@ -716,7 +716,7 @@ export default function Customerdetail() {
 
         console.log(id)
 
-        navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
+        navigate("/admin/task/details", { state: { taskId: id } });
 
     }
 

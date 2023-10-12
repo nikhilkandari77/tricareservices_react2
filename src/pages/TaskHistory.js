@@ -271,7 +271,7 @@ export default function TaskHistory() {
 
     const routeChange1 = (id) => {
         // console.log(id)
-        navigate("/Dashboard/task-history-details", { state: { taskId: id } });
+        navigate("/admin/task-history/details", { state: { taskId: id } });
     };
 
     useEffect(() => {

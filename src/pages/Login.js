@@ -62,7 +62,7 @@ const Login = () => {
         setauthenticated(true)
         localStorage.setItem("authenticated", true);
         alert("successfully.....");
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
 
             // history.push('/dashboard')
 

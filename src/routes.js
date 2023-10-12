@@ -26,23 +26,23 @@ import TaskHistoryDetail from './pages/TaskHistoryDetail';
 export default function Router() {
   return useRoutes([
     {
-      path: '/dashboard',
+      path: 'admin',
       element: <DashboardLayout  />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
-        { path: 'app', element: <DashboardAppPage /> },
+        // { element: <Navigate to="/dashboard/app" />, index: true },
+        { path: 'dashboard', element: <DashboardAppPage /> },
         { path: 'customers', element: <UserPage /> },
         {path: 'task', element: <Task /> },
         {path:'task-history',element:<TaskHistory/>},
-        {path: 'taskdetail', element: <Taskdetail/>},
-        {path:'task-history-details', element:<TaskHistoryDetail/>},
-        { path: 'customerdetail', element: <Customerdetail /> },
+        {path: 'task/details', element: <Taskdetail/>},
+        {path:'task-history/details', element:<TaskHistoryDetail/>},
+        { path: 'customers/details', element: <Customerdetail /> },
         {path: 'engineers', element: <Engineers />},
-        {path:'engineersdetail', element: <Engineersdetail/>},
+        {path:'engineers/details', element: <Engineersdetail/>},
         {path:'login', element: <Login/>},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
-        {path: 'admin', element: <Admin/> },
+        {path: 'usermanagement/details', element: <Admin/> },
         {path: 'usermanagement', element: <Usermanagement/>},
       ],
     },
@@ -53,7 +53,7 @@ export default function Router() {
     {
       element: <SimpleLayout />,
       children: [
-        { element: <Navigate to="/dashboard/app" />, index: true },
+        { element: <Navigate to="/admin/dashboard" />, index: true },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

@@ -252,7 +252,6 @@ export default function Customerdetail() {
 
     const handleProductDetails = (row) => {
         setProductCustomerData(row);
-        setProductsImages(row.productImageName.split(','));
         console.log('jbhbjb', row.productImageName.split(','));
         setOpenProductDetails(true);
     };
@@ -402,7 +401,7 @@ export default function Customerdetail() {
     };
 
     const routeChange1 = (id) => {
-        navigate('/Dashboard/Taskdetail', { state: { taskId: id } });
+        navigate('/admin/task/details', { state: { taskId: id } });
     };
 
     const handleDateChange = (event) => {
@@ -771,7 +770,7 @@ export default function Customerdetail() {
     const routeChange2 = (id) => {
         console.log(id);
 
-        navigate('/Dashboard/Taskdetail', { state: { taskId: id } });
+        navigate('/admin/task/details', { state: { taskId: id } });
     };
 
     const handlePasswordChange10 = (e) => {

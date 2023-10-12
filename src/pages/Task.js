@@ -280,7 +280,7 @@ export default function Task() {
 
     const routeChange1 = (id) => {
         // console.log(id)
-        navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
+        navigate("/admin/task/details", { state: { taskId: id } });
     };
 
     useEffect(() => {

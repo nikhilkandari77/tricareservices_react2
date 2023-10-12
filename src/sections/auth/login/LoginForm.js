@@ -126,7 +126,7 @@ export default function LoginForm() {
         //   console.log("sending token",messageToken)
         //   sendToken(messageToken,data);
         // }
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       } else {
         // Handle error responses
         const errorData = await response.json();
