@@ -5,18 +5,15 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { toast } from 'react-toastify';
-import 'react-datepicker/dist/react-datepicker.css';
 import AppBar from '@mui/material/AppBar';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 import { Carousel } from 'react-material-ui-carousel';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 
 import Dialog from '@mui/material/Dialog';
 import Toolbar from '@mui/material/Toolbar';
-import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+
+import dayjs, { Dayjs } from 'dayjs';
 
 import { format } from 'date-fns'; // make sure to have date-fns installed
 import { css } from "@emotion/react";
@@ -47,6 +44,12 @@ import SearchIcon from '@mui/icons-material/Search';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
+
 
 // import { styled } from '@mui/material/styles';
 // import Table from '@mui/material/Table';
@@ -61,8 +64,10 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
+import { DesktopDateTimePicker, MobileDateTimePicker, StaticDateTimePicker } from '@mui/x-date-pickers';
 import baseUrl from '../utils/baseUrl';
-
+// Parse the input date string
+// const moment = require('moment');
 
 const override = css`
   display: block;
@@ -75,7 +80,7 @@ const columns = [
 
     { id: 'srno', label: 'Sr.No', minWidth: 10, align: 'center' },
     { id: 'remark', label: 'Activity', minWidth: 50, align: 'center' },
-    { id: 'username', label: 'User', minWidth: 100, align: 'center' },
+    { id: 'username', label: 'By', minWidth: 100, align: 'center' },
     { id: 'message', label: 'Message', minWidth: 140, align: 'center' },
     { id: 'activityDatetime', label: 'TimeStamp', minWidth: 100, align: 'center' },
 
@@ -87,9 +92,12 @@ const columns = [
 
 
 export default function Taskdetail() {
+
+    const [value, setValue] = React.useState(dayjs('2022-04-17T15:30'));
     // const [rows, setRows] = useState([]);
     // const [page, setPage] = React.useState(0);
     // const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
     const [zoomedIn, setZoomedIn] = useState(false);
 
     const location = useLocation();
@@ -100,7 +108,7 @@ export default function Taskdetail() {
     const [isLoading, setIsLoading] = useState(false);
     const [isCustomerLoading, setIsCustomerLoading] = useState(false);
     const [isTaskLoading, setIsTaskLoading] = useState(false);
-    const [loading,setLoading]=useState(false);
+    const [loading, setLoading] = useState(false);
     const [serviceType, setServiceType] = React.useState("Free");
     const [complaintType, setComplaintType] = React.useState("Remote");
     const [engineer, setEngineer] = React.useState('');
@@ -129,7 +137,7 @@ export default function Taskdetail() {
         setPage(0);
     };
 
-    
+
     const postComplaintDetails = async (data) => {
 
         setIsLoading(true);
@@ -174,7 +182,7 @@ export default function Taskdetail() {
             ticketStatus: "Closed"
         };
         postComplaintDetails(d);
-        toast.warn("Complaint has been closed sucessfully");
+        toast.success("Complaint has been closed sucessfully");
         setTimeout(() => {
 
             navigate("/dashboard/task");
@@ -201,33 +209,52 @@ export default function Taskdetail() {
         //     // status = "Engineer Assigned";
         // }
 
+        
+
+// Your code for date conversion using moment goes here
+
+        // Parse the input date string
+        const parsedVisitDate = dayjs(visitDate, { format: "ddd, DD MMM YYYY HH:mm:ss [GMT]", utc: true });
+
+        // Format the date in the desired format "YYYY-MM-DD HH:mm:ss"
+        const formattedVisitDate = parsedVisitDate.format("YYYY-MM-DD HH:mm:ss");
+
+
+        // Parse the input date string
+        const parsedEstimatedDate = dayjs(estimatedDate, { format: "ddd, DD MMM YYYY HH:mm:ss [GMT]", utc: true });
+
+        // Format the date in the desired format "YYYY-MM-DD HH:mm:ss"
+        const formattedEstimatedDate = parsedEstimatedDate.format("YYYY-MM-DD HH:mm:ss");
+
+
         const d = {
 
             id: `${taskId}`,
             engineerId: `${engineerId}`,
-            estimatedDateTime: `${`${estimatedDate} ${estimatedTime}:00`}`,
+            estimatedDateTime: `${formattedEstimatedDate}`,
             complaintType: `${complaintType}`,
             serviceType: `${serviceType}`,
             priority: `${priority}`,
-            visitDatetime: `${`${visitDate} ${visitTime}:00`}`,
+            visitDatetime: `${formattedVisitDate}`,
             complaintStatus: task.engineerId === null
-            ? "Engineer Assigned"
-            : task.engineerId !== engineerId
-            ? "Engineer Reassigned"
-            : status,
+                ? "Engineer Assigned"
+                : task.engineerId !== engineerId
+                    ? "Engineer Reassigned"
+                    : status,
             statusofengineer: task.engineerId === null
-            ? "Pending"
-            : task.engineerId !== engineerId
-            ? "Pending"
-            : statusofengineer,
+                ? "Pending"
+                : task.engineerId !== engineerId
+                    ? "Pending"
+                    : statusofengineer,
         };
 
-        if(task.statusofcustomer !== null){
+        if (task.statusofcustomer !== null) {
 
-            d.complaintStatus = "Submitted";
-            d.statusofengineer = "Pending";
-            d.statusofcustomer = null;
+            // d.complaintStatus = "Submitted";
+            // d.statusofengineer = "Pending";
+            // d.statusofcustomer = null;
             d.ticketStatus = "reassign";
+
         }
 
         console.log(JSON.stringify(d));
@@ -241,7 +268,7 @@ export default function Taskdetail() {
 
     function formatDateTime(dateTimeString) {
         const dateTime = new Date(dateTimeString);
-       
+
         const formattedDate = format(dateTime, 'yyyy-MM-dd');
         const formattedTime = format(dateTime, 'HH:mm');
 
@@ -252,15 +279,15 @@ export default function Taskdetail() {
     const [openImage, setOpenImage] = useState(false);
     const [image, setImage] = useState(null);
     const [estimatedTime, setSelectedTime] = useState(null);
-    const [estimatedDate, setSelectedDate] = useState(null);
+    const [estimatedDate, setEstimatedDate] = React.useState(dayjs('2022-01-01T00:01'));
     const [visitTime, setVisitTime] = useState(new Date());
-    const [visitDate, setVisitDate] = useState(null);
+    const [visitDate, setVisitDate] = React.useState(dayjs('2022-01-01T00:01'));
     const [product, Images] = useState('');
     const handleTimeChange = (event) => {
         setSelectedTime(event.target.value);
     };
     const handleDateChange = (event) => {
-        setSelectedDate(event.target.value);
+        setEstimatedDate(event.target.value);
     };
 
     const handleChangeServiceType = (event) => {
@@ -353,37 +380,43 @@ export default function Taskdetail() {
                     setEngineerId(json.data.engineerId);
                     setEngineer(json.data.engineerName);
 
-                    const { formattedDate, formattedTime } = formatDateTime(json.data.estimatedDateTime);
-                    // console.log(`Estimated End Date ${  formattedDate}`);
-                    // console.log(`Estimated End Time ${  formattedTime}`);
-                    if (json.data.estimatedDateTime === null) {
+                    // const { formattedDate, formattedTime } = formatDateTime(json.data.estimatedDateTime);
+                    // // console.log(`Estimated End Date ${  formattedDate}`);
+                    // // console.log(`Estimated End Time ${  formattedTime}`);
+                    // if (json.data.estimatedDateTime === null) {
 
-                        setSelectedDate("");
-                        setSelectedTime("");
+                    //     setSelectedDate("");
+                    //     setSelectedTime("");
 
-                    } else {
-                        
-                        setSelectedDate(formattedDate);
-                        setSelectedTime(formattedTime);
+                    // } else {
 
-                    }
-                    const visitDatetime = new Date(json.data.visitDatetime);
+                    //     setSelectedDate(formattedDate);
+                    //     setSelectedTime(formattedTime);
 
-                    const formattedDate2 = format(visitDatetime, 'yyyy-MM-dd');
-                    const formattedTime2 = format(visitDatetime, 'HH:mm');
-                    // console.log(`Estimated End Date ${  formattedDate}`);
-                    // console.log(`Estimated End Time ${  formattedTime}`);
-                    if (json.data.visitDatetime === null) {
+                    // }
+                    // // const visitDatetime = new Date(json.data.visitDatetime);
+                    setVisitDate(dayjs(json.data.visitDatetime));
+                    setEstimatedDate(dayjs(json.data.estimatedDateTime));
 
-                        setVisitTime("");
-                        setVisitDate("");
+                    // const formattedDate2 = format(visitDatetime, 'yyyy-MM-dd');
+                    // const formattedTime2 = format(visitDatetime, 'HH:mm');
+                    // // console.log(`Estimated End Date ${  formattedDate}`);
+                    // // console.log(`Estimated End Time ${  formattedTime}`);
+                    // if (json.data.visitDatetime === null) {
 
-                    } else {
-                        setVisitDate(formattedDate2);
-                        setVisitTime(formattedTime2);
-                    }
+                    //     setVisitTime("");
+                    //     setVisitDate("");
 
-                    console.log(formattedDate2);
+                    // } else {
+                    //     setVisitDate(formattedDate2);
+                    //     // setVisitTime(formattedTime2);
+
+                    //     // setVisitDate(visitDatetime);
+                    //     setVisitTime(visitDatetime);
+
+                    // }
+
+                    // console.log(formattedDate2);
                     showCustomer(json.data.customerId, token);
 
                 });
@@ -471,8 +504,8 @@ export default function Taskdetail() {
                 setIsLoading(false);
             });
     }, [taskId]);
-    
-      
+
+
 
 
     function formatDate(dateString) {
@@ -502,14 +535,14 @@ export default function Taskdetail() {
 
     // table API
 
-    
+
 
 
     let sr = 0;
 
     if (loading) {
         return <div>Loading...</div>;
-      }
+    }
 
     return (
 
@@ -536,7 +569,7 @@ export default function Taskdetail() {
 
                 <div>
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh' ,borderRadius:"3px"}} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh', borderRadius: "3px" }} position="static">
 
 
                             {Object.keys(task).length === 0 ? (
@@ -960,85 +993,48 @@ export default function Taskdetail() {
                                                     )}
                                                 </Select>
                                             </FormControl>
-                                            <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
-                                                <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                    Select Visit Date And Time
-                                                </Typography>
-                                            </InputLabel>
-                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                <TextField
-                                                    id="datepicker"
-                                                    variant="outlined"
-                                                    value={visitDate}
-                                                    onChange={(e) => setVisitDate(e.target.value)}
-                                                    type="date" // Use type "date" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    inputProps={{
-                                                        // Set placeholder value here
-                                                        // min: new Date().toISOString().split('T')[0],
-                                                    }}
-                                                    required
-                                                />
-                                            </FormControl>
+
                                             <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
 
-                                                <TextField
-                                                    id="timepicker"
-                                                    variant="outlined"
-                                                    value={visitTime}
-                                                    onChange={(e) => setVisitTime(e.target.value)}
-                                                    type="time" // Use type "time" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    required
-                                                />
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DemoContainer
+                                                        components={[
+                                                            'DateTimePicker',
+                                                        ]}
+                                                    >
+                                                        <DemoItem label="Select Visit Date Time">
+                                                            <DateTimePicker
+
+                                                                value={visitDate}
+                                                                onChange={(newDate) => setVisitDate(newDate)}
+                                                                format="DD/MM/YYYY hh:mm A"
+                                                                
+                                                            />
+                                                        </DemoItem>
+                                                    </DemoContainer>
+                                                </LocalizationProvider>
 
                                             </FormControl>
 
-                                            <InputLabel id="estimated-time-label" sx={{ width: '100%', marginBottom: '2%' }}>
-                                                <Typography variant="subtitle1" style={{ fontSize: '15px' }}>
-                                                    Select End Date And Time
-                                                </Typography>
-                                            </InputLabel>
-
-
+                                        
                                             <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                <TextField
-                                                    id="datepicker"
-                                                    variant="outlined"
-                                                    value={estimatedDate}
-                                                    onChange={handleDateChange}
-                                                    type="date" // Use type "date" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    inputProps={{
-                                                        // Set placeholder value here
-                                                        min: new Date().toISOString().split('T')[0],
-                                                    }}
-                                                    required
-                                                />
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DemoContainer
+                                                        components={[
+                                                            'DateTimePicker',
+                                                        ]}
+                                                    >
+                                                        <DemoItem label="Select Estimated End Date Time">
+                                                            <DateTimePicker
 
-
-                                            </FormControl>
-
-                                            <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                                <TextField
-                                                    id="timepicker"
-                                                    variant="outlined"
-                                                    value={estimatedTime}
-                                                    onChange={handleTimeChange}
-                                                    type="time" // Use type "time" for date picker
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    renderInput={(params) => <TextField {...params} variant="standard" />}
-
-                                                    required
-                                                />
+                                                                value={estimatedDate}
+                                                                onChange={(newDate) => setEstimatedDate(newDate)}
+                                                                format="DD/MM/YYYY hh:mm A"
+                                                                
+                                                            />
+                                                        </DemoItem>
+                                                    </DemoContainer>
+                                                </LocalizationProvider>
 
                                             </FormControl>
 
@@ -1131,92 +1127,92 @@ export default function Taskdetail() {
 
                         </Grid>
 
-                        
+
                         <Grid item xs={12} style={{ marginTop: '0%' }}>
                             {/* <Item> */}
-                                {/* <Card > */}
-                                <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
-                                    Activity
-                                </Typography>
+                            {/* <Card > */}
+                            <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
+                                Activity
+                            </Typography>
 
 
-                                <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
-                                    <TableContainer sx={{ height: "65vh" }}>
-                                        <Table stickyHeader aria-label="sticky table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    {columns.map((column) => (
-                                                        <TableCell
-                                                            key={column.id}
+                            <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
+                                <TableContainer sx={{ height: "65vh" }}>
+                                    <Table stickyHeader aria-label="sticky table">
+                                        <TableHead>
+                                            <TableRow>
+                                                {columns.map((column) => (
+                                                    <TableCell
+                                                        key={column.id}
 
-                                                            align={column.align}
-                                                            style={{ minWidth: column.minWidth }}
-                                                        >
-                                                            {column.label}
-                                                        </TableCell>
-                                                    ))}
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {rows
-                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                    .map((row) => (
-                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                            {columns.map((column) => {
-                                                                const value = row[column.id];
+                                                        align={column.align}
+                                                        style={{ minWidth: column.minWidth }}
+                                                    >
+                                                        {column.label}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {rows
+                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                .map((row) => (
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                        {columns.map((column) => {
+                                                            const value = row[column.id];
 
-                                                                if (column.id === 'srno') {
-                                                                    sr += 1;
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value === null ? '' : String(sr)}
-                                                                        </TableCell>
-                                                                    );
-                                                                }
-
-
-                                                                if (column.id === 'activityDatetime') {
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
-                                                                            {formatDate(value)}  {formatTime(value)}
-                                                                        </TableCell>
-
-                                                                    );
-
-
-                                                                }
-
-
+                                                            if (column.id === 'srno') {
+                                                                sr += 1;
                                                                 return (
                                                                     <TableCell key={column.id} align={column.align}>
-                                                                        {value}
+                                                                        {value === null ? '' : String(sr)}
+                                                                    </TableCell>
+                                                                );
+                                                            }
+
+
+                                                            if (column.id === 'activityDatetime') {
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
+                                                                        {formatDate(value)}  {formatTime(value)}
                                                                     </TableCell>
 
                                                                 );
-                                                            })}
-                                                        </TableRow>
-
-                                                    ))}
-                                            </TableBody>
 
 
+                                                            }
 
-                                        </Table>
-                                    </TableContainer>
-                                    <TablePagination
-                                        rowsPerPageOptions={[10, 25, 100]}
-                                        component="div"
-                                        count={rows.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        onPageChange={handleChangePage}
-                                        onRowsPerPageChange={handleChangeRowsPerPage}
 
-                                    />
-                                </Paper>
+                                                            return (
+                                                                <TableCell key={column.id} align={column.align}>
+                                                                    {value}
+                                                                </TableCell>
 
-                                {/* </Card> */}
+                                                            );
+                                                        })}
+                                                    </TableRow>
+
+                                                ))}
+                                        </TableBody>
+
+
+
+                                    </Table>
+                                </TableContainer>
+                                <TablePagination
+                                    rowsPerPageOptions={[10, 25, 100]}
+                                    component="div"
+                                    count={rows.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+
+                                />
+                            </Paper>
+
+                            {/* </Card> */}
 
 
                             {/* </Item> */}
@@ -1224,10 +1220,10 @@ export default function Taskdetail() {
 
 
 
-                                {/* </Card> */}
+                        {/* </Card> */}
 
 
-                            {/* </Item> */}
+                        {/* </Item> */}
 
 
 
