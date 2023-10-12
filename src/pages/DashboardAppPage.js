@@ -532,8 +532,11 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={4} justifyContent="center">
           <Grid item xs={12} md={6}>
+           
             <Card>
+            <div style={{padding:"3vh 0 0 2vw"}}><h5><b> Over All Progress</b></h5></div>
               <PieChart
+              title="Engineer WorkLoads"
                 series={[
                   {
 
@@ -544,8 +547,8 @@ export default function DashboardAppPage() {
                     ],
                   },
                 ]}
-                width="400"
-                height={400}
+                width="350"
+                height={350}
                 outerRadius={2}
                 innerRadius={1}
                 {...sizing}
@@ -567,6 +570,7 @@ export default function DashboardAppPage() {
           </Grid>
 
           <Grid item xs={12} md={6}>
+            
             <ChartEngineerWorkload
               title="Engineer WorkLoads"
               subheader=""
@@ -575,7 +579,7 @@ export default function DashboardAppPage() {
                 { name: 'numberofservices', data: Object.values(hashMap) }
               ]}
               width={'100%'}
-              height={400} // You can adjust the height as needed
+              height={600} // You can adjust the height as needed
               options={{ maintainAspectRatio: false }} // Allow chart to adjust its aspect ratio
             />
           </Grid>
