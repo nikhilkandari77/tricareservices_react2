@@ -141,21 +141,21 @@ export default function TaskHistoryDetail() {
         setPriority(event.target.value);
     };
 
-    const getProduct = (productId) => {
-        console.log(productId)
-        fetch(`${baseUrl}/api/user/product-master/${productId}`, {
+    // const getProduct = (productId) => {
+    //     console.log(productId)
+    //     fetch(`${baseUrl}/api/user/product-master/${productId}`, {
 
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
+    //         method: 'GET',
+    //         mode: 'cors',
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         },
 
-        }).then(response => response.json()).then(data => {
-            setProductImages(data.data.imageName.toString().split(","));
-            console.log("product", data.data.imageName)
-        }).catch(error => console.log(error));
-    }
+    //     }).then(response => response.json()).then(data => {
+    //         setProductImages(data.data.imageName.toString().split(","));
+    //         console.log("product", data.data.imageName)
+    //     }).catch(error => console.log(error));
+    // }
 
 
 
@@ -191,11 +191,13 @@ export default function TaskHistoryDetail() {
 
 
                     setTask(json.data);
-                    getProduct(json.data.productCustomer.productId);
+                    // getProduct(json.data.productCustomer.productId);
                     // console.log(`Task Data ${JSON.stringify(json)}`);
                     // if (json.data.engineerId !== null && json.data.engineerId !== undefined && json.data.engineerId !== 'null') {
                     //     toast.success("Engineer Already Assigned");
                     // }
+
+                    setProductImages(json.data.productCustomer.productImageName.toString().split(","));
 
                     setComplaintType(json.data.complaintType);
                     setServiceType(json.data.serviceType);
@@ -262,7 +264,7 @@ export default function TaskHistoryDetail() {
             console.error("Error:", error);
         }
 
-    }, [getProduct, location.state.taskId, taskId, token]);
+    }, [location.state.taskId, taskId, token]);
 
 
 

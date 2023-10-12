@@ -119,6 +119,12 @@ export default function LoginForm() {
       if (response.ok) {
         const data = await response.json();
         // Save the token and navigate on success
+        console.log("data",data)
+        if(data.user.role.id !== 1){
+          toast.error("invalid user",{position:"top-right"}); // Show alert for invalid credentials
+          return;
+        }
+      
         localStorage.setItem('name', data.user.name);
         localStorage.setItem('email', data.user.email);
         localStorage.setItem('adminId',data.user.id);
