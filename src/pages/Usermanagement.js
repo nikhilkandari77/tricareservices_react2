@@ -442,25 +442,35 @@ export default function Usermanagement() {
 
 
 
-    const getRole = () => {
+    const getRole = async () => {
         const token = localStorage.getItem('token');
 
-        fetch(`${baseUrl}/api/user/role/`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
+        try {
+            const response = await fetch(`${baseUrl}/api/user/role/`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
 
-        })
+            if (!response.ok) {
+                // Handle the case where the response is not OK (e.g., an error response)
+                console.error('Error during role data fetching:', response);
+                toast.error('Failed to fetch role data');
+                return;
+            }
 
-            .then(response => response.json())
-            .then(json => {
-                console.log("product data:", json.data); // This line will print the data to the console
-                setRole(json.data);
+            const json = await response.json();
+            console.log("Role data:", json.data);
+            setRole(json.data);
 
-            })
-    }
+        } catch (error) {
+            // Handle errors that occurred during the fetch
+            console.error('Error during role data fetching:', error);
+            toast.error('Services not available');
+        }
+    };
 
 
 
@@ -619,27 +629,39 @@ export default function Usermanagement() {
 
 
 
-    const fetchUserData = (roleId) => {
+    const fetchUserData = async (roleId) => {
         const token = localStorage.getItem('token');
 
 
         console.log("has role", roleId)
         setLoading(true);
-        fetch(`${baseUrl}/api/user/hasRole/${roleId}`, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                console.log("Fetched data:", json.data);
-                setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
-            })
-            .finally(() => {
-                setLoading(false);
+        try {
+            const response = await fetch(`${baseUrl}/api/user/hasRole/${roleId}`, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
+
+            if (!response.ok) {
+                // Handle the case where the response is not OK (e.g., an error response)
+                console.error('Error during data fetching with role:', response);
+                toast.error('Failed to fetch data with role');
+                return;
+            }
+
+            const json = await response.json();
+            console.log("Fetched data:", json.data);
+            setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
+
+        } catch (error) {
+            // Handle errors that occurred during the fetch
+            console.error('Error during data fetching with role:', error);
+            toast.error('Services not available');
+        } finally {
+            setLoading(false);
+        }
     };
 
     if (loading) {
@@ -1358,12 +1380,14 @@ export default function Usermanagement() {
                                                                                 <Switch
                                                                                     checked={row.status}
                                                                                     onChange={() => handleSwitchChange(row.id)}
+                                                                                    disabled={row.id===parseInt(localStorage.getItem("adminId"),10)}
                                                                                 />
                                                                             )}
                                                                             {isLoading[row.id] && (
                                                                                 <CircularProgress size={24} color="secondary" />
                                                                             )}
                                                                         </div>
+                                                                     
 
                                                                     </TableCell>
                                                                 );

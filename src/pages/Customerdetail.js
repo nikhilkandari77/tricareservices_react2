@@ -734,11 +734,19 @@ export default function Customerdetail() {
                 Authorization: `Bearer ${token}`,
             },
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then((json) => {
-                console.log('Fetched data:', json.data); // This line will print the data to the console
-                // setUsers(json);
+                console.log('Fetched data:', json.data);
                 setUser(json.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error.message);
+                // You can handle the error state or display an error message to the user
             })
             .finally(() => {
                 setLoading(false);

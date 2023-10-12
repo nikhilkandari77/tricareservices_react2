@@ -11,7 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {  styled } from '@mui/material/styles';
-
+import { toast } from 'react-toastify';
 import {  Button,Box, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Toolbar from '@mui/material/Toolbar';
@@ -158,20 +158,25 @@ export default function DashboardTable({ token }) {
       method: 'GET',
       mode: 'cors',
       headers: {
-        Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
       },
-
-    })
-      .then(response => response.json())
+  })
+      .then(response => {
+          if (!response.ok) {
+              // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+      })
       .then(json => {
-
-
-
-        const dataTemp = json.data;
-        // console.log(dataTemp[0].productCustomer.productName);
-        setRows(json.data);
-        // console.log(`Rows ${  dataTemp}`);
-
+          // Handle successful response and update state
+          const dataTemp = json.data;
+          setRows(dataTemp);
+      })
+      .catch(error => {
+          // Handle errors that occurred during the fetch
+          console.error('Error during fetch:', error);
+          toast.error('Services not available ');
       });
 
   }, []);

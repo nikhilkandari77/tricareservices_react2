@@ -6,6 +6,9 @@ import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@m
 import { LoadingButton } from '@mui/lab';
 import FormControl from '@mui/material/FormControl';
 import { toast } from 'react-toastify';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 // components
 import CircularProgress from '@mui/material/CircularProgress';
 import baseUrl from '../../../utils/baseUrl';
@@ -33,6 +36,9 @@ export default function LoginForm() {
   // const users = [{ email: "bkc@gmail.com", password: "testpassword" }];
   const [btnLoading, setBtnLoading] = useState(false);
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+};
 
   // const validateEmail = (email) => {
   //   // Regex pattern to validate email format
@@ -170,7 +176,17 @@ export default function LoginForm() {
             sx={{ m: 1, width: '20rem' }}
             type={showPassword ? 'text' : 'password'}
             value={password} onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} edge="end">
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
+   
           {errors.password && <span style={{ color: "red" }}>{errors.password} </span>}
 
 

@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import SearchIcon from '@mui/icons-material/Search';
 import { DataGrid } from '@mui/x-data-grid';
-
+import {toast} from 'react-toastify';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -282,13 +282,22 @@ export default function TaskHistory() {
             headers: {
                 Authorization: `Bearer ${token}`
             },
-
         })
-
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
                 setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
+            })
+            .catch(error => {
+                // Handle errors that occurred during the fetch
+                console.error('Error during fetch:', error);
+                toast.error('Services not available');
             })
             .finally(() => {
                 setLoading(false);

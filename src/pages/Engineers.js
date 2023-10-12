@@ -52,6 +52,50 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 
+const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: 'white',
+    '&:hover': {
+        backgroundColor: 'white',
+    },
+    marginLeft: 0,
+    width: '100%',
+    color: 'gray',
+    [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(1),
+        width: 'auto',
+    },
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    color: 'gray',
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('sm')]: {
+            width: '12ch',
+            '&:focus': {
+                width: '20ch',
+            },
+        },
+    },
+}));
+
 
 
 
@@ -64,6 +108,7 @@ export default function Engineers() {
     // const [email, setEmail] = useState('');
     // const [address, setAddress] = useState('');
 
+    const [search, setSearch] = useState('');
 
     const [name, setName] = useState('');
     const [contact, setContact] = useState('');
@@ -112,7 +157,13 @@ export default function Engineers() {
         setShowPassword(!showPassword);
     };
 
-
+    const searchItem = data.filter(row => {
+        if(search!==''&&row.name!==null){
+            return row.name.toString().toLowerCase().includes(search.toLocaleLowerCase())
+            ? row:"";
+        }
+        return row;
+      });
 
 
     const handleChangePage = (event, newPage) => {
@@ -211,50 +262,6 @@ export default function Engineers() {
         </Box>
     );
 
-
-    const Search = styled('div')(({ theme }) => ({
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: 'white',
-        '&:hover': {
-            backgroundColor: 'white',
-        },
-        marginLeft: 0,
-        width: '100%',
-        color: 'gray',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(1),
-            width: 'auto',
-        },
-    }));
-
-    const SearchIconWrapper = styled('div')(({ theme }) => ({
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        color: 'gray',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }));
-
-    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-        color: 'inherit',
-        '& .MuiInputBase-input': {
-            padding: theme.spacing(1, 1, 1, 0),
-            // vertical padding + font size from searchIcon
-            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-            transition: theme.transitions.create('width'),
-            width: '100%',
-            [theme.breakpoints.up('sm')]: {
-                width: '12ch',
-                '&:focus': {
-                    width: '20ch',
-                },
-            },
-        },
-    }));
 
 
     useEffect(() => {
@@ -437,21 +444,28 @@ export default function Engineers() {
             headers: {
                 Authorization: `Bearer ${token}`
             },
-
         })
-
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(json => {
                 console.log("Fetched data:", json.data); // This line will print the data to the console
                 // setUsers(json);
-                setData(json.data)
-
-
-
+                setData(json.data);
+            })
+            .catch(error => {
+                // Handle errors that occurred during the fetch
+                console.error('Error during fetch:', error);
+                toast.error('Services not available');
             })
             .finally(() => {
                 setLoading(false);
             });
+
 
         // handleChange7();
     }, []);
@@ -527,6 +541,7 @@ export default function Engineers() {
                                     <StyledInputBase
                                         placeholder="Search…"
                                         inputProps={{ 'aria-label': 'search' }}
+                                        onChange={(e) => setSearch(e.target.value)}
                                     />
                                 </Search>
 
@@ -858,7 +873,7 @@ export default function Engineers() {
                             </Typography>
                         ) :
 
-                            data.map(item => (
+                            searchItem.map(item => (
 
                                 <div key={item.id} className='col-md-3 col-sm-6'>
 

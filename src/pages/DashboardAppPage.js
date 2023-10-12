@@ -127,29 +127,32 @@ export default function DashboardAppPage() {
       method: 'GET',
       mode: 'cors',
       headers: {
-        Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
       },
-
-    })
-    .then((response) => {
-      console.log("data", response);
-      if (response.status === 403) {
-        // Handle the case where the response is not OK (e.g., an error response)
-        toast.error('Session Timed Out');
-        // Clear the user's authentication token or session-related data
-        localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
-        localStorage.removeItem("isLoggedIn");
-        localStorage.clear();
-        // history.push('/login'); // Replace '/login' with the route for your login page
-        navigate("/login");
-      }
-      if(!response.ok){
-        
-        toast.error('Something Went Wrong');
-        
-      }
-      return response.json(); // Continue parsing the response
-    })
+  })
+      .then((response) => {
+          console.log("data", response);
+          
+          if (response.status === 403) {
+              // Handle the case where the response is a 403 (Forbidden) status code
+              toast.error('Session Timed Out');
+              
+              // Clear the user's authentication token or session-related data
+              localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
+              localStorage.removeItem("isLoggedIn");
+              localStorage.clear();
+              
+              // Redirect to the login page
+              navigate("/login"); // If you're using React Router, replace this with the appropriate navigation method
+          } else if (!response.ok) {
+              // Handle other non-OK status codes
+              toast.error('Something Went Wrong');
+          }
+  
+          return response.json(); // Continue parsing the response
+      })
+     
+     
       .then(json => {
 
         setEngineerWorkloadList(json.data.complaintGroupByEngineer);
@@ -172,7 +175,13 @@ export default function DashboardAppPage() {
 
         
 
-      }).finally(() => {
+      })
+      .catch((error) => {
+        // Handle general errors that occurred during the fetch
+        console.error('Error during fetch:', error);
+        toast.error('An error occurred');
+    })
+      .finally(() => {
         setLoading(false);
       });
 
