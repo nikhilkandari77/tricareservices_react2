@@ -15,55 +15,46 @@ const Icon = ({ src, alt }) => <img src={src} alt={alt} />;
 
 
 
-
 const navConfig = [
   {
-    title: 'dashboard',
-    path: '/dashboard/app',
+    title: 'Dashboard',
+    path: '/admin/dashboard',
     icon: <Icon src='/assets/icons/navbar/NavIconDashboard.png' alt="Dashboard" />,
   },
   {
-    title: 'product',
-    path: '/dashboard/products',
+    title: 'Products',
+    path: '/admin/products',
     icon: <Icon src='/assets/icons/navbar/NavIconProducts.png' alt="Products" />,
   },
- {
+  {
     title: 'Active Complaints',
-    path: '/dashboard/task',
+    path: '/admin/task',
     icon: <Icon src='/assets/icons/navbar/NavIconTasks.png' alt="Complaints" />,
   },
   {
     title: 'Closed Complaints',
-    path: '/dashboard/task-history',
+    path: '/admin/task-history',
     icon: <Icon src='/assets/icons/navbar/closedComplaints.png' alt="Complaints" />,
-  }, 
-
-
-
+  },
   {
     title: 'Customers',
-    path: '/dashboard/customers',
+    path: '/admin/customers',
     icon: <Icon src='/assets/icons/navbar/NavIconCustomers.png' alt="Customers" />,
   },
   {
     title: 'Engineers',
-    path: '/dashboard/engineers',
+    path: '/admin/engineers',
     icon: <Icon src='/assets/icons/navbar/NavIconEngineer.png' alt="Engineer" />,
   },
   {
     title: 'User Management',
-    path: '/dashboard/usermanagement',
+    path: '/admin/usermanagement',
     icon: <Icon src='/assets/icons/navbar/UserMngmnt.png' alt="Engineer" />,
   },
-  // {
+    // {
   //   title: 'Reports',
   //   path: '/dashboard/reports',
   //   icon:<Icon src='/assets/icons/navbar/NavIconTasks.png' alt="Tasks" />,
-  // },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: icon('ic_disabled'),
   // },
 ];
 

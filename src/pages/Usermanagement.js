@@ -551,15 +551,15 @@ export default function Usermanagement() {
         console.log("Received id:", id);
         if (roleId === 1) {
             // If id is equal to 1, navigate to customerdetail
-            navigate("/dashboard/Admin/", { state: { userId: id } });
+            navigate("/admin/usermanagement/details", { state: { userId: id } });
 
         } else if (roleId === 2) {
             // If id is equal to 2, navigate to Engineersdetail
-            navigate("/dashboard/customerdetail/", { state: { userId: id } });
+            navigate("/admin/customers/details", { state: { userId: id } });
 
         } else if (roleId === 3) {
             // If id is equal to 3, navigate to Adminpage
-            navigate("/dashboard/Engineersdetail/", { state: { userId: id } });
+            navigate("/admin/Engineers/details", { state: { userId: id } });
 
         } else {
             // Handle other cases or provide a default route

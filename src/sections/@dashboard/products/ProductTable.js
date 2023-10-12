@@ -512,7 +512,7 @@ export default function StickyHeadTable() {
 
 
 
-    navigate("/dashboard/customerdetail/", { state: { userId: id } });
+    navigate("/admin/customers/details", { state: { userId: id } });
 
 
   }

@@ -120,7 +120,7 @@ export default function DashboardTable({ token }) {
 
   const routeChange1 = (id) => {
     if(id!==undefined&&id!==null)
-    navigate("/Dashboard/Taskdetail", { state: { taskId: id } });
+    navigate("/admin/task/details", { state: { taskId: id } });
   };
 
 

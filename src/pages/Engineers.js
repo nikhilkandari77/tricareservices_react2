@@ -186,7 +186,7 @@ export default function Engineers() {
 
 
 
-        navigate("/dashboard/Engineersdetail/", { state: { userId: id } });
+        navigate("/admin/engineers/details/", { state: { userId: id } });
 
 
     }

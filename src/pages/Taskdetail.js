@@ -158,7 +158,7 @@ export default function Taskdetail() {
                 toast.success("Complaint has been updated");
                 setIsLoading(true);
                 setTimeout(() => {
-                    navigate("/dashboard/task");
+                    navigate("/admin/task");
                 }, 2000);
             }
         } catch (error) {
@@ -185,7 +185,7 @@ export default function Taskdetail() {
         toast.success("Complaint has been closed sucessfully");
         setTimeout(() => {
 
-            navigate("/dashboard/task");
+            navigate("/admin/task");
 
         }, 2000);
 
@@ -422,7 +422,7 @@ export default function Taskdetail() {
                 });
         } catch (error) {
             console.error("Error:", error);
-            navigate("dashboard/task");
+            navigate("admin/task");
         } finally {
             setIsTaskLoading(false);
         }

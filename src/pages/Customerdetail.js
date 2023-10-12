@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import FileSaver from 'file-saver';
-// import moment from 'moment'; // Import moment or dayjs here
 
 import { useLocation, useParams, Navigate, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
@@ -403,7 +402,7 @@ export default function Customerdetail() {
     };
 
     const routeChange1 = (id) => {
-        navigate('/Dashboard/Taskdetail', { state: { taskId: id } });
+        navigate('/admin/task/details', { state: { taskId: id } });
     };
 
     const handleDateChange = (event) => {
@@ -772,7 +771,7 @@ export default function Customerdetail() {
     const routeChange2 = (id) => {
         console.log(id);
 
-        navigate('/Dashboard/Taskdetail', { state: { taskId: id } });
+        navigate('/admin/task/details', { state: { taskId: id } });
     };
 
     const handlePasswordChange10 = (e) => {
@@ -1213,7 +1212,7 @@ export default function Customerdetail() {
                                                                     style={{ marginTop: '20px', alignItems: 'center' }}
                                                                     disabled={btnLoading} // Disable the button when loading is true
                                                                 >
-                                                                    {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Upload Excel File'} 
+                                                                    {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Upload Excel File'}
                                                                 </Button>
                                                             </div>
                                                         </form>
@@ -1863,7 +1862,7 @@ export default function Customerdetail() {
                                                                             );
                                                                         }
 
-                                                                        
+
 
 
                                                                         if (column.id === 'button') {
