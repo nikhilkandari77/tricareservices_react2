@@ -29,12 +29,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 // import Input from '@mui/joy/Input';
 
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
+
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
 import baseUrl from '../utils/baseUrl';
-
-
 
 
 const override = css`
@@ -42,11 +48,16 @@ const override = css`
   margin: 0 auto;
 `;
 
+// table column
+const columns = [
 
+    { id: 'srno', label: 'Sr.No', minWidth: 10, align: 'center' },
+    { id: 'remark', label: 'Activity', minWidth: 50, align: 'center' },
+    { id: 'username', label: 'User', minWidth: 100, align: 'center' },
+    { id: 'message', label: 'Message', minWidth: 140, align: 'center' },
+    { id: 'activityDatetime', label: 'TimeStamp', minWidth: 100, align: 'center' },
 
-
-
-
+];
 
 
 export default function TaskHistoryDetail() {
@@ -72,6 +83,21 @@ export default function TaskHistoryDetail() {
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
 
     const token = localStorage.getItem('token');
+
+    const [rows, setRows] = useState([]);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+    
+
     function formatDateTime(dateTimeString) {
         const dateTime = new Date(dateTimeString);
 
@@ -115,21 +141,21 @@ export default function TaskHistoryDetail() {
         setPriority(event.target.value);
     };
 
-    const getProduct = (productId) => {
-        console.log(productId)
-        fetch(`${baseUrl}/api/user/product-master/${productId}`, {
+    // const getProduct = (productId) => {
+    //     console.log(productId)
+    //     fetch(`${baseUrl}/api/user/product-master/${productId}`, {
 
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
+    //         method: 'GET',
+    //         mode: 'cors',
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         },
 
-        }).then(response => response.json()).then(data => {
-            setProductImages(data.data.imageName.toString().split(","));
-            console.log("product", data.data.imageName)
-        }).catch(error => console.log(error));
-    }
+    //     }).then(response => response.json()).then(data => {
+    //         setProductImages(data.data.imageName.toString().split(","));
+    //         console.log("product", data.data.imageName)
+    //     }).catch(error => console.log(error));
+    // }
 
 
 
@@ -165,11 +191,13 @@ export default function TaskHistoryDetail() {
 
 
                     setTask(json.data);
-                    getProduct(json.data.productCustomer.productId);
+                    // getProduct(json.data.productCustomer.productId);
                     // console.log(`Task Data ${JSON.stringify(json)}`);
                     // if (json.data.engineerId !== null && json.data.engineerId !== undefined && json.data.engineerId !== 'null') {
                     //     toast.success("Engineer Already Assigned");
                     // }
+
+                    setProductImages(json.data.productCustomer.productImageName.toString().split(","));
 
                     setComplaintType(json.data.complaintType);
                     setServiceType(json.data.serviceType);
@@ -236,7 +264,7 @@ export default function TaskHistoryDetail() {
             console.error("Error:", error);
         }
 
-    }, [location.state.taskId]);
+    }, [location.state.taskId, taskId, token]);
 
 
 
@@ -273,6 +301,11 @@ export default function TaskHistoryDetail() {
         const options = { day: 'numeric', month: 'short', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('en-US', options);
     }
+    function formatTime(dateTimeString) {
+        const dateTime = new Date(dateTimeString);
+        const formattedTime = format(dateTime, 'HH:mm');
+        return formattedTime;
+    }
 
     const statusColors = {
         'Completed': 'success', // Green color
@@ -288,6 +321,37 @@ export default function TaskHistoryDetail() {
         setZoomedIn(!zoomedIn);
     };
     const [zoomedIn, setZoomedIn] = useState(false);
+
+    // table API
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setIsLoading(false);
+        fetch(`${baseUrl}/api/user/task-activity/${taskId}`, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+
+        })
+
+            .then(response => response.json())
+            .then(json => {
+                console.log("Fetched data:", json); // This line will print the data to the console
+                // setUsers(json);
+                setRows(json.data);
+
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }, [taskId]);
+
+
+    let sr = 0;
+
+
 
     
     return (
@@ -403,7 +467,7 @@ export default function TaskHistoryDetail() {
                                         <Typography variant="h6" gutterBottom>
                                             Customer Profile
                                         </Typography>
-                                        <Card style={{ height: '100%', maxWidth: '100%', marginBottom: '2px' }}>
+                                        <Card style={{ height: '97%', maxWidth: '100%', marginBottom: '2px' }}>
                                             <CardMedia
                                                 component="img"
                                                 alt="/assets/images/avatars/avatar_15.jpg"
@@ -672,8 +736,8 @@ export default function TaskHistoryDetail() {
                                                 disabled
                                             >
 
-                                                <MenuItem value="Remote">Remote Support</MenuItem>
-                                                <MenuItem value="Onsite">On Site Visit</MenuItem>
+                                                <MenuItem value="Remote Support">Remote Support</MenuItem>
+                                                <MenuItem value="On Site Visit">On Site Visit</MenuItem>
                                             </Select>
                                         </FormControl>
 
@@ -735,6 +799,96 @@ export default function TaskHistoryDetail() {
                             </Paper>
 
 
+                        </Grid>
+
+                        <Grid item xs={12} style={{ marginTop: '0%' }}>
+                            {/* <Item> */}
+                                {/* <Card > */}
+                                <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
+                                    Activity
+                                </Typography>
+
+
+                                <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
+                                    <TableContainer sx={{ height: "65vh" }}>
+                                        <Table stickyHeader aria-label="sticky table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    {columns.map((column) => (
+                                                        <TableCell
+                                                            key={column.id}
+
+                                                            align={column.align}
+                                                            style={{ minWidth: column.minWidth }}
+                                                        >
+                                                            {column.label}
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {rows
+                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                    .map((row) => (
+                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                            {columns.map((column) => {
+                                                                const value = row[column.id];
+
+                                                                if (column.id === 'srno') {
+                                                                    sr += 1;
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {value === null ? '' : String(sr)}
+                                                                        </TableCell>
+                                                                    );
+                                                                }
+
+
+                                                                if (column.id === 'activityDatetime') {
+                                                                    return (
+                                                                        <TableCell key={column.id} align={column.align}>
+                                                                            {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
+                                                                            {formatDate(value)}  {formatTime(value)}
+                                                                        </TableCell>
+
+                                                                    );
+
+
+                                                                }
+
+
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        {value}
+                                                                    </TableCell>
+
+                                                                );
+                                                            })}
+                                                        </TableRow>
+
+                                                    ))}
+                                            </TableBody>
+
+
+
+                                        </Table>
+                                    </TableContainer>
+                                    <TablePagination
+                                        rowsPerPageOptions={[10, 25, 100]}
+                                        component="div"
+                                        count={rows.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onPageChange={handleChangePage}
+                                        onRowsPerPageChange={handleChangeRowsPerPage}
+
+                                    />
+                                </Paper>
+
+                                {/* </Card> */}
+
+
+                            {/* </Item> */}
                         </Grid>
 
 

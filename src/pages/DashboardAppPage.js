@@ -132,7 +132,8 @@ export default function DashboardAppPage() {
 
     })
     .then((response) => {
-      if (response.code === 403) {
+      console.log("data", response);
+      if (response.status === 403) {
         // Handle the case where the response is not OK (e.g., an error response)
         toast.error('Session Timed Out');
         // Clear the user's authentication token or session-related data
@@ -143,6 +144,7 @@ export default function DashboardAppPage() {
         navigate("/login");
       }
       if(!response.ok){
+        
         toast.error('Something Went Wrong');
         
       }
@@ -168,13 +170,13 @@ export default function DashboardAppPage() {
         setBacklogsMedium(json.data.backLogGroupByPriority.medium);
         setBacklogsLow(json.data.backLogGroupByPriority.low);
 
-        console.log("data", json);
+        
 
       }).finally(() => {
         setLoading(false);
       });
 
-  }, []);
+  }, [navigate, token]);
 
 
   useEffect(() => {
@@ -321,7 +323,7 @@ export default function DashboardAppPage() {
 
             >
 
-              <Typography variant="h3">Total Complaints</Typography>
+              <Typography variant="h3">Active Complaints</Typography>
               <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
 
 

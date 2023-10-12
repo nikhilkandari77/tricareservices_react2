@@ -152,6 +152,7 @@ export default function StickyHeadTable() {
     const formData = new FormData();
     formData.append("excelSheet", excelFile[0]);
     try {
+      setCircularProgress(true);
       const response = await fetch(`${baseUrl}/api/user/product-master/import/`, {
         method: 'POST',
         headers: {
@@ -177,8 +178,12 @@ export default function StickyHeadTable() {
     } catch (error) {
       console.error('Error while adding product:', error);
       toast.error('Error while adding product'); // Display error toast
+    } finally {
+      setCircularProgress(false); // Set loading back to false after submission is complete
     }
-  }
+
+
+  };
 
 
   const setRowData = (row) => {
@@ -743,8 +748,9 @@ export default function StickyHeadTable() {
                                 type='submit'
                                 variant="contained"
                                 style={{ color: 'white', background: "green" }}
+                                disabled={circularProgress}
                               >
-                                Import
+                                {circularProgress ? <CircularProgress size={24} color="inherit" /> : 'Import'}
                               </Button>
                             </Grid>
 
@@ -823,10 +829,10 @@ export default function StickyHeadTable() {
                                 else if (column.id === 'button') {
                                   return (
                                     <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={() => handleClickOpen(row)}><DetailsIcon color="primary" /></Button>
-                                      <Button onClick={() => handleUpdateOpen(row)}><UpdateIcon color='info' />
+                                      <Button onClick={() => handleClickOpen(row)} title="Details" ><DetailsIcon color="primary" /></Button>
+                                      <Button onClick={() => handleUpdateOpen(row)} title="Update" ><UpdateIcon color='info' />
                                       </Button>
-                                      <Button onClick={() => handleDeleteOption(row)} ><DeleteIcon color='error' /></Button>
+                                      <Button onClick={() => handleDeleteOption(row)} title="Delete" ><DeleteIcon color='error' /></Button>
 
                                       <Dialog
                                         open={updateForm}

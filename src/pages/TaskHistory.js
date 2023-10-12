@@ -201,7 +201,7 @@ export default function TaskHistory() {
             field: 'problem',
             headerName: 'Problem',
             // format: (value) => value.toLocaleString('en-US'),
-            minWidth: 120,
+            minWidth: 200,
         },
         {
             id: 'customerName',
@@ -334,7 +334,7 @@ export default function TaskHistory() {
                                 component="div"
                                 sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
                             >
-                                Previous Complaints
+                                Closed Complaints
                             </Typography>
 
 
