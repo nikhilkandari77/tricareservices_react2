@@ -57,7 +57,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 
-import { Category } from '@mui/icons-material';
+import { Category, InfoSharp } from '@mui/icons-material';
 import Iconify from '../components/iconify';
 import baseUrl from '../utils/baseUrl';
 import Label from '../components/label/Label';
@@ -734,11 +734,19 @@ export default function Customerdetail() {
                 Authorization: `Bearer ${token}`,
             },
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then((json) => {
-                console.log('Fetched data:', json.data); // This line will print the data to the console
-                // setUsers(json);
+                console.log('Fetched data:', json.data);
                 setUser(json.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching data:', error.message);
+                // You can handle the error state or display an error message to the user
             })
             .finally(() => {
                 setLoading(false);
@@ -1870,7 +1878,7 @@ export default function Customerdetail() {
                                                                             return (
                                                                                 <TableCell key={column.id} align={column.align}>
                                                                                     <Button onClick={() => handleProductDetails(row)} title="Details" >
-                                                                                        <DetailsIcon color="primary" />
+                                                                                        <InfoSharp color="primary" />
                                                                                     </Button>
                                                                                     <Button onClick={() => handleDeleteOption(row)}  title="Delete"><DeleteIcon color='error' /></Button>
 

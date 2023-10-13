@@ -11,7 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {  styled } from '@mui/material/styles';
-
+import { toast } from 'react-toastify';
 import {  Button,Box, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Toolbar from '@mui/material/Toolbar';
@@ -22,9 +22,16 @@ import Label from '../label/Label';
 import baseUrl from '../../utils/baseUrl';
 
 const columns = [
-  { id: "sr", label: 'S.No', minWidth: 10 },
+  { id: "sr", label: 'S.No',align: 'center', minWidth: 10 },
+  { id: 'id', label: 'Complaint Id', align: 'center', minWidth: 30 },
   { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
-  { id: 'id', label: 'Complaint Id', align: 'center', minWidth: 50 },
+  {
+    id: 'customerName',
+    label: 'Customer',
+    minWidth: 60,
+    align: 'center',
+    // format: (value) => value.toFixed(2),
+  },
   {
     id: 'productCustomer',
     subId: 'productName',
@@ -40,18 +47,10 @@ const columns = [
     align: 'center',
     // format: (value) => value.toLocaleString('en-US'),
   },
-  {
-    id: 'customerName',
-    label: 'Customer',
-    minWidth: 60,
-    align: 'center',
-    // format: (value) => value.toFixed(2),
-  },
-  { id: 'createdDateTime', label: 'Complaint Time', align: 'center', minWidth: 110 },
+  // { id: 'createdDateTime', label: 'Complaint Time', align: 'center', minWidth: 110 },
   { id: 'engineerName', label: 'Engineer', align: 'center', minWidth: 70 },
-  { id: 'estimatedDateTime', label: 'Estimated End Time', align: 'center', minWidth: 110 },
+  // { id: 'estimatedDateTime', label: 'Estimated End Time', align: 'center', minWidth: 110 },
   { id: 'complaintStatus', label: 'Status', align: 'center', minWidth: 70 },
-  
   { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
 ];
 const Search = styled('div')(({ theme }) => ({
@@ -99,7 +98,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-export default function DashboardTable({ token }) {
+export default function DashboardTable({ data }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
@@ -151,30 +150,42 @@ export default function DashboardTable({ token }) {
 
   let sr = 0;
 
+  // Use an effect to update the `rows` state when `data` prop changes
   useEffect(() => {
+    setRows(data);
+  }, [data]);
+
+  // useEffect(() => {
 
 
-    fetch(`${baseUrl}/api/user/complaint/`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
+  //   fetch(`${baseUrl}/api/user/complaint/`, {
+  //     method: 'GET',
+  //     mode: 'cors',
+  //     headers: {
+  //         Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then(response => {
+  //         if (!response.ok) {
+  //             // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+  //             throw new Error(`HTTP error! Status: ${response.status}`);
+  //         }
+  //         return response.json();
+  //     })
+  //     .then(json => {
+  //         // Handle successful response and update state
+  //         const dataTemp = json.data;
+  //         const filteredData = dataTemp.filter(item => item.engineerId !== null);
+  //         setRows(filteredData);
+  //         // setRows(dataTemp);
+  //     })
+  //     .catch(error => {
+  //         // Handle errors that occurred during the fetch
+  //         console.error('Error during fetch:', error);
+  //         toast.error('Services not available ');
+  //     });
 
-    })
-      .then(response => response.json())
-      .then(json => {
-
-
-
-        const dataTemp = json.data;
-        // console.log(dataTemp[0].productCustomer.productName);
-        setRows(json.data);
-        // console.log(`Rows ${  dataTemp}`);
-
-      });
-
-  }, []);
+  // }, [token]);
 
   //   const [searched, setSearched] = useState("");
 
@@ -206,7 +217,7 @@ export default function DashboardTable({ token }) {
               component="div"
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
             >
-              Complaints
+              Assigned Complaints
             </Typography>
 
 
@@ -329,7 +340,7 @@ export default function DashboardTable({ token }) {
 
                       if (column.id === 'estimatedDateTime') {
 
-                        console.log(`Desired Value ${value}`);
+                        // console.log(`Desired Value ${value}`);
                         return (
                           <TableCell key={column.id} align={column.align}>
                             {value !== null ? formatDateTime(value) : 'Pending Assign'}
@@ -340,7 +351,7 @@ export default function DashboardTable({ token }) {
 
                       if (column.id === 'createdDateTime') {
 
-                        console.log(`Desired Value ${value}`);
+                        // console.log(`Desired Value ${value}`);
                         return (
                           <TableCell key={column.id} align={column.align}>
                             {value !== null ? formatDateTime(value) : ''}

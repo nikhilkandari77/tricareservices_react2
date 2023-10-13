@@ -41,6 +41,7 @@ import './custom.css';
 import baseUrl from '../../../utils/baseUrl';
 import Iconify from '../../../components/iconify';
 import ImageSlide from './ImageSlide'
+import { Info, InfoSharp } from '@mui/icons-material';
 
 
 
@@ -468,22 +469,29 @@ export default function StickyHeadTable() {
       method: 'GET',
       mode: 'cors',
       headers: {
-        Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`
       },
-
     })
-
-      .then(response => response.json())
+      .then(response => {
+          if (!response.ok) {
+              // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+      })
       .then(json => {
-        console.log("Fetched data:", json); // This line will print the data to the console
-        // setUsers(json);
-        setRows(json.data);
-        setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
-        getCategories(token);
-
+          console.log("Fetched data:", json); // This line will print the data to the console
+          // setUsers(json);
+          setRows(json.data.map((row, i) => ({ ...row, sr: i + 1 })));
+          getCategories(token);
+      })
+      .catch(error => {
+          // Handle errors that occurred during the fetch
+          console.error('Error during fetch:', error);
+          toast.error('Services not available');
       })
       .finally(() => {
-        setLoading(false);
+          setLoading(false);
       });
 
   }, [refresh]);
@@ -830,7 +838,7 @@ export default function StickyHeadTable() {
                                 else if (column.id === 'button') {
                                   return (
                                     <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={() => handleClickOpen(row)} title="Details" ><DetailsIcon color="primary" /></Button>
+                                      <Button onClick={() => handleClickOpen(row)} title="Details" ><InfoSharp color="primary" /></Button>
                                       <Button onClick={() => handleUpdateOpen(row)} title="Update" ><UpdateIcon color='info' />
                                       </Button>
                                       <Button onClick={() => handleDeleteOption(row)} title="Delete" ><DeleteIcon color='error' /></Button>
