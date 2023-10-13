@@ -209,9 +209,9 @@ export default function Taskdetail() {
         //     // status = "Engineer Assigned";
         // }
 
-        
 
-// Your code for date conversion using moment goes here
+
+        // Your code for date conversion using moment goes here
 
         // Parse the input date string
         const parsedVisitDate = dayjs(visitDate, { format: "ddd, DD MMM YYYY HH:mm:ss [GMT]", utc: true });
@@ -279,9 +279,9 @@ export default function Taskdetail() {
     const [openImage, setOpenImage] = useState(false);
     const [image, setImage] = useState(null);
     const [estimatedTime, setSelectedTime] = useState(null);
-    const [estimatedDate, setEstimatedDate] = React.useState(dayjs('2022-01-01T00:01'));
+    const [estimatedDate, setEstimatedDate] = React.useState(null);
     const [visitTime, setVisitTime] = useState(new Date());
-    const [visitDate, setVisitDate] = React.useState(dayjs('2022-01-01T00:01'));
+    const [visitDate, setVisitDate] = React.useState(null);
     const [product, Images] = useState('');
     const handleTimeChange = (event) => {
         setSelectedTime(event.target.value);
@@ -394,10 +394,13 @@ export default function Taskdetail() {
                     //     setSelectedTime(formattedTime);
 
                     // }
-                    // // const visitDatetime = new Date(json.data.visitDatetime);
-                    setVisitDate(dayjs(json.data.visitDatetime));
-                    setEstimatedDate(dayjs(json.data.estimatedDateTime));
+                    // // const visitDatetime = new Date(json.data.visitDatetime);\
+                    if(json.data.visitDatetime!==null&&json.data.visitDatetime!==undefined)
+                        setVisitDate(dayjs(json.data.visitDatetime));
 
+                    if(json.data.estimatedDateTime!==null&&json.data.estimatedDateTime!==undefined)
+                        setEstimatedDate(dayjs(json.data.estimatedDateTime));
+                    console.log(json.data.estimatedDateTime)
                     // const formattedDate2 = format(visitDatetime, 'yyyy-MM-dd');
                     // const formattedTime2 = format(visitDatetime, 'HH:mm');
                     // // console.log(`Estimated End Date ${  formattedDate}`);
@@ -1004,11 +1007,16 @@ export default function Taskdetail() {
                                                     >
                                                         <DemoItem label="Select Visit Date Time">
                                                             <DateTimePicker
-
-                                                                value={visitDate}
+                                                                renderInput={(props) => <TextField {...props} required />}
+                                                                 value={visitDate}
                                                                 onChange={(newDate) => setVisitDate(newDate)}
                                                                 format="DD/MM/YYYY hh:mm A"
-                                                                
+                                                                slotProps={{
+                                                                    textField: {
+                                                                      required: true,
+                                                                    },
+                                                                  }}
+
                                                             />
                                                         </DemoItem>
                                                     </DemoContainer>
@@ -1016,9 +1024,9 @@ export default function Taskdetail() {
 
                                             </FormControl>
 
-                                        
+
                                             <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DemoContainer
                                                         components={[
                                                             'DateTimePicker',
@@ -1026,11 +1034,16 @@ export default function Taskdetail() {
                                                     >
                                                         <DemoItem label="Select Estimated End Date Time">
                                                             <DateTimePicker
-
-                                                                value={estimatedDate}
+                                                                renderInput={(props) => <TextField {...props} required />}
+                                                                 value={estimatedDate}
                                                                 onChange={(newDate) => setEstimatedDate(newDate)}
                                                                 format="DD/MM/YYYY hh:mm A"
-                                                                
+                                                                slotProps={{
+                                                                    textField: {
+                                                                      required: true,
+                                                                    },
+                                                                  }}
+
                                                             />
                                                         </DemoItem>
                                                     </DemoContainer>
