@@ -157,9 +157,7 @@ export default function Taskdetail() {
             if (response.ok) {
                 toast.success("Complaint has been updated");
                 setIsLoading(true);
-                setTimeout(() => {
-                    navigate("/admin/task");
-                }, 2000);
+                
             }
         } catch (error) {
             console.error("Error:", error);
@@ -168,6 +166,9 @@ export default function Taskdetail() {
             // Handle error if needed
         } finally {
             // setIsLoading(false); // Stop loading
+            setTimeout(() => {
+                navigate("/admin/task");
+            }, 2000);
         }
 
 

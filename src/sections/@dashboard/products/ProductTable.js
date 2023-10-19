@@ -174,9 +174,10 @@ export default function StickyHeadTable() {
         toast.success('Product added successfully'); // Display success toast
         setRefresh((prevRefresh) => !prevRefresh);
       } else {
-        console.error('Failed to add product');
-        toast.error('Failed to add product'); // Display error toast
-      }
+        const errorMessage = await response.text().then(text=>JSON.parse(text)); // Extract backend error message
+        console.error('Invalid product data format', errorMessage);
+        toast.error(`Invalid product data format: ${errorMessage.message}`);
+    }
     } catch (error) {
       console.error('Error while adding product:', error);
       toast.error('Error while adding product'); // Display error toast
@@ -941,7 +942,6 @@ export default function StickyHeadTable() {
                                                       fullWidth
                                                       required
                                                       multiline
-                                                      inputProps={{ maxLength: 150 }}
                                                       margin="normal" // Added margin for spacing between fields
                                                     /><br /><br />
                                                     <div style={{ textAlign: "center" }}><h5>Select images for delete</h5></div>
