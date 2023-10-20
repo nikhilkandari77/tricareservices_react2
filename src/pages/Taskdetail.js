@@ -183,12 +183,7 @@ export default function Taskdetail() {
             ticketStatus: "Closed"
         };
         postComplaintDetails(d);
-        toast.success("Complaint has been closed sucessfully");
-        setTimeout(() => {
-
-            navigate("/admin/task");
-
-        }, 2000);
+       
 
 
     };

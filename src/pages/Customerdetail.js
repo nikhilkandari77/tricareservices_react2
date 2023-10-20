@@ -833,6 +833,7 @@ export default function Customerdetail() {
                 console.log('Product added successfully');
                 setOpenUserImport(false);
                 toast.success('Product added successfully'); // Display success toast
+                window.location.reload();
             } else {
                 const errorMessage = await response.text().then(text=>JSON.parse(text)); // Extract backend error message
                 console.error('Invalid product data format', errorMessage);
