@@ -183,12 +183,7 @@ export default function Taskdetail() {
             ticketStatus: "Closed"
         };
         postComplaintDetails(d);
-        toast.success("Complaint has been closed sucessfully");
-        setTimeout(() => {
-
-            navigate("/admin/task");
-
-        }, 2000);
+       
 
 
     };
@@ -342,7 +337,11 @@ export default function Taskdetail() {
 
 
     useEffect(() => {
-        console.log("state is :", state);
+        // console.log("state is :", state);
+        if(taskId == null){
+            navigate("admin/task");
+            return;
+        }
 
         try {
             setIsTaskLoading(true);
@@ -683,7 +682,7 @@ export default function Taskdetail() {
                                                 <Typography variant="subtitle1" >
                                                     <b> Phone No.:</b>
                                                 </Typography>
-                                                <Typography variant="body1">{customer.contact}</Typography>
+                                                <Typography variant="body1">{task.contact}</Typography>
                                                 <Typography variant="subtitle1"><b>Email Id:</b></Typography>
                                                 <Typography variant="body1">{customer.email}</Typography>
 
@@ -694,9 +693,9 @@ export default function Taskdetail() {
                                                 <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
                                                     <Typography variant="body1"><b>Building No:</b> {task.buildingNo}</Typography>
                                                     <Typography variant="body1"><b>Area: </b>{task.area}</Typography>
-                                                    <Typography variant="body1"><b>City: </b>{customer.city}</Typography>
-                                                    <Typography variant="body1"><b>AreaPin: </b>{customer.areaPin}</Typography>
-                                                    <Typography variant="body1"><b>State: </b>{customer.state}</Typography>
+                                                    <Typography variant="body1"><b>City: </b>{task.city}</Typography>
+                                                    <Typography variant="body1"><b>AreaPin: </b>{task.pinCode}</Typography>
+                                                    {/* <Typography variant="body1"><b>State: </b>{customer.state}</Typography> */}
                                                 </div>
                                             </CardContent>
                                         </Card>

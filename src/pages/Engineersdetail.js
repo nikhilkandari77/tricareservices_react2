@@ -654,9 +654,6 @@ export default function Customerdetail() {
                 // password,
                 // confirmpassword,
 
-
-
-
                 role: {
                     id: 3,
                 },
@@ -681,7 +678,7 @@ export default function Customerdetail() {
 
             if (response.ok) {
                 setUserOpenProduct(false);
-                toast.success('Form submitted successfully');
+                toast.success('Engineer Updated successfully');
                 window.location.reload();
             } else {
                 setMessage(data.message);

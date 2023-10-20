@@ -176,8 +176,8 @@ export default function Usermanagement() {
     const [formData, setFormData] = useState({});
     const [isFormOpen, setIsFormOpen] = useState(true);
     const [id, setId] = useState('');
-    const [loading, setLoading] = useState(false)
-    const [users, setUsers] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [users, setUsers] = useState([]);
     const navigate = useNavigate();
     const [role, setRole] = React.useState([]);
     const [roles, setRoles] = useState([]);
@@ -231,7 +231,7 @@ export default function Usermanagement() {
         return (search === '') || columns.map((column) => row[column.id] !== undefined
             && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
             ? row : null;
-    })
+    });
 
 
     const handleChangePage = (event, newPage) => {
@@ -262,30 +262,30 @@ export default function Usermanagement() {
         setUserOpen(true);
         setUserOpenimport(true);
 
-    }
+    };
 
     const handleClickOpenUserPopupimportexcle = () => {
 
         setUserOpenimport(true);
 
-    }
+    };
     const handleClickCloseimportexcle = () => {
         setUserOpenimport(false);
 
-    }
+    };
 
 
     const handleClickClose1 = () => {
         setUserOpen(false);
         resetpassword();
-    }
+    };
     const handleClickCloseimport = () => {
         setOpenUserImportfile(false);
 
-    }
+    };
     const handleClickOpen1 = () => {
         setUserOpen(false);
-    }
+    };
 
 
 
@@ -544,7 +544,7 @@ export default function Usermanagement() {
     const routeChange = () => {
         window.location.href = "/dashboard/usermanagement";
 
-    }
+    };
 
     // const routeChange4 = (id) => { 
 
@@ -575,7 +575,7 @@ export default function Usermanagement() {
             // Handle other cases or provide a default route
             navigate("/dashboard/default/", { state: { userId: id } });
         }
-    }
+    };
 
 
 
@@ -624,7 +624,7 @@ export default function Usermanagement() {
             console.error('Error while adding users:', error);
             toast.error('Error while adding users'); // Display error toast
         }
-    }
+    };
 
 
 
@@ -633,7 +633,7 @@ export default function Usermanagement() {
         const token = localStorage.getItem('token');
 
 
-        console.log("has role", roleId)
+        console.log("has role", roleId);
         setLoading(true);
         try {
             const response = await fetch(`${baseUrl}/api/user/hasRole/${roleId}`, {
@@ -771,7 +771,7 @@ export default function Usermanagement() {
 
 
 
-    }
+    };
 
     const handleCloseImportExcel = () => {
         setOpenUserImport(false);
@@ -790,7 +790,7 @@ export default function Usermanagement() {
     const handleChange2 = (event) => {
 
         setRole(event.target.value);
-    }
+    };
 
 
     const resetpassword = (e) => {
@@ -807,7 +807,7 @@ export default function Usermanagement() {
         setAddselectedrole('');
         // setConfirmpassword('');
 
-    }
+    };
 
 
 
@@ -1380,14 +1380,16 @@ export default function Usermanagement() {
                                                                                 <Switch
                                                                                     checked={row.status}
                                                                                     onChange={() => handleSwitchChange(row.id)}
-                                                                                    disabled={row.id===parseInt(localStorage.getItem("adminId"),10)}
+                                                                                    disabled={row.id === parseInt(localStorage.getItem("adminId"), 10)}
                                                                                 />
+                                                                               
                                                                             )}
                                                                             {isLoading[row.id] && (
                                                                                 <CircularProgress size={24} color="secondary" />
                                                                             )}
+                                                                            
                                                                         </div>
-                                                                     
+
 
                                                                     </TableCell>
                                                                 );

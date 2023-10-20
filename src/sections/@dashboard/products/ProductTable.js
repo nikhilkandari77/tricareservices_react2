@@ -41,6 +41,7 @@ import './custom.css';
 import baseUrl from '../../../utils/baseUrl';
 import Iconify from '../../../components/iconify';
 import ImageSlide from './ImageSlide'
+import { Info, InfoSharp } from '@mui/icons-material';
 
 
 
@@ -471,7 +472,7 @@ export default function StickyHeadTable() {
       headers: {
           Authorization: `Bearer ${token}`
       },
-  })
+    })
       .then(response => {
           if (!response.ok) {
               // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
@@ -838,7 +839,7 @@ export default function StickyHeadTable() {
                                 else if (column.id === 'button') {
                                   return (
                                     <TableCell key={column.id} align={column.align}>
-                                      <Button onClick={() => handleClickOpen(row)} title="Details" ><DetailsIcon color="primary" /></Button>
+                                      <Button onClick={() => handleClickOpen(row)} title="Details" ><InfoSharp color="primary" /></Button>
                                       <Button onClick={() => handleUpdateOpen(row)} title="Update" ><UpdateIcon color='info' />
                                       </Button>
                                       <Button onClick={() => handleDeleteOption(row)} title="Delete" ><DeleteIcon color='error' /></Button>

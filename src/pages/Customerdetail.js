@@ -57,7 +57,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 
-import { Category } from '@mui/icons-material';
+import { Category, InfoSharp } from '@mui/icons-material';
 import Iconify from '../components/iconify';
 import baseUrl from '../utils/baseUrl';
 import Label from '../components/label/Label';
@@ -833,6 +833,7 @@ export default function Customerdetail() {
                 console.log('Product added successfully');
                 setOpenUserImport(false);
                 toast.success('Product added successfully'); // Display success toast
+                window.location.reload();
             } else {
                 const errorMessage = await response.text().then(text=>JSON.parse(text)); // Extract backend error message
                 console.error('Invalid product data format', errorMessage);
@@ -1879,7 +1880,7 @@ export default function Customerdetail() {
                                                                             return (
                                                                                 <TableCell key={column.id} align={column.align}>
                                                                                     <Button onClick={() => handleProductDetails(row)} title="Details" >
-                                                                                        <DetailsIcon color="primary" />
+                                                                                        <InfoSharp color="primary" />
                                                                                     </Button>
                                                                                     <Button onClick={() => handleDeleteOption(row)}  title="Delete"><DeleteIcon color='error' /></Button>
 

@@ -18,6 +18,8 @@ import { GaugeChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
 // 
+// eslint-disable-next-line import/no-unresolved
+import UnassignedTasksTable from 'src/components/tables/UnassignedTasksTable';
 import baseUrl from '../utils/baseUrl';
 import Iconify from '../components/iconify';
 
@@ -81,19 +83,22 @@ export default function DashboardAppPage() {
   const [isVisitsTodayExpanded, setVisitsTodayExpanded] = useState(false);
   const [isBackLogsExpanded, setBackLogsExpanded] = useState(false);
 
+  const [unassignedTasksData, setUnassignedTaskData] = useState([]);
+  const [assignedTasksData, setAssignedTaskData] = useState([]);
+
   const handleCardClick = (cardTitle) => {
     // Call the custom onClickHandler when the component is clicked
-    if(cardTitle === "total complaints"){
+    if (cardTitle === "total complaints") {
 
       setTotalServicesExpanded(!isTotalServicesExpanded);
-      if(isVisitsTodayExpanded){
+      if (isVisitsTodayExpanded) {
         setVisitsTodayExpanded(!setVisitsTodayExpanded);
       }
       if (isBackLogsExpanded) {
         setBackLogsExpanded(!isBackLogsExpanded);
       }
 
-    } else if(cardTitle === "visits today"){
+    } else if (cardTitle === "visits today") {
 
       setVisitsTodayExpanded(!isVisitsTodayExpanded);
       if (isTotalServicesExpanded) {
@@ -103,14 +108,14 @@ export default function DashboardAppPage() {
         setBackLogsExpanded(!isBackLogsExpanded);
       }
 
-    } else if(cardTitle === "backlog"){
+    } else if (cardTitle === "backlog") {
 
       setBackLogsExpanded(!isBackLogsExpanded);
-      if(isVisitsTodayExpanded){
+      if (isVisitsTodayExpanded) {
         setVisitsTodayExpanded(!setVisitsTodayExpanded);
       }
       if (isTotalServicesExpanded) {
-         setTotalServicesExpanded(!isTotalServicesExpanded);
+        setTotalServicesExpanded(!isTotalServicesExpanded);
       }
 
     }
@@ -121,38 +126,37 @@ export default function DashboardAppPage() {
   useEffect(() => {
     setLoading(true);
 
-
     console.log(`Token ${token}`);
     fetch(`${baseUrl}/api/user/dashboard/admin/`, {
       method: 'GET',
       mode: 'cors',
       headers: {
-          Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-  })
+    })
       .then((response) => {
-          console.log("data", response);
-          
-          if (response.status === 403) {
-              // Handle the case where the response is a 403 (Forbidden) status code
-              toast.error('Session Timed Out');
-              
-              // Clear the user's authentication token or session-related data
-              localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
-              localStorage.removeItem("isLoggedIn");
-              localStorage.clear();
-              
-              // Redirect to the login page
-              navigate("/login"); // If you're using React Router, replace this with the appropriate navigation method
-          } else if (!response.ok) {
-              // Handle other non-OK status codes
-              toast.error('Something Went Wrong');
-          }
-  
-          return response.json(); // Continue parsing the response
+        console.log("data", response);
+
+        if (response.status === 403) {
+          // Handle the case where the response is a 403 (Forbidden) status code
+          toast.error('Session Timed Out');
+
+          // Clear the user's authentication token or session-related data
+          localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
+          localStorage.removeItem("isLoggedIn");
+          localStorage.clear();
+
+          // Redirect to the login page
+          navigate("/login"); // If you're using React Router, replace this with the appropriate navigation method
+        } else if (!response.ok) {
+          // Handle other non-OK status codes
+          toast.error('Something Went Wrong');
+        }
+
+        return response.json(); // Continue parsing the response
       })
-     
-     
+
+
       .then(json => {
 
         setEngineerWorkloadList(json.data.complaintGroupByEngineer);
@@ -173,19 +177,54 @@ export default function DashboardAppPage() {
         setBacklogsMedium(json.data.backLogGroupByPriority.medium);
         setBacklogsLow(json.data.backLogGroupByPriority.low);
 
-        
+
 
       })
       .catch((error) => {
         // Handle general errors that occurred during the fetch
         console.error('Error during fetch:', error);
         toast.error('An error occurred');
-    })
+      })
       .finally(() => {
         setLoading(false);
       });
 
   }, [navigate, token]);
+
+  useEffect(() => {
+
+
+    fetch(`${baseUrl}/api/user/complaint/`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        // Handle successful response and update state
+        const dataTemp = json.data;
+        const unAssignedFilteredData = dataTemp.filter(item => item.engineerId === null);
+        const assignedFilteredData = dataTemp.filter(item => item.engineerId !== null);
+        setUnassignedTaskData(unAssignedFilteredData);
+        setAssignedTaskData(assignedFilteredData);
+
+        // setRows(dataTemp);
+      })
+      .catch(error => {
+        // Handle errors that occurred during the fetch
+        console.error('Error during fetch:', error);
+        toast.error('Services not available ');
+      });
+
+  }, [token]);
 
 
   useEffect(() => {
@@ -328,7 +367,7 @@ export default function DashboardAppPage() {
                 margin: 'auto',
                 cursor: 'pointer',
               }}
-              onClick={() => handleCardClick("total complaints")}
+              // onClick={() => handleCardClick("total complaints")}
 
             >
 
@@ -352,7 +391,7 @@ export default function DashboardAppPage() {
                 margin: 'auto',
                 cursor: 'pointer',
               }}
-              onClick={() => handleCardClick("visits today")}
+              // onClick={() => handleCardClick("visits today")}
             >
 
               <Typography variant="h3">Visits Today</Typography>
@@ -376,7 +415,7 @@ export default function DashboardAppPage() {
                 margin: 'auto',
                 cursor: 'pointer',
               }}
-              onClick={() => handleCardClick("backlog")}
+              // onClick={() => handleCardClick("backlog")}
             >
 
               <Typography variant="h3">BackLogs</Typography>
@@ -427,7 +466,7 @@ export default function DashboardAppPage() {
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
+                      <Typography variant="h3" style={{ color: '#00fa9a' }}>Low</Typography>
                       <Typography variant="h3">{totalComplaintsLow !== 0 ? totalComplaintsLow : "0"}</Typography>
                     </Grid>
                   </Grid>
@@ -474,7 +513,7 @@ export default function DashboardAppPage() {
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
+                      <Typography variant="h3" style={{ color: '#00fa9a' }}>Low</Typography>
                       <Typography variant="h3">{todayVisitsLow !== 0 ? todayVisitsLow : "0"}</Typography>
                     </Grid>
                   </Grid>
@@ -522,7 +561,7 @@ export default function DashboardAppPage() {
                   </Grid>
                   <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
                     <Grid>
-                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
+                      <Typography variant="h3" style={{ color: '#00fa9a' }}>Low</Typography>
                       <Typography variant="h3">{backlogsLow !== 0 ? backlogsLow : "0"}</Typography>
                     </Grid>
                   </Grid>
@@ -540,58 +579,64 @@ export default function DashboardAppPage() {
       <div className="container-fluid">
 
         <Grid container spacing={4} justifyContent="center">
-          <Grid item xs={12} md={6}>
-           
-            <Card>
-            <div style={{padding:"3vh 0 0 2vw"}}><h5><b> Over All Progress</b></h5></div>
-              <PieChart
-              title="Engineer WorkLoads"
-                series={[
-                  {
 
-                    data: [
-                      { id: 0, value: rows.backLog, label: `Delayed `, color: "#dc3545" },
-                      { id: 1, value: rows.closedService, label: `Completed `, color: "#198754" },
-                      { id: 2, value: rows.activeService, label: `On-Going `, color: "#ffc107" },
-                    ],
-                  },
-                ]}
-                width="350"
-                height={350}
-                outerRadius={2}
-                innerRadius={1}
-                {...sizing}
-              />
-              <div className='comtainer'>
-                <div className='row'>
+          <Grid item xs={12} md={7}>
 
-                  <div className='col-sm-12' style={{ textAlign: "center" }}>
-                    <span className="btn btn-dark">Total {rows.activeService + rows.closedService}</span>&nbsp;
-
-                    <span className="btn btn-danger">Delayed {rows.backLog}</span>&nbsp;
-                    <span className="btn btn-success">Completed {rows.closedService}</span>&nbsp;
-                    <span className="btn btn-warning">On-Going {rows.activeService}</span>
-                  </div>
-                </div>
-                <br />
-              </div>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            
             <ChartEngineerWorkload
               title="Engineer WorkLoads"
               subheader=""
               chartLabels={Object.keys(hashMap)}
               chartData={[
-                { name: 'numberofservices', data: Object.values(hashMap) }
+                { name: 'Services', data: Object.values(hashMap) }
               ]}
               width={'100%'}
-              height={600} // You can adjust the height as needed
+              height={300} // You can adjust the height as needed
               options={{ maintainAspectRatio: false }} // Allow chart to adjust its aspect ratio
             />
           </Grid>
+
+
+          <Grid item xs={12} md={5}>
+
+            <Card style={{ padding: '20px' }}>
+              <div><h5><b> Over All Progress</b></h5></div>
+
+              <Grid container spacing={2} justifyContent="center">
+                <Grid item xs={8} md={8}>
+                  <PieChart
+                    title="OverAll Progress"
+                    series={[
+                      {
+                        data: [
+                          { id: 0, value: rows.backLog, label: `Delayed `, color: "#dc3545" },
+                          { id: 1, value: rows.closedService, label: `Completed `, color: "#198754" },
+                          { id: 2, value: rows.activeService, label: `On-Going `, color: "#ffc107" },
+                        ],
+                      },
+                    ]}
+                    width="400"
+                    height={300}
+                    outerRadius={2}
+                    innerRadius={1}
+                    {...sizing}
+                  />
+
+                </Grid>
+                <Grid item xs={4} md={4}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                    
+                      <span className="btn btn-success">Completed {rows.closedService}</span>&nbsp;
+                      <span className="btn btn-warning">On-Going {rows.activeService}</span>&nbsp;
+                      <span className="btn btn-danger">Delayed {rows.backLog}</span>&nbsp;
+                      <span className="btn btn-dark">Total {rows.activeService + rows.closedService}</span>
+
+                  </div>
+                </Grid>
+
+              </Grid>
+            </Card>
+          </Grid>
+
         </Grid>
       </div>
 
@@ -603,7 +648,20 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12}>
 
-            <DashboardTable token={token} />
+            <UnassignedTasksTable data={unassignedTasksData} />
+
+          </Grid>
+        </Grid>
+      </div>
+
+      <div className="container-fluid">
+
+        <Grid container spacing={3}>
+
+          <Grid item xs={12}>
+
+            <DashboardTable data={assignedTasksData} />
+
           </Grid>
         </Grid>
       </div>

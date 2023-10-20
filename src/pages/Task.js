@@ -185,59 +185,71 @@ export default function Task() {
         },
         { id: 'id', field: 'id', headerName: 'Complaint Id',align: 'center', minWidth: 50 },
         {
+            id: 'customerName',
+            field: 'customerName',
+            headerName: 'Customer',
+            minWidth: 150,
+            align: 'center',
+            headerAlign: 'center', // Center-align the header text
+            renderCell: (params) => (
+                <a style={{ whiteSpace: 'pre-wrap' }}>{params.row.customerName}</a>
+              ),
+        },
+        {
             id: 'productCustomer',
             field: 'productCustomer',
             subId: 'productName',
             headerName: 'Product',
-            minWidth: 200,
+            minWidth: 150,
+            align: 'center',
             renderCell: (params) => (
-                <a>{params.row.productCustomer.productName}</a>
+              <a style={{ whiteSpace: 'pre-wrap' }}>{params.row.productCustomer.productName}</a>
             ),
             // format: (value) => value.toLocaleString('en-US'),
+            headerAlign: 'center', // Center-align the header text
         },
         {
             id: 'problem',
             field: 'problem',
             headerName: 'Problem',
             // format: (value) => value.toLocaleString('en-US'),
-            minWidth: 200,
+            minWidth: 130,
+            align: 'center',
+            renderCell: (params) => (
+                <a style={{ whiteSpace: 'pre-wrap' }}>{params.row.problem}</a>
+              ),
+            headerAlign: 'center', // Center-align the header text
         },
+        
+        // {
+        //     id: 'createdDateTime', field: 'createdDateTime', headerName: 'Complaint Time', minWidth: 170,
+        //     valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
+        //     type: "date"
+        // },
         {
-            id: 'customerName',
-            field: 'customerName',
-            headerName: 'Customer',
-            minWidth: 70,
-            // format: (value) => value.toFixed(2),
+            id: 'engineerName',
+            field: 'engineerName',
+            headerName: 'Engineer',
+            minWidth: 150,
+            align: 'center',
+            headerAlign: 'center', // Center-align the header text
+            renderCell: (params) => (
+                <a style={{ whiteSpace: 'pre-wrap' }}>{params.row.engineerName || 'Not Assigned'}</a>
+              ),
         },
-        {
-            id: 'createdDateTime', field: 'createdDateTime', headerName: 'Complaint Time', minWidth: 170,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
-            type: "date"
-        },
-        {
-            id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70,
-
-            valueFormatter: (params) => {
-                if (params.value === null) {
-                    return "Pending Assign"; // Set an empty string if value is null
-                }
-                return params.value;
-            },
-
-        },
-        {
-            id: 'estimatedDateTime',
-            field: 'estimatedDateTime',
-            headerName: 'Estimated End Date',
-            minWidth: 170,
-            valueFormatter: (params) => {
-                if (params.value === null) {
-                    return "Pending"; // Set an empty string if value is null
-                }
-                return new Date(params.value).toLocaleDateString('en-GB');
-            },
-            type: "date"
-        },
+        // {
+        //     id: 'estimatedDateTime',
+        //     field: 'estimatedDateTime',
+        //     headerName: 'Estimated End Date',
+        //     minWidth: 170,
+        //     valueFormatter: (params) => {
+        //         if (params.value === null) {
+        //             return "Pending"; // Set an empty string if value is null
+        //         }
+        //         return new Date(params.value).toLocaleDateString('en-GB');
+        //     },
+        //     type: "date"
+        // },
         { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
 
 
@@ -394,7 +406,11 @@ export default function Task() {
 
                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                                 <div style={{ height: "80vh", width: '100%' }}>
-                                    <DataGrid rows={searchItem} columns={columns} initialState={{
+                                    <DataGrid 
+                                    rows={searchItem} 
+                                    columns={columns} 
+                                    rowHeight={80} // Adjust the value as needed to accommodate the cell content
+                                    initialState={{
                                         ...rows.initialState,
                                         pagination: { paginationModel: { pageSize: 10 } },
                                     }}
