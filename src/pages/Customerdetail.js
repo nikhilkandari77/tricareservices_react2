@@ -17,6 +17,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TableHead from '@mui/material/TableHead';
+import UpdateIcon from '@mui/icons-material/Update';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {
@@ -246,6 +247,9 @@ export default function Customerdetail() {
     const [openProductUser, setUserOpenProduct] = React.useState(false);
     const [openuserpassword, setOpenuserpassword] = React.useState(false); // 11/9/2023 change this line
     const [openProductDetails, setOpenProductDetails] = useState(false);
+    const [openProductEdit, setOpenProductEdit] = useState(false);
+    const [editRowData, setEditRowData] = useState(null);
+
     // const [isEditable, setIsEditable] = useState(false);
 
     // const [label, setLabel] = useState('');
@@ -256,6 +260,54 @@ export default function Customerdetail() {
         // console.log('jbhbjb', row.productImageName.split(','));
         setOpenProductDetails(true);
     };
+
+    const handleProductEdit = (row) => {
+        setEditRowData(row);
+
+        setOpenProductEdit(true);
+    }
+    const handleChangeEditRowData = (e) => {
+        setEditRowData({ ...editRowData, [e.target.name]: e.target.value });
+    };
+
+    const submitEditData = async (e) => {
+        e.preventDefault();
+        console.log("edit", editRowData);
+        try {
+            setBtnLoading(true); // Set loading to true when the submission starts
+
+            const response = await fetch(`${baseUrl}/api/user/product-customer/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(editRowData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setUserOpenProduct(false);
+                toast.success('Form submitted successfully');
+                window.location.reload();
+            } else {
+                setMessage(data.message);
+                toast.error('Something went wrong');
+            }
+
+            // Now you can close the form.
+            setIsFormOpen(false);
+        } catch (error) {
+            console.error('An error occurred:', error);
+            toast.error('An error occurred while submitting the form', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        } finally {
+            setBtnLoading(false); // Set loading back to false after submission is complete
+        }
+
+    }
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -833,15 +885,16 @@ export default function Customerdetail() {
                 console.log('Product added successfully');
                 setOpenUserImport(false);
                 toast.success('Product added successfully'); // Display success toast
+                setRefresh(true);
             } else {
-                const errorMessage = await response.text().then(text=>JSON.parse(text)); // Extract backend error message
+                const errorMessage = await response.text().then(text => JSON.parse(text)); // Extract backend error message
                 console.error('Invalid product data format', errorMessage);
                 toast.error(`Invalid product data format: ${errorMessage.message}`);
             }
         } catch (error) {
             console.error('Error while adding products:', error);
             toast.error('Error while adding products'); // Display error toast
-        } finally{
+        } finally {
             setBtnLoading(false); // Set loading to true when the submission starts
         }
     }
@@ -1875,13 +1928,256 @@ export default function Customerdetail() {
 
 
                                                                         if (column.id === 'button') {
-                                                                            const value2=productCustomerData.productImageList;
+                                                                            const value2 = productCustomerData.productImageList;
                                                                             return (
                                                                                 <TableCell key={column.id} align={column.align}>
                                                                                     <Button onClick={() => handleProductDetails(row)} title="Details" >
                                                                                         <DetailsIcon color="primary" />
                                                                                     </Button>
-                                                                                    <Button onClick={() => handleDeleteOption(row)}  title="Delete"><DeleteIcon color='error' /></Button>
+                                                                                    <Button onClick={() => handleProductEdit(row)} title="Edit" >
+                                                                                        <UpdateIcon color='info' />
+                                                                                    </Button>
+                                                                                    <Button onClick={() => handleDeleteOption(row)} title="Delete"><DeleteIcon color='error' /></Button>
+
+
+
+
+                                                                                    <Dialog
+                                                                                        open={openProductEdit}
+                                                                                        onClose={() => setOpenProductEdit(false)}
+                                                                                        aria-labelledby="alert-dialog-title"
+                                                                                        aria-describedby="alert-dialog-description"
+                                                                                        style={{ height: '100vh' }}
+                                                                                        fullWidth
+                                                                                        maxWidth="md"
+                                                                                    >
+                                                                                        <div className="container-fluid" style={{ padding: '20px' }}>
+                                                                                            <div className="row" style={{ textAlign: 'center' }}>
+                                                                                                <h3 id="alert-dialog-title">Edit Product Details</h3>
+                                                                                            </div>
+                                                                                            <br />
+                                                                                            {
+                                                                                                editRowData === null ? "" :
+                                                                                                    <div className="row">
+
+
+                                                                                                        <div className="col-md-12">
+
+
+                                                                                                            <form onSubmit={submitEditData}>
+                                                                                                                <Grid container spacing={3}>
+                                                                                                                    {/* Left side fields */}
+                                                                                                                    {/* Your Name, Contact No, Email, and Area pin fields */}
+
+                                                                                                                    <Grid item xs={12} md={6}>
+                                                                                                                        {' '}
+                                                                                                                        {/* Adjusted the Grid layout for responsiveness */}
+                                                                                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+                                                                                                                            <TextField
+                                                                                                                                label="Product Type"
+                                                                                                                                value={editRowData.productType || ""}
+                                                                                                                                name='productType'
+                                                                                                                                onChange={handleChangeEditRowData}
+                                                                                                                                fullWidth
+                                                                                                                                required
+                                                                                                                                style={{ marginTop: '7%' }}
+                                                                                                                                inputProps={{ maxLength: 50 }}
+                                                                                                                            // style={{ padding: '7px', width: '250px' }}
+                                                                                                                            />
+                                                                                                                            <TextField
+                                                                                                                                label="Serial No"
+                                                                                                                                value={editRowData.serialNo}
+                                                                                                                                name='serialNo'
+                                                                                                                                onChange={handleChangeEditRowData}
+                                                                                                                                fullWidth
+                                                                                                                                required
+                                                                                                                                style={{ marginTop: '7%' }}
+                                                                                                                                inputProps={{ maxLength: 50 }}
+                                                                                                                            />
+                                                                                                                            <TextField
+                                                                                                                                label="Construction Type"
+                                                                                                                                value={editRowData.constructionType}
+                                                                                                                                onChange={handleChangeEditRowData}
+                                                                                                                                name='constructionType'
+                                                                                                                                fullWidth
+                                                                                                                                required
+                                                                                                                                style={{ marginTop: '7%' }}
+                                                                                                                                inputProps={{ maxLength: 50 }}
+                                                                                                                            // style={{ padding: '7px', width: '250px' }}
+                                                                                                                            />
+
+
+                                                                                                                            <FormControl
+                                                                                                                                variant="outlined"
+                                                                                                                                sx={{ width: '100%', marginTop: '7%' }}
+                                                                                                                                size="small"
+                                                                                                                            >
+                                                                                                                                <TextField
+                                                                                                                                    id="datepicker"
+                                                                                                                                    label="Dispatch Date"
+                                                                                                                                    variant="outlined"
+                                                                                                                                    required
+                                                                                                                                    name='dispatchDate'
+                                                                                                                                    value={editRowData.dispatchDate}
+                                                                                                                                    onChange={handleChangeEditRowData}
+                                                                                                                                    type="date" // Use type "date" for date picker
+                                                                                                                                    InputLabelProps={{
+                                                                                                                                        shrink: true,
+                                                                                                                                    }}
+                                                                                                                                    inputProps={{
+                                                                                                                                        // Set placeholder value here
+                                                                                                                                        // min: new Date().toISOString().split('T')[0],
+                                                                                                                                    }}
+
+                                                                                                                                />
+                                                                                                                            </FormControl>
+
+                                                                                                                        </div>
+                                                                                                                    </Grid>
+                                                                                                                    <Grid item xs={12} md={6}>
+                                                                                                                        {' '}
+                                                                                                                        {/* Adjusted the Grid layout for responsiveness */}
+                                                                                                                        {/* Right side fields */}
+                                                                                                                        {/* Your Address, City, Password, and Confirm Password fields */}
+                                                                                                                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+
+
+
+
+                                                                                                                            <FormControl
+                                                                                                                                variant="outlined"
+                                                                                                                                sx={{ width: '100%', marginTop: '7%' }}
+                                                                                                                                size="small"
+                                                                                                                            >
+                                                                                                                                <TextField
+                                                                                                                                    id="datepicker"
+                                                                                                                                    label="Purchase Date"
+                                                                                                                                    variant="outlined"
+                                                                                                                                    required
+                                                                                                                                    value={editRowData.purchaseDate}
+                                                                                                                                    name='purchaseDate'
+                                                                                                                                    onChange={handleChangeEditRowData}
+                                                                                                                                    type="date" // Use type "date" for date picker
+
+                                                                                                                                    InputLabelProps={{
+                                                                                                                                        shrink: true,
+                                                                                                                                    }}
+                                                                                                                                    inputProps={{
+                                                                                                                                        // Set placeholder value here
+                                                                                                                                        // min: new Date().toISOString().split('T')[0],
+                                                                                                                                    }}
+                                                                                                                                />
+                                                                                                                            </FormControl>
+
+
+
+
+                                                                                                                            <FormControl
+                                                                                                                                variant="outlined"
+                                                                                                                                sx={{ width: '100%', marginTop: '7%' }}
+                                                                                                                                size="small"
+                                                                                                                            >
+                                                                                                                                <TextField
+                                                                                                                                    id="datepicker"
+                                                                                                                                    label="Manufacturing Date"
+                                                                                                                                    variant="outlined"
+                                                                                                                                    required
+                                                                                                                                    name='manufacturingDate'
+                                                                                                                                    value={editRowData.manufacturingDate}
+                                                                                                                                    onChange={handleChangeEditRowData}
+                                                                                                                                    type="date" // Use type "date" for date picker
+
+                                                                                                                                    InputLabelProps={{
+                                                                                                                                        shrink: true,
+                                                                                                                                    }}
+                                                                                                                                    inputProps={{
+                                                                                                                                        // Set placeholder value here
+
+                                                                                                                                        // min: new Date().toISOString().split('T')[0],
+                                                                                                                                    }}
+                                                                                                                                />
+                                                                                                                            </FormControl>
+
+
+
+
+
+                                                                                                                            <FormControl
+                                                                                                                                variant="outlined"
+                                                                                                                                sx={{ width: '100%', marginTop: '7%' }}
+                                                                                                                                size="small"
+                                                                                                                            >
+                                                                                                                                <TextField
+                                                                                                                                    id="datepicker"
+                                                                                                                                    label="Installation Date"
+                                                                                                                                    variant="outlined"
+                                                                                                                                    required
+                                                                                                                                    name='installationDate'
+                                                                                                                                    value={editRowData.installationDate}
+                                                                                                                                    onChange={handleChangeEditRowData}
+                                                                                                                                    type="date" // Use type "date" for date picker
+
+                                                                                                                                    InputLabelProps={{
+                                                                                                                                        shrink: true,
+                                                                                                                                    }}
+                                                                                                                                    inputProps={{
+                                                                                                                                        // Set placeholder value here
+
+                                                                                                                                        // min: new Date().toISOString().split('T')[0],
+                                                                                                                                    }}
+                                                                                                                                />
+                                                                                                                            </FormControl>
+
+
+
+
+                                                                                                                            <TextField
+                                                                                                                                label="Warranty (In month)"
+                                                                                                                                value={editRowData.warrantyPeriod}
+                                                                                                                                sx={{ marginTop: '7%' }}
+                                                                                                                                name='warrantyPeriod'
+                                                                                                                                onChange={handleChangeEditRowData}
+                                                                                                                                fullWidth
+                                                                                                                                required
+                                                                                                                                inputProps={{ maxLength: 2 }}
+                                                                                                                            // style={{ padding: '7px', width: '250px' }}
+                                                                                                                            />
+                                                                                                                        </div>
+                                                                                                                    </Grid>
+                                                                                                                </Grid>
+                                                                                                            <div><br/>
+                                                                                                            <Button
+                                                                                                                type="submit"
+                                                                                                                variant="contained"
+                                                                                                                color="primary"
+                                                                                                                style={{ float: 'right', }}
+                                                                                                                disabled={btnLoading} // Disable the button when loading is true
+                                                                                                            >
+                                                                                                                {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+                                                                                                            </Button>
+
+                                                                                                            <Button
+                                                                                                                className="btn btn-dangerr"
+                                                                                                                onClick={() => setOpenProductEdit(false)} // Attach the onClick handler to close the dialog
+                                                                                                                style={{ width: '8%', color: 'red' }}
+
+                                                                                                            >
+                                                                                                                Close
+                                                                                                            </Button>
+                                                                                                            </div>
+                                                
+                                                                                                            </form>
+                                                                                                    
+                                                                                                        </div>
+
+                                                                                            
+                                                                                                    </div>
+                                                                                            }
+
+                                                                                        </div>
+                                                                                    </Dialog>
 
                                                                                     <Dialog
                                                                                         open={openProductDetails}
@@ -1905,7 +2201,7 @@ export default function Customerdetail() {
                                                                                                                 <img style={{ height: "10vh", margin: "auto" }} src="/products/logo.png" alt='product' />
                                                                                                             ) : (
                                                                                                                 // <LazyLoad height={100} offset={100}>
-                                                                                                                <img  loading="lazy" src={`${baseUrl}${productCustomerData.productImageList[0]}`} alt='product' />
+                                                                                                                <img loading="lazy" src={`${baseUrl}${productCustomerData.productImageList[0]}`} alt='product' />
                                                                                                             )}
                                                                                                         </div>
                                                                                                         <div style={{ margin: 'auto', textAlign: 'center', padding: '10' }}>
