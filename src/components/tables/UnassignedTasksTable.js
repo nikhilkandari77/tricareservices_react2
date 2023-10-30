@@ -10,9 +10,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import {  styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
-import {  Button,Box, Typography } from '@mui/material';
+import { Button, Box, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
@@ -23,8 +23,8 @@ import baseUrl from '../../utils/baseUrl';
 
 const columns = [
   { id: "sr", label: 'S.No',align: 'center', minWidth: 10 },
-  { id: 'id', label: 'Complaint Id', align: 'center', minWidth: 30 },
-  { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
+  // { id: 'priority', label: 'Priority', align: 'center', minWidth: 70 },
+  { id: 'id', label: 'Complaint Id', align: 'center', minWidth: 10 },
   {
     id: 'customerName',
     label: 'Customer',
@@ -47,10 +47,11 @@ const columns = [
     align: 'center',
     // format: (value) => value.toLocaleString('en-US'),
   },
-  // { id: 'createdDateTime', label: 'Complaint Time', align: 'center', minWidth: 110 },
-  { id: 'engineerName', label: 'Engineer', align: 'center', minWidth: 70 },
+  { id: 'createdDateTime', label: 'Complaint Time', align: 'center', minWidth: 110 },
+  // { id: 'engineerName', label: 'Engineer', align: 'center', minWidth: 70 },
   // { id: 'estimatedDateTime', label: 'Estimated End Time', align: 'center', minWidth: 110 },
-  { id: 'complaintStatus', label: 'Status', align: 'center', minWidth: 70 },
+  // { id: 'complaintStatus', label: 'Status', align: 'center', minWidth: 70 },
+
   { id: 'action', label: 'Action', align: 'center', minWidth: 70 },
 ];
 const Search = styled('div')(({ theme }) => ({
@@ -98,7 +99,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
-export default function DashboardTable({ data }) {
+export default function UnassignedTasksTable({ data }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
 
@@ -118,8 +119,8 @@ export default function DashboardTable({ data }) {
   };
 
   const routeChange1 = (id) => {
-    if(id!==undefined&&id!==null)
-    navigate("/admin/task/details", { state: { taskId: id } });
+    if (id !== undefined && id !== null)
+      navigate("/admin/task/details", { state: { taskId: id } });
   };
 
 
@@ -162,27 +163,28 @@ export default function DashboardTable({ data }) {
   //     method: 'GET',
   //     mode: 'cors',
   //     headers: {
-  //         Authorization: `Bearer ${token}`,
+  //       Authorization: `Bearer ${token}`,
   //     },
   //   })
   //     .then(response => {
-  //         if (!response.ok) {
-  //             // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
-  //             throw new Error(`HTTP error! Status: ${response.status}`);
-  //         }
-  //         return response.json();
+  //       if (!response.ok) {
+  //         // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+  //         throw new Error(`HTTP error! Status: ${response.status}`);
+  //       }
+  //       return response.json();
   //     })
   //     .then(json => {
-  //         // Handle successful response and update state
-  //         const dataTemp = json.data;
-  //         const filteredData = dataTemp.filter(item => item.engineerId !== null);
-  //         setRows(filteredData);
-  //         // setRows(dataTemp);
+  //       // Handle successful response and update state
+  //       const dataTemp = json.data;
+  //       const filteredData = dataTemp.filter(item => item.engineerId === null);
+  //       setRows(filteredData);
+
+  //       // setRows(dataTemp);
   //     })
   //     .catch(error => {
-  //         // Handle errors that occurred during the fetch
-  //         console.error('Error during fetch:', error);
-  //         toast.error('Services not available ');
+  //       // Handle errors that occurred during the fetch
+  //       console.error('Error during fetch:', error);
+  //       toast.error('Services not available ');
   //     });
 
   // }, [token]);
@@ -201,15 +203,15 @@ export default function DashboardTable({ data }) {
   //     requestSearch(searched);
   //   };
 
-  const searchItems = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined&&row[column.id]!==null
-      && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
-      ? row : null)
+  const searchItems = rows.filter(row => (search === '') || columns.map((column) => row[column.id] !== undefined && row[column.id] !== null
+    && row[column.id].toString().toLowerCase().includes(search.toLocaleLowerCase())).reduce((x, y) => x || y)
+    ? row : null);
 
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <Box sx={{ flexGrow: 6 }}>
-        <AppBar style={{ backgroundColor: '#449355' }} position="static">
+        <AppBar style={{ backgroundColor: '#dc3545' }} position="static">
           <Toolbar variant="dense">
             <Typography
               variant="h6"
@@ -217,12 +219,12 @@ export default function DashboardTable({ data }) {
               component="div"
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
             >
-              Assigned Complaints
+              Recieved Complaints
             </Typography>
 
 
 
-            <Search> 
+            <Search>
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
@@ -245,7 +247,7 @@ export default function DashboardTable({ data }) {
               "& th": {
                 fontSize: "1rem",
                 color: "white",
-                backgroundColor: "#449355"
+                backgroundColor: "#dc3545"
               }
             }}>
               {columns.map((column) => (
@@ -322,7 +324,7 @@ export default function DashboardTable({ data }) {
                       if (column.id === 'action') {
                         return (
                           <TableCell key={column.id} align={column.align}>
-                            <Button onClick={() => routeChange1(row.id)} variant="contained">Details</Button>
+                            <Button onClick={() => routeChange1(row.id)} variant="contained">Assign</Button>
                           </TableCell>
                         );
                       }

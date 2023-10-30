@@ -4,28 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock">
-      <change afterPath="$PROJECT_DIR$/build/assets/icons/navbar/FJS77L3H4AGKADG.xls" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/assets/icons/navbar/UserMngmnt.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/assets/icons/navbar/Videos - Shortcut.lnk" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/image1/Group 1 (6).png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/image1/Vector (1).png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/image1/Vector.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/image1/png-clipart-user-profile-computer-icons-girl-customer-avatar-angle-heroes-thumbnail 1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/assets/icons/navbar/reportIcon.png" afterDir="false" />
+    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="12TH OCT">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/asset-manifest.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/css/main.b708531c.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/css/main.b708531c.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/js/496.640516ce.chunk.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/js/496.640516ce.chunk.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/js/main.e496646a.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/js/main.e496646a.js.LICENSE.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/js/main.e496646a.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/icons/navbar/FJS77L3H4AGKADG.xls" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/icons/navbar/UserMngmnt.png" beforeDir="false" afterPath="$PROJECT_DIR$/build/assets/icons/navbar/UserMngmnt.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/assets/icons/navbar/Videos - Shortcut.lnk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/static/js/main.44bbffa0.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/baseUrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/baseUrl.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -306,7 +291,15 @@
       <option name="project" value="LOCAL" />
       <updated>1696944700183</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="12TH OCT">
+      <option name="closed" value="true" />
+      <created>1697095844475</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1697095844475</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -324,6 +317,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="update" />
     <MESSAGE value="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock" />
+    <MESSAGE value="12TH OCT" />
+    <option name="LAST_COMMIT_MESSAGE" value="12TH OCT" />
   </component>
 </project>

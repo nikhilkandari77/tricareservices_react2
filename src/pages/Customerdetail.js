@@ -58,7 +58,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 
-import { Category } from '@mui/icons-material';
+import { Category, InfoSharp } from '@mui/icons-material';
 import Iconify from '../components/iconify';
 import baseUrl from '../utils/baseUrl';
 import Label from '../components/label/Label';
@@ -2167,12 +2167,12 @@ export default function Customerdetail() {
                                                                                                                 Close
                                                                                                             </Button>
                                                                                                             </div>
-                                                
+
                                                                                                             </form>
-                                                                                                    
+
                                                                                                         </div>
 
-                                                                                            
+
                                                                                                     </div>
                                                                                             }
 
@@ -2201,7 +2201,7 @@ export default function Customerdetail() {
                                                                                                                 <img style={{ height: "10vh", margin: "auto" }} src="/products/logo.png" alt='product' />
                                                                                                             ) : (
                                                                                                                 // <LazyLoad height={100} offset={100}>
-                                                                                                                <img loading="lazy" src={`${baseUrl}${productCustomerData.productImageList[0]}`} alt='product' />
+                                                                                                                <img  loading="lazy" src={`${baseUrl}${productCustomerData.productImageList[0]}`} alt='product' />
                                                                                                             )}
                                                                                                         </div>
                                                                                                         <div style={{ margin: 'auto', textAlign: 'center', padding: '10' }}>

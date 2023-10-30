@@ -169,59 +169,97 @@ export default function TaskHistory() {
 
     const [datas, setData] = useState([]);
 
+    function formatDateTime(dateString) {
+        const options = {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        };
+    
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', options);
+    }
+
     const columns = [
         { id: "sr", field: "sr", headerName: 'S.No', maxWidth: 10 },
+        // {
+        //     id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
+
+        //     renderCell: (params) => (
+        //         <Label
+        //             color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
+        //         >
+        //             {params.row.priority}
+        //         </Label>
+        //     )
+
+        // },
+        { id: 'id', field: 'id', headerName: 'Complaint Id', minWidth: 30 },
         {
-            id: 'priority', field: 'priority', headerName: 'Priority', minWidth: 70,
-
+            id: 'customerName',
+            field: 'customerName',
+            headerName: 'Customer',
+            minWidth: 150,
+            align: 'center',
+            headerAlign: 'center', // Center-align the header text
             renderCell: (params) => (
-                <Label
-
-                    color={params.row.priority === "High" ? "error" : params.row.priority === "Medium" ? "warning" : "success"}
-                >
-                    {params.row.priority}
-                </Label>
-            )
-
+                <a style={{ whiteSpace: 'pre-wrap' }}>{params.row.customerName}</a>
+              ),
         },
-        { id: 'id', field: 'id', headerName: 'Complaint Id', minWidth: 50 },
         {
             id: 'productCustomer',
             field: 'productCustomer',
             subId: 'productName',
             headerName: 'Product',
-            minWidth: 120,
+            minWidth: 150,
+            align: 'center',
             renderCell: (params) => (
-                <a>{params.row.productCustomer.productName}</a>
+              <a style={{ whiteSpace: 'pre-wrap' }}>{params.row.productCustomer.productName}</a>
             ),
             // format: (value) => value.toLocaleString('en-US'),
+            headerAlign: 'center', // Center-align the header text
         },
         {
             id: 'problem',
             field: 'problem',
             headerName: 'Problem',
             // format: (value) => value.toLocaleString('en-US'),
-            minWidth: 200,
+            minWidth: 130,
+            align: 'center',
+            renderCell: (params) => (
+                <a style={{ whiteSpace: 'pre-wrap' }}>{params.row.problem}</a>
+              ),
+            headerAlign: 'center', // Center-align the header text
         },
+        
+        // {
+        //     id: 'createdDateTime', field: 'createdDateTime', headerName: 'Complaint Time', minWidth: 170,
+        //     valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
+        //     type: "date"
+        // },
         {
-            id: 'customerName',
-            field: 'customerName',
-            headerName: 'Customer',
-            minWidth: 70,
-            // format: (value) => value.toFixed(2),
+            id: 'engineerName',
+            field: 'engineerName',
+            headerName: 'Engineer',
+            minWidth: 150,
+            align: 'center',
+            headerAlign: 'center', // Center-align the header text
+            valueGetter: (params) => params.row.engineerName || 'Not Assigned',
         },
+        // {
+        //     id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Date', minWidth: 170,
+        //     valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
+        //     type: "date"
+        // },
         {
-            id: 'createdDateTime', field: 'createdDateTime', headerName: 'Complaint Time', minWidth: 170,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
+            id: 'closeDateTime', field: 'closeDateTime', headerName: 'Closed Time', minWidth: 170,
+            valueFormatter: (params) => formatDateTime(params.value),
             type: "date"
         },
-        { id: 'engineerName', field: 'engineerName', headerName: 'Engineer', minWidth: 70 },
-        {
-            id: 'estimatedDateTime', field: 'estimatedDateTime', headerName: 'Estimated End Date', minWidth: 170,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString('en-GB'),
-            type: "date"
-        },
-        { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 170 },
+        { id: 'complaintStatus', field: 'complaintStatus', headerName: 'Status', minWidth: 100 },
         
         // { id: 'action',field: 'action', label: 'Action', align: 'center', minWidth: 70 },
         {
@@ -308,19 +346,19 @@ export default function TaskHistory() {
 
 
 
-    function formatDateTime(dateString) {
-        const options = {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-        };
+    // function formatDateTime(dateString) {
+    //     const options = {
+    //         year: 'numeric',
+    //         month: 'short',
+    //         day: 'numeric',
+    //         hour: 'numeric',
+    //         minute: 'numeric',
+    //         hour12: true
+    //     };
 
-        const date = new Date(dateString);
-        return date.toLocaleString('en-US', options);
-    }
+    //     const date = new Date(dateString);
+    //     return date.toLocaleString('en-US', options);
+    // }
 
     //    let sr = 0;
 
@@ -380,7 +418,11 @@ export default function TaskHistory() {
 
                             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                                 <div style={{ height: "80vh", width: '100%' }}>
-                                <DataGrid rows={searchItem} columns={columns} initialState={{
+                                <DataGrid 
+                                    rows={searchItem} 
+                                    columns={columns} 
+                                    rowHeight={80} // Adjust the value as needed to accommodate the cell content
+                                    initialState={{
                                         ...rows.initialState,
                                         pagination: { paginationModel: { pageSize: 10 } },
                                     }}

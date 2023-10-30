@@ -77,7 +77,7 @@ export default function TaskHistoryDetail() {
     const [engineerId, setEngineerId] = React.useState('');
     const [priority, setPriority] = React.useState('');
 
-    const [productImages, setProductImages] = useState('')
+    const [productImages, setProductImages] = useState('');
     const [task, setTask] = useState({}); /* sets complaint details */
     const [customer, setCustomer] = useState({}); /* gets customer's details */
     const [engineers, setEngineers] = useState([]); /* gets engineer list */
@@ -96,7 +96,7 @@ export default function TaskHistoryDetail() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    
+
 
     function formatDateTime(dateTimeString) {
         const dateTime = new Date(dateTimeString);
@@ -234,7 +234,7 @@ export default function TaskHistoryDetail() {
                         setVisitTime(formattedTime2);
                     }
 
-                    console.log(formattedDate2)
+                    console.log(formattedDate2);
                     showCustomer(json.data.customerId, token);
 
                 });
@@ -316,7 +316,7 @@ export default function TaskHistoryDetail() {
     const handleOpenImage = (e) => {
         setImage(e.target.src);
         setOpenImage(true);
-    }
+    };
     const toggleZoom = () => {
         setZoomedIn(!zoomedIn);
     };
@@ -348,12 +348,25 @@ export default function TaskHistoryDetail() {
             });
     }, [taskId]);
 
+    function formatMonthDateTime(dateString) {
+        const options = {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        };
+
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', options);
+    }
 
     let sr = 0;
 
 
 
-    
+
     return (
 
         <div>
@@ -379,7 +392,7 @@ export default function TaskHistoryDetail() {
 
                 <div>
                     <Box>
-                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh',borderRadius:"3px" }} position="static">
+                        <AppBar style={{ backgroundColor: '#007F6D', padding: '1vh', borderRadius: "3px" }} position="static">
 
 
                             {Object.keys(task).length === 0 ? (
@@ -481,18 +494,20 @@ export default function TaskHistoryDetail() {
                                                 <Typography variant="subtitle1" style={{ marginTop: '10%' }}>
                                                     Phone No.
                                                 </Typography>
-                                                <Typography variant="body1">{customer.contact}</Typography>
+                                                <Typography variant="body1">{task.contact}</Typography>
                                                 <Typography variant="subtitle1">Email Id.</Typography>
                                                 <Typography variant="body1">{customer.email}</Typography>
-                                                <Typography variant="subtitle1" style={{ marginTop: '10%' }}>
-                                                    Address.
+
+                                                <Typography variant="h5" >
+                                                    Address:
                                                 </Typography>
+
                                                 <div style={{ overflowWrap: 'break-word', maxWidth: "10rem" }}>
-                                                <Typography variant="body1">Building No: {task.buildingNo}</Typography>
-                                                <Typography variant="body1">Area: {task.area}</Typography>
-                                                <Typography variant="body1">City: {customer.city}</Typography>
-                                                <Typography variant="body1">AreaPin: {customer.areaPin}</Typography>
-                                                <Typography variant="body1">State: {customer.state}</Typography>
+                                                    <Typography variant="body1"><b>Building No:</b> {task.buildingNo}</Typography>
+                                                    <Typography variant="body1"><b>Area: </b>{task.area}</Typography>
+                                                    <Typography variant="body1"><b>City: </b>{task.city}</Typography>
+                                                    <Typography variant="body1"><b>AreaPin: </b>{task.pinCode}</Typography>
+                                                    {/* <Typography variant="body1"><b>State: </b>{customer.state}</Typography> */}
                                                 </div>
                                             </CardContent>
                                         </Card>
@@ -708,7 +723,7 @@ export default function TaskHistoryDetail() {
                                             </CardContent>
                                         </Card>
 
-                                        <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
+                                        {/* <FormControl sx={{ width: '100%', marginBottom: '10%' }} size="small">
                                             <InputLabel id="labelServiceType">Service Type</InputLabel>
                                             <Select
                                                 labelId="labelServiceType"
@@ -763,26 +778,36 @@ export default function TaskHistoryDetail() {
                                                     ))
                                                 )}
                                             </Select>
-                                        </FormControl>
-
+                                        </FormControl> */}
 
                                         <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
-
-                                            <div><b>Closed Date : </b>{estimatedDate}</div>
+                                            <div><b>Service Type :   </b>{task.serviceType}</div>
                                         </FormControl>
 
                                         <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <div><b>Complaint Type :   </b>{task.complaintType}</div>
+                                        </FormControl>
+
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <div><b>Service Engineer :   </b>{task.engineerName || 'Not Assigned'}</div>
+                                        </FormControl>
+
+                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                            <div><b>Closed Date : </b>{formatMonthDateTime(task.closeDateTime)}</div>
+                                        </FormControl>
+
+                                        {/* <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
 
                                             <div><b>Closed Time : </b>{estimatedTime}</div>
-                                        </FormControl>
+                                        </FormControl> */}
 
-                                        <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
+                                        {/* <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
                                             <div><b>Visit Date : </b>{visitDate}</div>
                                         </FormControl>
                                         <FormControl variant="outlined" sx={{ width: '100%', marginBottom: '5%' }} size="small">
                                             <div><b>Visit Time : </b>{visitTime}</div>
 
-                                        </FormControl>
+                                        </FormControl> */}
                                         <FormControl sx={{ width: '100%', marginBottom: '2%' }} size="small">
 
                                             <div><b>Priority : </b>{priority}</div>
@@ -803,89 +828,89 @@ export default function TaskHistoryDetail() {
 
                         <Grid item xs={12} style={{ marginTop: '0%' }}>
                             {/* <Item> */}
-                                {/* <Card > */}
-                                <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
-                                    Activity
-                                </Typography>
+                            {/* <Card > */}
+                            <Typography variant="subtitle1" style={{ marginRight: '90%' }}>
+                                Activity
+                            </Typography>
 
 
-                                <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
-                                    <TableContainer sx={{ height: "65vh" }}>
-                                        <Table stickyHeader aria-label="sticky table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    {columns.map((column) => (
-                                                        <TableCell
-                                                            key={column.id}
+                            <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: '1%' }}>
+                                <TableContainer sx={{ height: "65vh" }}>
+                                    <Table stickyHeader aria-label="sticky table">
+                                        <TableHead>
+                                            <TableRow>
+                                                {columns.map((column) => (
+                                                    <TableCell
+                                                        key={column.id}
 
-                                                            align={column.align}
-                                                            style={{ minWidth: column.minWidth }}
-                                                        >
-                                                            {column.label}
-                                                        </TableCell>
-                                                    ))}
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {rows
-                                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                    .map((row) => (
-                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                                            {columns.map((column) => {
-                                                                const value = row[column.id];
+                                                        align={column.align}
+                                                        style={{ minWidth: column.minWidth }}
+                                                    >
+                                                        {column.label}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {rows
+                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                                .map((row) => (
+                                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                                        {columns.map((column) => {
+                                                            const value = row[column.id];
 
-                                                                if (column.id === 'srno') {
-                                                                    sr += 1;
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {value === null ? '' : String(sr)}
-                                                                        </TableCell>
-                                                                    );
-                                                                }
-
-
-                                                                if (column.id === 'activityDatetime') {
-                                                                    return (
-                                                                        <TableCell key={column.id} align={column.align}>
-                                                                            {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
-                                                                            {formatDate(value)}  {formatTime(value)}
-                                                                        </TableCell>
-
-                                                                    );
-
-
-                                                                }
-
-
+                                                            if (column.id === 'srno') {
+                                                                sr += 1;
                                                                 return (
                                                                     <TableCell key={column.id} align={column.align}>
-                                                                        {value}
+                                                                        {value === null ? '' : String(sr)}
+                                                                    </TableCell>
+                                                                );
+                                                            }
+
+
+                                                            if (column.id === 'activityDatetime') {
+                                                                return (
+                                                                    <TableCell key={column.id} align={column.align}>
+                                                                        {/* <Button onClick={() => routeChange4(row.id)} variant="contained"> Details </Button> */}
+                                                                        {formatDate(value)}  {formatTime(value)}
                                                                     </TableCell>
 
                                                                 );
-                                                            })}
-                                                        </TableRow>
-
-                                                    ))}
-                                            </TableBody>
 
 
+                                                            }
 
-                                        </Table>
-                                    </TableContainer>
-                                    <TablePagination
-                                        rowsPerPageOptions={[10, 25, 100]}
-                                        component="div"
-                                        count={rows.length}
-                                        rowsPerPage={rowsPerPage}
-                                        page={page}
-                                        onPageChange={handleChangePage}
-                                        onRowsPerPageChange={handleChangeRowsPerPage}
 
-                                    />
-                                </Paper>
+                                                            return (
+                                                                <TableCell key={column.id} align={column.align}>
+                                                                    {value}
+                                                                </TableCell>
 
-                                {/* </Card> */}
+                                                            );
+                                                        })}
+                                                    </TableRow>
+
+                                                ))}
+                                        </TableBody>
+
+
+
+                                    </Table>
+                                </TableContainer>
+                                <TablePagination
+                                    rowsPerPageOptions={[10, 25, 100]}
+                                    component="div"
+                                    count={rows.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+
+                                />
+                            </Paper>
+
+                            {/* </Card> */}
 
 
                             {/* </Item> */}

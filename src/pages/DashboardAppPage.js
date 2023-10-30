@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { ArcElement } from "chart.js";
+import Chart from "chart.js/auto";
 // eslint-disable-next-line import/no-unresolved
 import DashboardTable from 'src/components/tables/DashboardTable';
 // eslint-disable-next-line import/no-unresolved
 import colors from 'src/theme/colors';
-
-
+import CardContent from '@mui/material/CardContent';
 
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -18,6 +19,18 @@ import { GaugeChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
 // 
+// eslint-disable-next-line import/no-unresolved
+import UnassignedTasksTable from 'src/components/tables/UnassignedTasksTable';
+
+import Donutchart from './Donutchart';
+import DonutchartBacklock from './DonutchartBacklock';
+
+// import PieChartActivity from "./PieChartActivity";
+import StackedBarChart from "./EngginerChart";
+import ComplaintChart from "./ComplaintAnalysis";
+import PriorityChart from "./PieChartActivity";
+import InProgressChart from './InProgress';
+
 import baseUrl from '../utils/baseUrl';
 import Iconify from '../components/iconify';
 
@@ -62,6 +75,11 @@ export default function DashboardAppPage() {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
 
+  const [inProgress, setInProgess] = useState(null);
+  const [todayVisit, setTodayVisit] = useState(null);
+  const [backlog, setBacklog] = useState(null);
+  const [serviceData, setServiceData] = useState(null);
+
   const [totalComplaints, setTotalComplaints] = useState('0');
   const [totalComplaintsHigh, setTotalComplaintsHigh] = useState('0');
   const [totalComplaintsMedium, setTotalComplaintsMedium] = useState('0');
@@ -81,19 +99,24 @@ export default function DashboardAppPage() {
   const [isVisitsTodayExpanded, setVisitsTodayExpanded] = useState(false);
   const [isBackLogsExpanded, setBackLogsExpanded] = useState(false);
 
+  const [unassignedTasksData, setUnassignedTaskData] = useState([]);
+  const [assignedTasksData, setAssignedTaskData] = useState([]);
+  const [engineerWorkload, setEngineerWorkload] = useState(null);
+  const [onHold, setOnHold] = useState(null);
+
   const handleCardClick = (cardTitle) => {
     // Call the custom onClickHandler when the component is clicked
-    if(cardTitle === "total complaints"){
+    if (cardTitle === "total complaints") {
 
       setTotalServicesExpanded(!isTotalServicesExpanded);
-      if(isVisitsTodayExpanded){
+      if (isVisitsTodayExpanded) {
         setVisitsTodayExpanded(!setVisitsTodayExpanded);
       }
       if (isBackLogsExpanded) {
         setBackLogsExpanded(!isBackLogsExpanded);
       }
 
-    } else if(cardTitle === "visits today"){
+    } else if (cardTitle === "visits today") {
 
       setVisitsTodayExpanded(!isVisitsTodayExpanded);
       if (isTotalServicesExpanded) {
@@ -103,14 +126,14 @@ export default function DashboardAppPage() {
         setBackLogsExpanded(!isBackLogsExpanded);
       }
 
-    } else if(cardTitle === "backlog"){
+    } else if (cardTitle === "backlog") {
 
       setBackLogsExpanded(!isBackLogsExpanded);
-      if(isVisitsTodayExpanded){
+      if (isVisitsTodayExpanded) {
         setVisitsTodayExpanded(!setVisitsTodayExpanded);
       }
       if (isTotalServicesExpanded) {
-         setTotalServicesExpanded(!isTotalServicesExpanded);
+        setTotalServicesExpanded(!isTotalServicesExpanded);
       }
 
     }
@@ -118,74 +141,79 @@ export default function DashboardAppPage() {
 
   };
 
+
   useEffect(() => {
-    setLoading(true);
 
 
-    console.log(`Token ${token}`);
-    fetch(`${baseUrl}/api/user/dashboard/admin/`, {
+    fetch(`${baseUrl}/api/user/complaint/`, {
       method: 'GET',
       mode: 'cors',
       headers: {
-          Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-  })
-      .then((response) => {
-          console.log("data", response);
-          
-          if (response.status === 403) {
-              // Handle the case where the response is a 403 (Forbidden) status code
-              toast.error('Session Timed Out');
-              
-              // Clear the user's authentication token or session-related data
-              localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
-              localStorage.removeItem("isLoggedIn");
-              localStorage.clear();
-              
-              // Redirect to the login page
-              navigate("/login"); // If you're using React Router, replace this with the appropriate navigation method
-          } else if (!response.ok) {
-              // Handle other non-OK status codes
-              toast.error('Something Went Wrong');
-          }
-  
-          return response.json(); // Continue parsing the response
-      })
-     
-     
-      .then(json => {
-
-        setEngineerWorkloadList(json.data.complaintGroupByEngineer);
-        setRows(json.data);
-
-        setTotalComplaints(json.data.activeService);
-        setTotalComplaintsHigh(json.data.activeServiceGroupByPriority.high);
-        setTotalComplaintsMedium(json.data.activeServiceGroupByPriority.medium);
-        setTotalComplaintsLow(json.data.activeServiceGroupByPriority.low);
-
-        setTodayVisits(json.data.todayService);
-        setTodayVisitsHigh(json.data.todayServiceGroupByPriority.high);
-        setTodayVisitsMedium(json.data.todayServiceGroupByPriority.medium);
-        setTodayVisitsLow(json.data.todayServiceGroupByPriority.low);
-
-        setBacklogs(json.data.backLog);
-        setBacklogsHigh(json.data.backLogGroupByPriority.high);
-        setBacklogsMedium(json.data.backLogGroupByPriority.medium);
-        setBacklogsLow(json.data.backLogGroupByPriority.low);
-
-        
-
-      })
-      .catch((error) => {
-        // Handle general errors that occurred during the fetch
-        console.error('Error during fetch:', error);
-        toast.error('An error occurred');
     })
-      .finally(() => {
-        setLoading(false);
+      .then(response => {
+        if (!response.ok) {
+          // Handle non-OK responses (e.g., 404 Not Found, 500 Internal Server Error)
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        // Handle successful response and update state
+        const dataTemp = json.data;
+        const unAssignedFilteredData = dataTemp.filter(item => item.engineerId === null);
+        const assignedFilteredData = dataTemp.filter(item => item.engineerId !== null);
+        setUnassignedTaskData(unAssignedFilteredData);
+        setAssignedTaskData(assignedFilteredData);
+
+        // setRows(dataTemp);
+      })
+      .catch(error => {
+        // Handle errors that occurred during the fetch
+        console.error('Error during fetch:', error);
+        toast.error('Services not available ');
       });
 
-  }, [navigate, token]);
+  }, [token]);
+
+  // new Api
+
+
+  useEffect(() => {
+    getVisitToday();
+    getInProgress();
+    getbacklog();
+    getEngineerWorkload();
+    getOnHoldData();
+    fetch(`${baseUrl}/api/user/dashboard/admin/service`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        console.log("Fetched data:", json.data);
+        setServiceData(json.data);
+
+        // Calculate the total value for Free and Paid
+
+        // Display total value at the top
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, [])
+
+
 
 
   useEffect(() => {
@@ -302,6 +330,137 @@ export default function DashboardAppPage() {
     return <div>Loading...</div>;
   }
 
+  // nwe api
+
+  const getOnHoldData = () => {
+
+    fetch(`${baseUrl}/api/user/dashboard/admin/on-hold`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        console.log("Fetched data:", json.data);
+        setOnHold(json.data);
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
+  const getVisitToday = () => {
+
+    fetch(`${baseUrl}/api/user/dashboard/admin/today-visit`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        console.log("Fetched data:", json.data);
+        setTodayVisit(json.data);
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+  const getbacklog = () => {
+
+    fetch(`${baseUrl}/api/user/dashboard/admin/backlog`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        console.log("Fetched data:", json.data);
+        setBacklog(json.data);
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
+  const getInProgress = () => {
+
+    fetch(`${baseUrl}/api/user/dashboard/admin/in-progress`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        console.log("Fetched data:", json.data);
+        setInProgess(json.data);
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+
+
+  const getEngineerWorkload = () => {
+
+    fetch(`${baseUrl}/api/user/dashboard/admin/engineer-workload`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(json => {
+        console.log("Fetched data:", json.data);
+        setEngineerWorkload(json.data);
+
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+
+
+
+
   return (
     <>
       <Helmet>
@@ -309,84 +468,256 @@ export default function DashboardAppPage() {
       </Helmet>
 
       <div className="container-fluid mb-4">
-        <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
+        {/* <Typography variant="h4" sx={{ mb: 5, color: colors.figmaBlue }}>
           Dashboard
-        </Typography>
+        </Typography> */}
 
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card sx={{ minWidth: 180, height: 365, margin: '0 auto 20px', backgroundColor: 'white' }}>
+              <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={6} md={12}>
+                    <Typography sx={{ fontSize: 14, color: 'black', textAlign: 'center' }} color="text.secondary" gutterBottom>
+                      Service Complaints
+                    </Typography>
+
+                    <div>
+
+                      {
+                        serviceData !== null ? <Donutchart data={serviceData} /> : ""
+
+                      }
+
+                    </div>
+
+
+
+                  </Grid>
+
+
+
+                </Grid>
+
+
+
+
+              </CardContent>
+            </Card>
+          </Grid>
+
+
+
+
+
+          <Grid item xs={12} sm={6} md={4}>
+
+
+
+
+
+            <Card sx={{ minWidth: 200, height: 365, margin: '0 auto 20px', backgroundColor: 'white' }}>
+              <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={6} md={12}>
+                    <Typography sx={{ fontSize: 14, color: 'black', textAlign: 'center' }} color="text.secondary" gutterBottom>
+                      Visit Today
+                    </Typography>
+                  </Grid>
+
+
+                  <Grid item xs={12} sm={6} md={12}>
+
+
+                    <div>
+                      {
+                        todayVisit != null ? <InProgressChart data={todayVisit} /> : ""
+
+                      }
+
+                    </div>
+
+
+                  </Grid>
+                </Grid>
+
+
+
+
+              </CardContent>
+            </Card>
+
+
+
+          </Grid>
+
+
+
+
+          <Grid item xs={12} sm={6} md={4}>
+
+            <Card sx={{ minWidth: 200, height: 365, margin: '0 auto 20px', backgroundColor: 'white' }}>
+              <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={6} md={12}>
+                    <Typography sx={{ fontSize: 14, color: 'black', textAlign: 'center' }} color="text.secondary" gutterBottom>
+                      In Progress
+                    </Typography>
+                  </Grid>
+
+
+                  <Grid item xs={12} sm={6} md={12}>
+
+
+                    <div>
+                      {
+                        inProgress !== null ? <InProgressChart data={inProgress} /> : ""
+
+                      }
+                    </div>
+
+                  </Grid>
+                </Grid>
+
+
+
+
+              </CardContent>
+            </Card>
+
+          </Grid>
+
+
           <Grid item xs={12} sm={6} md={4}>
 
             {/* <CardTodayServices title="" color="info" totalCompleted={rows.todayCompletedService} total={rows.todayService} completed={0} /> */}
 
-            <Card
-
-              sx={{
-                py: 2,
-                backgroundColor: 'rgba(0, 91, 167, 1)',
-                color: 'rgba(255, 255, 255, 1)',
-                textAlign: 'center',
-                margin: 'auto',
-                cursor: 'pointer',
-              }}
-              onClick={() => handleCardClick("total complaints")}
-
-            >
-
-              <Typography variant="h3">Active Complaints</Typography>
-              <Typography variant="h3">{totalComplaints !== 0 ? totalComplaints : "0"}</Typography>
+            <Card sx={{ minWidth: 190, height: 460, margin: '0 auto 20px', backgroundColor: 'white' }}>
+              <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={6} md={12}>
+                    <Typography sx={{ fontSize: 14, color: 'black', textAlign: 'center' }} color="text.secondary" gutterBottom>
+                      Delayed
+                    </Typography>
+                  </Grid>
 
 
+                  <Grid item xs={12} sm={6} md={12}>
+
+
+                    <div>
+                      {
+                        backlog !== null ? <InProgressChart data={backlog} /> : ""
+                      }
+                    </div>
+
+
+
+
+
+
+                  </Grid>
+
+                </Grid>
+
+              </CardContent>
             </Card>
-
-
           </Grid>
+
+          <Grid item xs={12} sm={12} md={8}>
+            <Card sx={{ width: '100%', minHeight: "40vh", margin: '0 auto 20px', backgroundColor: 'white' }}>
+              <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={12} md={6}>
+                    <Typography sx={{ fontSize: 14, color: 'black', textAlign: 'center' }} color="text.secondary" gutterBottom>
+                      Engineer WorkLoads
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12} sm={12} md={12}>
+                    <div>
+                      {
+                        engineerWorkload !== null ?
+                          <StackedBarChart data={engineerWorkload} /> : ""
+                      }
+                    </div>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+
           <Grid item xs={12} sm={6} md={4}>
-            {/* <CardNextDayServices title="" total={rows.nextDayScheduled} color="warning" icon={'ant-design:windows-filled'} /> */}
-            <Card
 
-              sx={{
-                py: 2,
-                backgroundColor: 'rgba(68, 147, 85, 1)',
-                color: 'rgba(255, 255, 255, 1)',
-                textAlign: 'center',
-                margin: 'auto',
-                cursor: 'pointer',
-              }}
-              onClick={() => handleCardClick("visits today")}
-            >
+            {/* <CardTodayServices title="" color="info" totalCompleted={rows.todayCompletedService} total={rows.todayService} completed={0} /> */}
 
-              <Typography variant="h3">Visits Today</Typography>
-              <Typography variant="h3">{todayVisits !== 0 ? todayVisits : "0"}</Typography>
+            <Card sx={{ minWidth: 190, height: 408, margin: '0 auto 20px', backgroundColor: 'white' }}>
+              <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={6} md={12}>
+                    <Typography sx={{ fontSize: 14, color: 'black', textAlign: 'center' }} color="text.secondary" gutterBottom>
+                      On Hold
+                    </Typography>
+                  </Grid>
 
 
+                  <Grid item xs={12} sm={6} md={12}>
+
+
+                    <div>
+                      {
+                        onHold !== null ? <InProgressChart data={onHold} /> : ""
+                      }
+                    </div>
+
+
+
+
+
+                  </Grid>
+                </Grid>
+
+              </CardContent>
             </Card>
-
-
           </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            {/* <CardBackLogServices title="" total={rows.backLog} color="error" icon={'ant-design:bug-filled'} /> */}
-
-            <Card
-
-              sx={{
-                py: 2,
-                backgroundColor: 'rgba(0, 130, 148, 1)',
-                color: 'rgba(255, 255, 255, 1)',
-                textAlign: 'center',
-                margin: 'auto',
-                cursor: 'pointer',
-              }}
-              onClick={() => handleCardClick("backlog")}
-            >
-
-              <Typography variant="h3">BackLogs</Typography>
-              <Typography variant="h3">{backlogs !== 0 ? backlogs : "0"}</Typography>
 
 
+          <Grid item xs={12} sm={6} md={8}>
+            <Card sx={{ width: '100%', minheight: "60vh", backgroundColor: 'white' }}>
+              <CardContent>
+                <Grid container spacing={1}>
+                  <Grid item xs={12} sm={12} md={8}>
+                    <Typography sx={{ fontSize: 14, color: 'black', textAlign: 'Left' }} color="text.secondary" gutterBottom>
+                      Overall Activity
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12} sm={12} md={12}>
+                    <div style={{ width: '100%' }}>
+                      <ComplaintChart />
+                    </div>
+                  </Grid>
+                </Grid>
+              </CardContent>
             </Card>
-
           </Grid>
+
         </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -394,208 +725,12 @@ export default function DashboardAppPage() {
 
 
 
-      {isTotalServicesExpanded && (
-        <div className="container-fluid">
-
-          <Grid container spacing={1} justifyContent="center">
-            <Grid item xs={12} md={12}>
-              <Card
-                sx={
-                  {
-                    py: 2,
-                    backgroundColor: 'rgba(0, 91, 167, 1)',
-                    color: 'rgba(255, 255, 255, 1)',
-                    textAlign: "center",
-                    margin: "auto"
-                  }
-                }
-
-              >
-
-                <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{ color: '#ff0800' }}>High</Typography>
-                      <Typography variant="h3">{totalComplaintsHigh !== 0 ? totalComplaintsHigh : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{ color: '#fada5e' }}>Medium</Typography>
-                      <Typography variant="h3">{totalComplaintsMedium !== 0 ? totalComplaintsMedium : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
-                      <Typography variant="h3">{totalComplaintsLow !== 0 ? totalComplaintsLow : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                </div>
 
 
-              </Card>
-            </Grid>
-          </Grid>
-        </div>
-      )}
-
-      {/* Today Visits Details  */}
-      {isVisitsTodayExpanded && (
-        <div className="container-fluid">
-
-          <Grid container spacing={1} justifyContent="center">
-            <Grid item xs={12} md={12}>
-              <Card
-                sx={
-                  {
-                    py: 2,
-                    backgroundColor: 'rgba(68, 147, 85, 1)',
-                    color: 'rgba(255, 255, 255, 1)',
-                    textAlign: "center",
-                    margin: "auto"
-                  }
-                }
-
-              >
-
-                <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{ color: '#ff0800' }}>High</Typography>
-                      <Typography variant="h3">{todayVisitsHigh !== 0 ? todayVisitsHigh : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{ color: '#fada5e' }}>Medium</Typography>
-                      <Typography variant="h3">{todayVisitsMedium !== 0 ? todayVisitsMedium : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
-                      <Typography variant="h3">{todayVisitsLow !== 0 ? todayVisitsLow : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                </div>
 
 
-              </Card>
-            </Grid>
-          </Grid>
-        </div>
-      )}
 
 
-      {/* Backlogs Details  */}
-      {isBackLogsExpanded && (
-        <div className="container-fluid">
-
-          <Grid container spacing={1} justifyContent="center">
-            <Grid item xs={12} md={12}>
-              <Card
-                sx={
-                  {
-                    py: 2,
-                    backgroundColor: 'rgba(0, 130, 148, 1)',
-                    color: 'rgba(255, 255, 255, 1)',
-                    textAlign: "center",
-                    margin: "auto"
-                  }
-                }
-
-              >
-
-                <div className="container-fluid" style={{ display: 'flex', flexDirection: 'row' }}>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{ color: '#ff0800' }}>High</Typography>
-                      <Typography variant="h3">{backlogsHigh !== 0 ? backlogsHigh : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{ color: '#fada5e' }}>Medium</Typography>
-                      <Typography variant="h3">{backlogsMedium !== 0 ? backlogsMedium : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid spacing={4} justifyContent="center" item xs={12} sm={6} md={4}>
-                    <Grid>
-                      <Typography variant="h3" style={{color: '#00fa9a'}}>Low</Typography>
-                      <Typography variant="h3">{backlogsLow !== 0 ? backlogsLow : "0"}</Typography>
-                    </Grid>
-                  </Grid>
-                </div>
-
-
-              </Card>
-            </Grid>
-          </Grid>
-        </div>
-      )}
-
-
-      <br />
-      <div className="container-fluid">
-
-        <Grid container spacing={4} justifyContent="center">
-          <Grid item xs={12} md={6}>
-           
-            <Card>
-            <div style={{padding:"3vh 0 0 2vw"}}><h5><b> Over All Progress</b></h5></div>
-              <PieChart
-              title="Engineer WorkLoads"
-                series={[
-                  {
-
-                    data: [
-                      { id: 0, value: rows.backLog, label: `Delayed `, color: "#dc3545" },
-                      { id: 1, value: rows.closedService, label: `Completed `, color: "#198754" },
-                      { id: 2, value: rows.activeService, label: `On-Going `, color: "#ffc107" },
-                    ],
-                  },
-                ]}
-                width="350"
-                height={350}
-                outerRadius={2}
-                innerRadius={1}
-                {...sizing}
-              />
-              <div className='comtainer'>
-                <div className='row'>
-
-                  <div className='col-sm-12' style={{ textAlign: "center" }}>
-                    <span className="btn btn-dark">Total {rows.activeService + rows.closedService}</span>&nbsp;
-
-                    <span className="btn btn-danger">Delayed {rows.backLog}</span>&nbsp;
-                    <span className="btn btn-success">Completed {rows.closedService}</span>&nbsp;
-                    <span className="btn btn-warning">On-Going {rows.activeService}</span>
-                  </div>
-                </div>
-                <br />
-              </div>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            
-            <ChartEngineerWorkload
-              title="Engineer WorkLoads"
-              subheader=""
-              chartLabels={Object.keys(hashMap)}
-              chartData={[
-                { name: 'numberofservices', data: Object.values(hashMap) }
-              ]}
-              width={'100%'}
-              height={600} // You can adjust the height as needed
-              options={{ maintainAspectRatio: false }} // Allow chart to adjust its aspect ratio
-            />
-          </Grid>
-        </Grid>
-      </div>
-
-      <br />
 
       <div className="container-fluid">
 
@@ -603,7 +738,20 @@ export default function DashboardAppPage() {
 
           <Grid item xs={12}>
 
-            <DashboardTable token={token} />
+            <UnassignedTasksTable data={unassignedTasksData} />
+
+          </Grid>
+        </Grid>
+      </div><br />
+
+      <div className="container-fluid">
+
+        <Grid container spacing={3}>
+
+          <Grid item xs={12}>
+
+            <DashboardTable data={assignedTasksData} />
+
           </Grid>
         </Grid>
       </div>
