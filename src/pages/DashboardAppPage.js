@@ -123,73 +123,73 @@ export default function DashboardAppPage() {
 
   };
 
-  useEffect(() => {
-    setLoading(true);
+  // useEffect(() => {
+  //   setLoading(true);
 
-    console.log(`Token ${token}`);
-    fetch(`${baseUrl}/api/user/dashboard/admin/`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => {
-        console.log("data", response);
+  //   console.log(`Token ${token}`);
+  //   fetch(`${baseUrl}/api/user/dashboard/admin/`, {
+  //     method: 'GET',
+  //     mode: 'cors',
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   })
+  //     .then((response) => {
+  //       console.log("data", response);
 
-        if (response.status === 403) {
-          // Handle the case where the response is a 403 (Forbidden) status code
-          toast.error('Session Timed Out');
+  //       if (response.status === 403) {
+  //         // Handle the case where the response is a 403 (Forbidden) status code
+  //         toast.error('Session Timed Out');
 
-          // Clear the user's authentication token or session-related data
-          localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
-          localStorage.removeItem("isLoggedIn");
-          localStorage.clear();
+  //         // Clear the user's authentication token or session-related data
+  //         localStorage.removeItem('token'); // Replace 'token' with the key used to store the token or session data
+  //         localStorage.removeItem("isLoggedIn");
+  //         localStorage.clear();
 
-          // Redirect to the login page
-          navigate("/login"); // If you're using React Router, replace this with the appropriate navigation method
-        } else if (!response.ok) {
-          // Handle other non-OK status codes
-          toast.error('Something Went Wrong');
-        }
+  //         // Redirect to the login page
+  //         navigate("/login"); // If you're using React Router, replace this with the appropriate navigation method
+  //       } else if (!response.ok) {
+  //         // Handle other non-OK status codes
+  //         toast.error('Something Went Wrong');
+  //       }
 
-        return response.json(); // Continue parsing the response
-      })
-
-
-      .then(json => {
-
-        setEngineerWorkloadList(json.data.complaintGroupByEngineer);
-        setRows(json.data);
-
-        setTotalComplaints(json.data.activeService);
-        setTotalComplaintsHigh(json.data.activeServiceGroupByPriority.high);
-        setTotalComplaintsMedium(json.data.activeServiceGroupByPriority.medium);
-        setTotalComplaintsLow(json.data.activeServiceGroupByPriority.low);
-
-        setTodayVisits(json.data.todayService);
-        setTodayVisitsHigh(json.data.todayServiceGroupByPriority.high);
-        setTodayVisitsMedium(json.data.todayServiceGroupByPriority.medium);
-        setTodayVisitsLow(json.data.todayServiceGroupByPriority.low);
-
-        setBacklogs(json.data.backLog);
-        setBacklogsHigh(json.data.backLogGroupByPriority.high);
-        setBacklogsMedium(json.data.backLogGroupByPriority.medium);
-        setBacklogsLow(json.data.backLogGroupByPriority.low);
+  //       return response.json(); // Continue parsing the response
+  //     })
 
 
+  //     .then(json => {
 
-      })
-      .catch((error) => {
-        // Handle general errors that occurred during the fetch
-        console.error('Error during fetch:', error);
-        toast.error('An error occurred');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  //       setEngineerWorkloadList(json.data.complaintGroupByEngineer);
+  //       setRows(json.data);
 
-  }, [navigate, token]);
+  //       setTotalComplaints(json.data.activeService);
+  //       setTotalComplaintsHigh(json.data.activeServiceGroupByPriority.high);
+  //       setTotalComplaintsMedium(json.data.activeServiceGroupByPriority.medium);
+  //       setTotalComplaintsLow(json.data.activeServiceGroupByPriority.low);
+
+  //       setTodayVisits(json.data.todayService);
+  //       setTodayVisitsHigh(json.data.todayServiceGroupByPriority.high);
+  //       setTodayVisitsMedium(json.data.todayServiceGroupByPriority.medium);
+  //       setTodayVisitsLow(json.data.todayServiceGroupByPriority.low);
+
+  //       setBacklogs(json.data.backLog);
+  //       setBacklogsHigh(json.data.backLogGroupByPriority.high);
+  //       setBacklogsMedium(json.data.backLogGroupByPriority.medium);
+  //       setBacklogsLow(json.data.backLogGroupByPriority.low);
+
+
+
+  //     })
+  //     .catch((error) => {
+  //       // Handle general errors that occurred during the fetch
+  //       console.error('Error during fetch:', error);
+  //       toast.error('An error occurred');
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+
+  // }, [navigate, token]);
 
   useEffect(() => {
 
