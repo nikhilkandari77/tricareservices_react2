@@ -38,10 +38,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import InputBase from '@mui/material/InputBase';
 import LazyLoad from 'react-lazyload';
 import './custom.css';
+import { Info, InfoSharp } from '@mui/icons-material';
+
 import baseUrl from '../../../utils/baseUrl';
 import Iconify from '../../../components/iconify';
 import ImageSlide from './ImageSlide'
-import { Info, InfoSharp } from '@mui/icons-material';
 
 
 
