@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js">
+    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="Commit 20-10-23">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sections/@dashboard/products/ProductTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/@dashboard/products/ProductTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/baseUrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/baseUrl.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,9 +49,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.customizations&quot;
   }
 }</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -299,15 +295,31 @@
       <option name="project" value="LOCAL" />
       <updated>1697095844475</updated>
     </task>
-    <task id="LOCAL-00032" summary="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js">
+    <task id="LOCAL-00032" summary="Merge branch 'master' of https://github.com/rohitrailbit/tricareservices_react2">
       <option name="closed" value="true" />
-      <created>1698728036074</created>
+      <created>1697700031698</created>
       <option name="number" value="00032" />
       <option name="presentableId" value="LOCAL-00032" />
       <option name="project" value="LOCAL" />
-      <updated>1698728036074</updated>
+      <updated>1697700031698</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Merge branch 'master' of https://github.com/rohitrailbit/tricareservices_react2">
+      <option name="closed" value="true" />
+      <created>1697700163807</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1697700163807</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Commit 20-10-23">
+      <option name="closed" value="true" />
+      <created>1697778043348</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1697778043348</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -326,7 +338,8 @@
     <MESSAGE value="update" />
     <MESSAGE value="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock" />
     <MESSAGE value="12TH OCT" />
-    <MESSAGE value="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js" />
+    <MESSAGE value="Merge branch 'master' of https://github.com/rohitrailbit/tricareservices_react2" />
+    <MESSAGE value="Commit 20-10-23" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit 20-10-23" />
   </component>
 </project>
