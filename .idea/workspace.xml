@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="12TH OCT">
+    <list default="true" id="5fb6228f-74c9-4bb2-85f4-cfdb1a1a99a1" name="Changes" comment="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/assets/icons/navbar/FJS77L3H4AGKADG.xls" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/assets/icons/navbar/UserMngmnt.png" beforeDir="false" afterPath="$PROJECT_DIR$/build/assets/icons/navbar/UserMngmnt.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/assets/icons/navbar/Videos - Shortcut.lnk" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/static/js/main.44bbffa0.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/sections/@dashboard/products/ProductTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/sections/@dashboard/products/ProductTable.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/baseUrl.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/baseUrl.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +50,10 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
 }</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -299,7 +299,15 @@
       <option name="project" value="LOCAL" />
       <updated>1697095844475</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js">
+      <option name="closed" value="true" />
+      <created>1698728036074</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1698728036074</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -318,6 +326,7 @@
     <MESSAGE value="update" />
     <MESSAGE value="Merge branch 'master' of https://github.com/nikhilkandari77/tricareservices_react2&#10;&#10;# Conflicts:&#10;#&#9;build/asset-manifest.json&#10;#&#9;build/index.html&#10;#&#9;package-lock.json&#10;#&#9;package.json&#10;#&#9;src/pages/Customerdetail.js&#10;#&#9;src/pages/UserPage.js&#10;#&#9;src/sections/@dashboard/products/ProductTable.js&#10;#&#9;src/utils/baseUrl.js&#10;#&#9;yarn.lock" />
     <MESSAGE value="12TH OCT" />
-    <option name="LAST_COMMIT_MESSAGE" value="12TH OCT" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/master'&#10;&#10;# Conflicts:&#10;#&#9;src/pages/Customerdetail.js" />
   </component>
 </project>
