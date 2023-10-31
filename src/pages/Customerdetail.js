@@ -265,7 +265,7 @@ export default function Customerdetail() {
         setEditRowData(row);
 
         setOpenProductEdit(true);
-    }
+    };
     const handleChangeEditRowData = (e) => {
         setEditRowData({ ...editRowData, [e.target.name]: e.target.value });
     };
@@ -307,7 +307,7 @@ export default function Customerdetail() {
             setBtnLoading(false); // Set loading back to false after submission is complete
         }
 
-    }
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -558,7 +558,7 @@ export default function Customerdetail() {
             console.error('Error while updating product:', error);
             toast.error('Error while updating product'); // Display error toast
         }
-    }
+    };
     useEffect(() => {
         // Check if all required fields are valid
         const isValid =
@@ -856,7 +856,7 @@ export default function Customerdetail() {
         setConfirmpassword(null);
         setPassword(null);
 
-    }
+    };
 
 
     const handleExcelFileSubmit = async (e) => {
@@ -897,7 +897,7 @@ export default function Customerdetail() {
         } finally {
             setBtnLoading(false); // Set loading to true when the submission starts
         }
-    }
+    };
 
 
 
@@ -1065,7 +1065,7 @@ export default function Customerdetail() {
 
 
 
-    }
+    };
 
 
 
@@ -1932,7 +1932,7 @@ export default function Customerdetail() {
                                                                             return (
                                                                                 <TableCell key={column.id} align={column.align}>
                                                                                     <Button onClick={() => handleProductDetails(row)} title="Details" >
-                                                                                        <DetailsIcon color="primary" />
+                                                                                        <InfoSharp color="primary" />
                                                                                     </Button>
                                                                                     <Button onClick={() => handleProductEdit(row)} title="Edit" >
                                                                                         <UpdateIcon color='info' />
@@ -2147,26 +2147,26 @@ export default function Customerdetail() {
                                                                                                                         </div>
                                                                                                                     </Grid>
                                                                                                                 </Grid>
-                                                                                                            <div><br/>
-                                                                                                            <Button
-                                                                                                                type="submit"
-                                                                                                                variant="contained"
-                                                                                                                color="primary"
-                                                                                                                style={{ float: 'right', }}
-                                                                                                                disabled={btnLoading} // Disable the button when loading is true
-                                                                                                            >
-                                                                                                                {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
-                                                                                                            </Button>
+                                                                                                                <div><br />
+                                                                                                                    <Button
+                                                                                                                        type="submit"
+                                                                                                                        variant="contained"
+                                                                                                                        color="primary"
+                                                                                                                        style={{ float: 'right', }}
+                                                                                                                        disabled={btnLoading} // Disable the button when loading is true
+                                                                                                                    >
+                                                                                                                        {btnLoading ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
+                                                                                                                    </Button>
 
-                                                                                                            <Button
-                                                                                                                className="btn btn-dangerr"
-                                                                                                                onClick={() => setOpenProductEdit(false)} // Attach the onClick handler to close the dialog
-                                                                                                                style={{ width: '8%', color: 'red' }}
+                                                                                                                    <Button
+                                                                                                                        className="btn btn-dangerr"
+                                                                                                                        onClick={() => setOpenProductEdit(false)} // Attach the onClick handler to close the dialog
+                                                                                                                        style={{ width: '8%', color: 'red' }}
 
-                                                                                                            >
-                                                                                                                Close
-                                                                                                            </Button>
-                                                                                                            </div>
+                                                                                                                    >
+                                                                                                                        Close
+                                                                                                                    </Button>
+                                                                                                                </div>
 
                                                                                                             </form>
 
@@ -2201,7 +2201,7 @@ export default function Customerdetail() {
                                                                                                                 <img style={{ height: "10vh", margin: "auto" }} src="/products/logo.png" alt='product' />
                                                                                                             ) : (
                                                                                                                 // <LazyLoad height={100} offset={100}>
-                                                                                                                <img  loading="lazy" src={`${baseUrl}${productCustomerData.productImageList[0]}`} alt='product' />
+                                                                                                                <img loading="lazy" src={`${baseUrl}${productCustomerData.productImageList[0]}`} alt='product' />
                                                                                                             )}
                                                                                                         </div>
                                                                                                         <div style={{ margin: 'auto', textAlign: 'center', padding: '10' }}>
